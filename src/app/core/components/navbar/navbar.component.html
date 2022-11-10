@@ -1,0 +1,36 @@
+<mat-toolbar>
+  <span>MoneyCheck</span>
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="menuBudget">
+    <span>Budget</span>
+  </button>
+  <mat-menu #menuBudget="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item>
+      <mat-icon>home</mat-icon>
+      <span>År</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>people_outline</mat-icon>
+      <span>Version</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>videocam</mat-icon>
+      <span>Kategorier</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Currency</span>
+    </button>
+  </mat-menu>
+
+  <!-- <button mat-icon-button class="example-icon favorite-icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon">
+    <mat-icon>share</mat-icon>
+  </button> -->
+  <button mat-icon-button class="example-icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+</mat-toolbar>
