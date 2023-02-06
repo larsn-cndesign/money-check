@@ -1,0 +1,26 @@
+@use '../../../../content/variables.scss' as v;
+
+.loading {
+  position: absolute;
+  left: 0;
+  top: 65px;
+  right: 0;
+  bottom: 0;
+  background: v.$table-header;
+  opacity: 0.8;
+  z-index: 1200;
+}
+
+.loadingcontent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+}
+
+@media (max-width: 599px) {
+  .loading {
+    top: 57px;
+  }
+}

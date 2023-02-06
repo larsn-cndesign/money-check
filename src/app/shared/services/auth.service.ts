@@ -1,75 +1,85 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { AppUser } from 'src/app/core/models/app-user.model';
+import { UserCredential } from 'src/app/core/models/user-credential.model';
+import { ErrorService } from './error.service';
+import { UserService } from './user.service';
 
-interface User {
-  email: string;
-  password: string;
-}
-
+/**
+ * Class representing a service for managing authentication of users.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // API path
-  basePath = 'https://my-site.com/server/';
+  /**
+   * Initialize services.
+   * @param router Navigation service.
+   * @param http Http request service.
+   * @param userService A service manage users.
+   * @param errorService Application error service
+   */
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private userService: UserService,
+    private errorService: ErrorService
+  ) {}
 
-  constructor(private router: Router, private http: HttpClient) {}
-
-  // Http Options
-  // httpOptions = {
-  //   headers: new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //   }),
-  // };
-
-  // Handle errors
-  // handleError(error: HttpErrorResponse) {
-  //   if (error.error instanceof ErrorEvent) {
-  //     console.error('An error occurred:', error.error.message);
-  //   } else {
-  //     console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
-  //   }
-  //   return throwError('Something bad happened; please try again later.');
-  // }
-
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>('/api/login', { email, password });
-    // this is just the HTTP call,
-    // we still need to handle the reception of the token
-    // .shareReplay()
+  /**
+   * Log in user if credentials is valid and token is present in header.
+   * @param credentials User credentials for logging in.
+   * @returns An Observable of boolean.
+   * True if login was successful, false if token is not valid or a server error 404 occured.
+   */
+  login(credentials: UserCredential): Observable<boolean> {
+    return this.http.post<AppUser>('/api/authenticate', credentials, { observe: 'response' }).pipe(
+      map((response: HttpResponse<any>) => {
+        const token = this.getToken(response.headers);
+        if (token && response.body) {
+          this.userService.storeUser(token, response.body as AppUser);
+          return true;
+        }
+        return false;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return error.status === 400 ? of(false) : this.errorService.handleHttpError(error);
+      })
+    );
   }
 
-  // // Verify user credentials on server to get token
-  // loginForm(data): Observable<LoginResponse> {
-  //   return this.http
-  //     .post<LoginResponse>(this.basePath + 'api.php', data, this.httpOptions)
-  //     .pipe(retry(2), catchError(this.handleError));
-  // }
+  /**
+   * Checking if token is set.
+   * @returns True if token item is found in localStorage.
+   */
+  isLoggedIn(): boolean {
+    return localStorage.getItem('access_token') != null;
+  }
 
-  // // After login save token and other values(if any) in localStorage
-  // setUser(resp: LoginResponse) {
-  //   localStorage.setItem('name', resp.name);
-  //   localStorage.setItem('access_token', resp.access_token);
-  //   this.router.navigate(['/dashboard']);
-  // }
+  /**
+   * Logout user.
+   * @description Clear localStorage and user object in store and redirect user to login page.
+   */
+  logout(): void {
+    this.userService.clearStoredUser();
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/login']);
+  }
 
-  // // Checking if token is set
-  // isLoggedIn() {
-  //   return localStorage.getItem('access_token') != null;
-  // }
+  /**
+   * Get token from Authorization header.
+   * @param headers Headers in Http response.
+   * @returns Token if found, otherwise null.
+   */
+  private getToken(headers: HttpHeaders): string | null {
+    const auth = headers.get('Authorization');
+    if (!auth) {
+      return null;
+    }
 
-  // // After clearing localStorage redirect to login screen
-  // logout() {
-  //   localStorage.clear();
-  //   this.router.navigate(['/auth/login']);
-  // }
-
-  // // Get data from server for Dashboard
-  // getData(data): Observable<LoginResponse> {
-  //   return this.http
-  //     .post<LoginResponse>(this.basePath + 'api.php', data, this.httpOptions)
-  //     .pipe(retry(2), catchError(this.handleError));
-  // }
+    return auth.toLowerCase().startsWith('bearer') ? auth.substring(6).trim() : null;
+  }
 }

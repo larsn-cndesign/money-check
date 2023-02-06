@@ -1,0 +1,44 @@
+<h2>{{ title }}</h2>
+
+<form [formGroup]="form" #formDirective="ngForm" autocomplete="off" (ngSubmit)="onSaveBudget(formDirective)">
+  <div class="form-field-error">
+    <mat-form-field>
+      <mat-label>Budget</mat-label>
+      <input
+        #itemRef
+        matInput
+        placeholder="Ange namn på budget"
+        formControlName="budgetName"
+        type="text"
+        [errorStateMatcher]="matcher"
+      />
+      <mat-error *ngIf="budgetName?.invalid">{{ getErrorMessage(budgetName, 'Budget') }}</mat-error>
+    </mat-form-field>
+  </div>
+  <div *ngIf="form">
+    <button mat-raised-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
+    <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
+      <mat-radio-button value="Add">Lägg till budget</mat-radio-button>
+      <mat-radio-button value="Edit" [disabled]="action?.value === 'Add'">Ändra vald budget</mat-radio-button>
+    </mat-radio-group>
+  </div>
+</form>
+
+<div class="row-xl max-table-height">
+  <table mat-table [dataSource]="$any(budgets$ | async)" class="tbl">
+    <ng-container matColumnDef="budgetName">
+      <th mat-header-cell *matHeaderCellDef>Namn på budget</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.budgetName }}</mat-label>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let item; columns: displayedColumns"
+      [class.selected]="item.selected"
+      (click)="onSelectBudget(item)"
+    ></tr>
+  </table>
+</div>

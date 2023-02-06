@@ -1,0 +1,124 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: v.$body-background;
+}
+
+// -------------------------------
+// Alignment
+// -------------------------------
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.clear-fix {
+  clear: both;
+}
+
+.valign-icon-text {
+  display: flex;
+  align-items: center;
+}
+
+// -------------------------------
+// Grid
+// -------------------------------
+.row {
+  padding: 2px 3px;
+}
+
+.row-md {
+  padding: 4px 3px;
+}
+
+.row-xl {
+  padding: 10px 3px;
+}
+
+// -------------------------------
+// Other
+// -------------------------------
+.negative-number {
+  color: v.$warn-fg;
+}
+
+// -------------------------------
+// Shorten text with elipse "..."
+// -------------------------------
+.shorten-text-m,
+.shorten-text-ms,
+.shorten-text-s {
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.shorten-text-m {
+  max-width: 220px;
+}
+
+.shorten-text-ms {
+  max-width: 165px;
+}
+
+.shorten-text-s {
+  max-width: 110px;
+}
+
+// -------------------------------
+// Form fields
+// -------------------------------
+.form-field-note {
+  width: 50%;
+  min-width: 300px;
+}
+
+.form-field-error .mat-form-field {
+  margin-bottom: 12px;
+}
+
+.mat-form-field {
+  margin-right: 3px;
+}
+
+.v-radio-group .mat-radio-button {
+  margin: 5px 0;
+  width: 100%;
+}
+
+.year-version {
+  display: inline-block;
+}
+
+// -------------------------------
+// Browser Specific Styles
+// -------------------------------
+
+// Prevent light yellow background in Chrome
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------
+@media (min-width: 600px) {
+  .v-radio-group .mat-radio-button {
+    width: auto;
+    margin: 0 5px;
+  }
+}

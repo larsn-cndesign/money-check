@@ -1,0 +1,41 @@
+<div class="row-xl max-table-height">
+  <table mat-table [dataSource]="$any(currencies$ | async)" class="tbl">
+    <ng-container matColumnDef="currency">
+      <th mat-header-cell *matHeaderCellDef>Valuta</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.currency }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="budgetRate">
+      <th mat-header-cell *matHeaderCellDef>Budgetkurs</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.budgetRate | number : '1.0-2' }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="averageRate">
+      <th mat-header-cell *matHeaderCellDef>Medelkurs</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.averageRate | number : '1.0-2' }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-icon-button type="button" title="Ta bort kurs" (click)="onDelete($event, item)">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let item; columns: displayedColumns"
+      [class.selected]="item.selected"
+      (click)="onSelect(item)"
+    ></tr>
+  </table>
+</div>

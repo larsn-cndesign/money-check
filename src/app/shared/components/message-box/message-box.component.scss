@@ -1,0 +1,52 @@
+@use '../../../../content/variables.scss' as v;
+
+.message-wrap {
+  z-index: 1040;
+  position: fixed;
+  top: 65px;
+  left: 0;
+  width: 250px;
+  background-color: #8c9b8d;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin: 0 3px;
+}
+
+.message-main {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: #000000;
+}
+
+.message-text {
+  font-size: 24px;
+  margin-left: 10px;
+  color: v.$primary;
+}
+
+.message-icon {
+  color: v.$primary;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.horz-icon > span,
+.horz-icon > mat-icon,
+.horz-icon > img {
+  vertical-align: middle;
+}
+
+.fai-32 {
+  font-size: 32px;
+}
+
+.fg-prim {
+  color: v.$primary;
+}
+
+@media (max-width: 599px) {
+  .message-wrap {
+    top: 57px;
+  }
+}

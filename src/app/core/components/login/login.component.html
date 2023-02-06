@@ -1,18 +1,47 @@
-<form [formGroup]="form">
-  <div>
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" placeholder="Ange email" />
-    </mat-form-field>
-  </div>
-  <div>
-    <mat-form-field appearance="fill">
-      <mat-label>Lösenord</mat-label>
-      <input matInput type="password" formControlName="password" placeholder="Lösenord" />
-    </mat-form-field>
-  </div>
+<div class="page" style="text-align: center">
+  <h2>{{ title }}</h2>
 
-  <div style="text-align: center">
-    <button mat-raised-button color="primary" (click)="login()">Logga in</button>
-  </div>
-</form>
+  <form [formGroup]="form" (ngSubmit)="login()" data-testid="form">
+    <div class="server-error" *ngIf="invalidLogin" data-testid="server-error">
+      Ogiltigt användarnamn och/eller lösenord
+    </div>
+    <div class="form-field-error">
+      <mat-form-field style="width: 234px">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />
+        <mat-error *ngIf="email?.invalid">
+          <span data-testid="email-error">{{ getErrorMessage(email, 'Email') }}</span>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-field-error">
+      <mat-form-field>
+        <mat-label>Lösenord</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          placeholder="Lösenord"
+          required
+          data-testid="password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword"
+          data-testid="show-password"
+        >
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="password?.invalid">
+          <span data-testid="password-error">{{ getErrorMessage(password, 'Lösenord') }}</span>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <button mat-raised-button color="primary" type="submit" data-testid="submit">Logga in</button>
+    </div>
+  </form>
+</div>

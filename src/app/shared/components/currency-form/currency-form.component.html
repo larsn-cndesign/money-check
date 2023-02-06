@@ -1,0 +1,44 @@
+<form [formGroup]="form">
+  <div class="form-field-error">
+    <mat-form-field>
+      <mat-label>Valuta (3 tecken)</mat-label>
+      <input matInput type="text" formControlName="currency" [errorStateMatcher]="matcher" required />
+      <mat-error *ngIf="currency?.invalid">{{ getErrorMessage(currency, 'Valuta') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Budgetkurs</mat-label>
+      <input matInput type="text" formControlName="budgetRate" [errorStateMatcher]="matcher" required />
+      <mat-error *ngIf="budgetRate?.invalid">{{ getErrorMessage(budgetRate, 'Kurs') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Medlekurs</mat-label>
+      <input matInput type="text" formControlName="averageRate" [errorStateMatcher]="matcher" required />
+      <mat-error *ngIf="averageRate?.invalid">{{ getErrorMessage(averageRate, 'Kurs') }}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <button
+      mat-raised-button
+      type="button"
+      [disabled]="!currency?.valid || !budgetRate?.valid || !averageRate?.valid"
+      (click)="onSaveCurrency($event)"
+    >
+      OK
+    </button>
+    <mat-radio-group class="v-radio-group" formControlName="action">
+      <mat-radio-button value="Add">Lägg till valuta</mat-radio-button>
+      <mat-radio-button value="Edit" [disabled]="form.get('action')?.value === 'Add'">
+        Ändra vald valuta
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <app-currency-table
+    [currencies$]="currencies$"
+    [deletable]="deletable"
+    (changed)="onChangeCurrency($event)"
+  ></app-currency-table>
+</form>

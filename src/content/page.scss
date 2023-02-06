@@ -1,5 +1,39 @@
+@use '../content/variables.scss' as v;
+
 .page {
-  display: flex;
-  justify-content: center;
-  padding: 20px; 
+  padding: 20px;
+  width: 95%;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  color: v.$page-fg;
+}
+
+.filter {
+  border: 1px solid v.$border;
+  border-radius: 4px;
+  margin: 10px;
+}
+
+.server-error {
+  background-color: v.$warn-fg;
+  margin: 10px 0;
+  padding: 10px;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  border: 1px solid #000000;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------
+@media (min-width: 600px) {
+  .page {
+    width: 80%;
+  }
+
+  .server-error {
+    max-width: 500px;
+  }
 }

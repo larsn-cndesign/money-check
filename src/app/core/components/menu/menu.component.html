@@ -1,0 +1,33 @@
+<!-- Menu level 1 -->
+<button mat-button *ngIf="(user$ | async)?.name" routerLink="/feature/budget-variance" data-testid="budget-variance">
+  Utfall
+</button>
+<button mat-button *ngIf="(user$ | async)?.isAdmin" routerLink="/feature/actual-item" data-testid="admin">
+  Transaktoner
+</button>
+<button mat-button *ngIf="(user$ | async)?.isAdmin" [matMenuTriggerFor]="budget" data-testid="admin">
+  <span>Budget</span>
+</button>
+<button mat-button *ngIf="(user$ | async)?.name" (click)="logout()" data-testid="logout">
+  <span>Logga ut</span>
+</button>
+<!-- Menu level 2 -->
+<mat-menu #budget="matMenu" [overlapTrigger]="false">
+  <button mat-menu-item routerLink="/feature/budget-item">Hantera budget</button>
+  <button mat-menu-item routerLink="/feature/create-budget">Skapa budget</button>
+  <button mat-menu-item [matMenuTriggerFor]="year">År</button>
+  <button mat-menu-item [matMenuTriggerFor]="version">Version</button>
+  <button mat-menu-item routerLink="/feature/category">Kategori</button>
+  <button mat-menu-item routerLink="/feature/unit">Enheter</button>
+  <button mat-menu-item routerLink="/feature/trip">Reseor</button>
+</mat-menu>
+<!-- Menu level 3 -->
+<mat-menu #year="matMenu">
+  <button mat-menu-item routerLink="/feature/create-budget-year">Skapa nytt budgetår</button>
+  <button mat-menu-item routerLink="/feature/delete-budget-year">Ta bort budgetår</button>
+</mat-menu>
+
+<mat-menu #version="matMenu">
+  <button mat-menu-item routerLink="/feature/create-version">Skapa ny version</button>
+  <button mat-menu-item routerLink="/feature/modify-version">Ändra/Ta bort version</button>
+</mat-menu>

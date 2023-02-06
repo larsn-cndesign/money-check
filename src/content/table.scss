@@ -1,0 +1,32 @@
+table.tbl {
+  width: 100%;
+  border: none;
+}
+
+table.tbl th,
+table.tbl td {
+  padding: 0 6px !important;
+}
+
+table.tbl tr td {
+  cursor: pointer;
+}
+
+.max-table-height {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.mat-table-sticky {
+  background: v.$table-header;
+  opacity: 1;
+  font-size: 16px;
+}
+
+.selected {
+  background: v.$selected-bg;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------

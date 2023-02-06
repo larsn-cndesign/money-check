@@ -1,7 +1,61 @@
-.spacer {
-  flex: 1 1 auto;
+@use '../../../../content/variables' as v;
+
+.sidenav-container {
+  height: 100vh;
+  z-index: 2;
+  position: fixed;
 }
 
-.divider-right {
-  margin-right: 10px;
+.container {
+  display: flex;
+}
+
+.left {
+  width: 50%;
+  text-align: left;
+}
+
+.center {
+  width: 50%;
+  text-align: left;
+}
+
+.right {
+  width: 0%;
+  text-align: right;
+}
+
+.menu-font {
+  font-size: 14px;
+}
+
+.budget {
+  color: v.$accent-fg;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------
+@media (min-width: 600px) {
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .left {
+    width: 20%;
+  }
+
+  .center {
+    width: 60%;
+    text-align: center;
+  }
+
+  .right {
+    width: 20%;
+  }
+
+  .menu-font {
+    font-size: unset;
+  }
 }

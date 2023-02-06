@@ -1,0 +1,32 @@
+<h2>{{ title }} {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+
+<ng-container *ngIf="$any(budgetYear$ | async)?.budgetYears?.length !== 0; else noExistingYears">
+  <form [formGroup]="form" (ngSubmit)="onDeleteBudgetYear($event)">
+    <p>
+      <mat-form-field>
+        <mat-label>Välj år</mat-label>
+        <mat-select formControlName="budgetYearId" [errorStateMatcher]="matcher" required>
+          <mat-option *ngFor="let item of $any(budgetYear$ | async)?.budgetYears" [value]="item.id">
+            {{ item.year }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="budgetYearId?.invalid">{{ getErrorMessage(budgetYearId, 'År') }}</mat-error>
+      </mat-form-field>
+    </p>
+
+    <div>
+      <button
+        mat-raised-button
+        color="warn"
+        type="submit"
+        [disabled]="$any(budgetYear$ | async)?.budgetYears?.length === 0 || !form.valid || budgetYearId?.value === -1"
+      >
+        Ta bort
+      </button>
+    </div>
+  </form>
+</ng-container>
+
+<ng-template #noExistingYears>
+  <div *ngIf="pageLoaded">Det finns inget budgetår att ta bort</div>
+</ng-template>

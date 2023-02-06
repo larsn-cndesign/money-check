@@ -1,36 +1,38 @@
-<mat-toolbar>
-  <span>MoneyCheck</span>
-  <span class="spacer"></span>
-
-  <button mat-icon-button [matMenuTriggerFor]="menuBudget">
-    <span>Budget</span>
-  </button>
-  <mat-menu #menuBudget="matMenu" [overlapTrigger]="false">
-    <button mat-menu-item>
-      <mat-icon>home</mat-icon>
-      <span>År</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>people_outline</mat-icon>
-      <span>Version</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>videocam</mat-icon>
-      <span>Kategorier</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>exit_to_app</mat-icon>
-      <span>Currency</span>
-    </button>
-  </mat-menu>
-
-  <!-- <button mat-icon-button class="example-icon favorite-icon">
-    <mat-icon>favorite</mat-icon>
-  </button>
-  <button mat-icon-button class="example-icon">
-    <mat-icon>share</mat-icon>
-  </button> -->
-  <button mat-icon-button class="example-icon">
+<mat-toolbar class="container">
+  <button *ngIf="isMobileDevice" mat-icon-button (click)="onToggleSidenav()" data-testid="toggle-sidenav">
     <mat-icon>menu</mat-icon>
   </button>
+  <div class="left">
+    <span routerLink="/feature/home" style="cursor: pointer">
+      <div class="valign-icon-text menu-font"><mat-icon color="primary">euro</mat-icon>MoneyCheck</div>
+    </span>
+  </div>
+  <div class="center">
+    <ng-container *ngIf="budgetState$ | async as budgetState" style="text-align: center">
+      <mat-form-field class="menu-font budget" *ngIf="showBudget" appearance="standard" floatlLabel="never">
+        <mat-select
+          (selectionChange)="onChangeBudget($event)"
+          [value]="budgetState.budgetId"
+          placeholder="Välj budget"
+          data-testid="change-budget"
+        >
+          <mat-option *ngFor="let item of budgetState.budgets" [value]="item.id">
+            {{ item.budgetName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </div>
+
+  <div class="right">
+    <ng-container *ngIf="!isMobileDevice">
+      <app-menu></app-menu>
+    </ng-container>
+  </div>
 </mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container" *ngIf="isMobileDevice">
+  <mat-sidenav #snav [mode]="'side'" [opened]="isSideNavOpen">
+    <app-menu (navigated)="onNavigate()"></app-menu>
+  </mat-sidenav>
+</mat-sidenav-container>

@@ -1,0 +1,196 @@
+<h2>{{ title }} {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+
+<ng-container *ngIf="manageBudgetItem$ | async as budget">
+  <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
+    <ng-container *ngIf="budget.categories.length !== 0; else noExistingCategories">
+      <ng-container *ngIf="budget.units.length !== 0; else noExistingUnits">
+        <form [formGroup]="form" (ngSubmit)="onSaveBudgetItem()">
+          <div class="form-field-error">
+            <mat-form-field>
+              <mat-label>Välj år</mat-label>
+              <mat-select
+                formControlName="budgetYearId"
+                [errorStateMatcher]="matcher"
+                (selectionChange)="onChangeYear($event)"
+                required
+              >
+                <mat-option *ngFor="let item of budget.budgetYears" [value]="item.id">
+                  {{ item.year }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="budgetYearId?.invalid">{{ getErrorMessage(budgetYearId) }}</mat-error>
+            </mat-form-field>
+
+            <span class="year-version">Nuvarnade version: {{ budget?.version?.versionName }}</span>
+          </div>
+
+          <div class="form-field-error">
+            <mat-form-field>
+              <mat-label>Välj kategori</mat-label>
+              <mat-select formControlName="category" [errorStateMatcher]="matcher" required>
+                <mat-option *ngFor="let item of budget.categories" [value]="item.id">
+                  {{ item.categoryName }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="category?.invalid">{{ getErrorMessage(category) }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Välj enhet</mat-label>
+              <mat-select
+                formControlName="unit"
+                [errorStateMatcher]="matcher"
+                (selectionChange)="onChangeUnit($event)"
+                required
+              >
+                <mat-option *ngFor="let item of budget.units" [value]="item.id">
+                  {{ item.unitName }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="unit?.invalid">{{ getErrorMessage(unit) }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="useCurrency">
+              <mat-label>Välj valuta</mat-label>
+              <mat-select formControlName="currency" [errorStateMatcher]="matcher">
+                <mat-option *ngFor="let item of budget.currencies" [value]="item.currency">
+                  {{ item.currency }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="currency?.invalid">{{ getErrorMessage(currency) }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Värde</mat-label>
+              <input matInput type="text" formControlName="unitValue" [errorStateMatcher]="matcher" required />
+              <mat-error *ngIf="unitValue?.invalid">{{ getErrorMessage(unitValue) }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field class="form-field-note">
+            <mat-label>Notering</mat-label>
+            <textarea
+              matInput
+              formControlName="note"
+              rows="4"
+              [rows]="noteFieldRows"
+              appFocus
+              (focused)="onFocus()"
+              (unfocused)="onBlur()"
+            ></textarea>
+            <mat-error *ngIf="note?.invalid">{{ getErrorMessage(note) }}</mat-error>
+          </mat-form-field>
+
+          <div>
+            <button
+              mat-raised-button
+              type="submit"
+              [disabled]="
+                category?.invalid ||
+                unit?.invalid ||
+                unitValue?.invalid ||
+                category?.value === -1 ||
+                unit?.value === -1 ||
+                (useCurrency && currency?.value === -1) ||
+                (useCurrency && currency?.invalid)
+              "
+            >
+              Spara budgetpost
+            </button>
+            <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
+              <mat-radio-button value="Add">Lägg till budgetpost</mat-radio-button>
+              <mat-radio-button value="Edit" [disabled]="action?.value === 'Add'">
+                Ändra vald budgetpost
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </form>
+
+        <div class="row-xl filter">
+          <mat-icon>filter_alt</mat-icon>
+          <mat-form-field>
+            <mat-label>Välj kategori</mat-label>
+            <mat-select [value]="budget.filter.categoryId" (selectionChange)="onChangeFilter($event, 'category')">
+              <mat-option [value]="-1">Alla kategorier</mat-option>
+              <mat-option *ngFor="let item of budget.categories" [value]="item.id">
+                {{ item.categoryName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="max-table-height">
+          <table mat-table [dataSource]="$any(budgetItems$ | async)" class="tbl">
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef>Kategori</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>{{ item.categoryName }}</mat-label>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="unit">
+              <th mat-header-cell *matHeaderCellDef>Enhet</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>{{ item.unitName }}</mat-label>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="currency">
+              <th mat-header-cell *matHeaderCellDef>Valuta</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>{{ item.currency !== '' ? item.currency : '-' }}</mat-label>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="unitValue">
+              <th mat-header-cell *matHeaderCellDef>Värde</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label>{{ item.unitValue | number : '1.0-2' }}</mat-label>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="note">
+              <th mat-header-cell *matHeaderCellDef>Notering</th>
+              <td mat-cell *matCellDef="let item">
+                <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let item">
+                <button mat-icon-button type="button" title="Ta bort budgetpost" (click)="onDeleteItem($event, item)">
+                  <mat-icon>delete_forever</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr
+              mat-row
+              *matRowDef="let item; columns: displayedColumns"
+              [class.selected]="item.selected"
+              (click)="onSelectItem(item)"
+            ></tr>
+          </table>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #noExistingYears>
+  <div *ngIf="pageLoaded">Det finns ingen budget eller budgetår att hantera.</div>
+</ng-template>
+
+<ng-template #noExistingCategories>
+  <div *ngIf="pageLoaded">
+    Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.
+  </div>
+</ng-template>
+
+<ng-template #noExistingUnits>
+  <div *ngIf="pageLoaded">
+    Det finns ingen enhet upplagd för denna budget. <a href="/feature/unit">Lägg upp enhet</a>.
+  </div>
+</ng-template>
