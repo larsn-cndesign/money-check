@@ -43,7 +43,7 @@ describe('UserService', () => {
 
   //   service.getStoredUser();
 
-  //   // tslint:disable-next-line:no-string-literal
+  // eslint-disable-next-line
   //   expect(service['_store'].user.name).toBeFalsy();
   // });
 
