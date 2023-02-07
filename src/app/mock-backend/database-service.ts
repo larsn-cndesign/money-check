@@ -510,7 +510,7 @@ export class DatabaseService {
 
       // Transactions
       const transactions = this.db.actualItems.filter(
-        (x) => new Date(toDate(x.purchaseDate)).getFullYear() === budgetYear.year
+        (x) => x.budgetId === filter.budgetId && new Date(toDate(x.purchaseDate)).getFullYear() === budgetYear.year
       );
       actualItems = [...actualItems, ...transactions];
     });
