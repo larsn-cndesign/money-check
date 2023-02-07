@@ -20,7 +20,7 @@ import { Category } from '../feature/category/shared/category.model';
 import { Trip } from '../feature/trip/shared/trip.model';
 import { Unit } from '../feature/unit/shared/unit.model';
 import { ItemFilter } from '../shared/classes/filter';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from './database-service';
 
 // ------------------------------------
 // CONSTANTS FOR TEST ONLY
