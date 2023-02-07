@@ -357,8 +357,9 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param e The event object emitted by the select.
    * @todo Implement delay before sending to server.
    */
-  OnFilterNote(e: any): void {
-    this.actualItemService.setFilterItem(e.value, 'note');
+  OnFilterNote(e: Event): void {
+    const value = (e.target as HTMLInputElement).value;
+    this.actualItemService.setFilterItem(value, 'note');
     this.getActualItems();
   }
 
