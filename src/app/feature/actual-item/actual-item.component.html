@@ -255,6 +255,7 @@
               <mat-label style="margin-right: 6px">Summa</mat-label>
               <mat-form-field appearance="standard" floatlLabel="never">
                 <mat-select
+                  [value]="selectedCurrency"
                   (selectionChange)="onChangeSumCurrency($event)"
                   placeholder="Välj valuta"
                   data-testid="sum-currency"
@@ -268,7 +269,7 @@
           </ng-container>
           <ng-container matColumnDef="sum-amount">
             <td mat-footer-cell *matFooterCellDef colspan="3">
-              <mat-label>{{ sumCurrency | number : '1.0-2' }}</mat-label>
+              <mat-label *ngIf="selectedCurrency !== ''">{{ sumCurrency | number : '1.0-2' }}</mat-label>
             </td>
           </ng-container>
 

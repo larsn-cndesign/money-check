@@ -81,6 +81,13 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   sumCurrency!: number;
 
   /**
+   * A property holdning the currency selected for calculating the total amount of filtered actual items.
+   * @private
+   * @default '' No currency selected.
+   */
+  selectedCurrency = '';
+
+  /**
    * A property to hold a custom error state matcher.
    * @public
    */
@@ -212,6 +219,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         })
       )
       .subscribe(() => {
+        this.selectedCurrency = '';
         this.pageLoaded = true;
       });
   }
@@ -324,20 +332,8 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param e The event object emitted by the select.
    */
   onChangeSumCurrency(e: MatSelectChange): void {
-    let amount = 0;
-    const selectedCurrencyItem = this.findCurrency(e.value as string);
-
-    this.actualItemService.items.forEach((x) => {
-      if (!selectedCurrencyItem || x.currency === selectedCurrencyItem.currency) {
-        amount += x.amount;
-      } else {
-        const currency = this.findCurrency(x.currency);
-        if (currency) {
-          amount += x.amount * (currency.budgetRate / selectedCurrencyItem.budgetRate);
-        }
-      }
-    });
-    this.sumCurrency = amount;
+    this.selectedCurrency = e.value as string;
+    this.calculateTotalAmount();
   }
 
   /**
@@ -379,7 +375,9 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * Helper method to get filtered actual items from server.
    */
   private getActualItems(): void {
-    pipeTakeUntil(this.actualItemService.getActualItems(this.budgetState.budgetId), this.sub$).subscribe();
+    pipeTakeUntil(this.actualItemService.getActualItems(this.budgetState.budgetId), this.sub$).subscribe((item) => {
+      this.calculateTotalAmount();
+    });
   }
 
   /**
@@ -389,9 +387,32 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    */
   private modifyItem(item: ActualItem, action: string): void {
     pipeTakeUntil(this.actualItemService.modifyActualItem(item, action), this.sub$).subscribe(() => {
+      this.calculateTotalAmount();
       this.resetForm();
       this.messageBoxService.show();
     });
+  }
+
+  /**
+   * Calculates the total amount for a currency based on the current filter.
+   */
+  private calculateTotalAmount(): void {
+    if (this.selectedCurrency !== '') {
+      let amount = 0;
+      const selectedItem = this.findCurrency(this.selectedCurrency);
+
+      this.actualItemService.items.forEach((x) => {
+        if (!selectedItem || x.currency === selectedItem.currency) {
+          amount += x.amount;
+        } else {
+          const currencyItem = this.findCurrency(x.currency);
+          if (currencyItem) {
+            amount += x.amount * (currencyItem.budgetRate / selectedItem.budgetRate);
+          }
+        }
+      });
+      this.sumCurrency = amount;
+    }
   }
 
   /**
