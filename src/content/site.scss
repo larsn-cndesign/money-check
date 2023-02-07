@@ -4,6 +4,16 @@
   box-sizing: border-box;
 }
 
+a:link,
+a:visited,
+a:active {
+  color: v.$link;
+}
+
+a:hover {
+  color: v.$link-hover;
+}
+
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
