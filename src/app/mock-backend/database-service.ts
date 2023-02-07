@@ -536,8 +536,8 @@ export class DatabaseService {
     item.budgetYears = years;
     item.currencies = currencies;
     item.actualItems = this._actualItemsWithOptionalProps(actualItems);
-    item.categories = this.db.categories;
-    item.trips = this.db.trips;
+    item.categories = this.db.categories.filter((x) => x.budgetId === filter.budgetId);
+    item.trips = this.db.trips.filter((x) => x.budgetId === filter.budgetId);
     item.currencyItems = currencyItems;
 
     return item;
