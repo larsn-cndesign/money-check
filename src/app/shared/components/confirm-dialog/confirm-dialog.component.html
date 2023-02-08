@@ -3,6 +3,6 @@
   <span [innerHtml]="data.message | skipSanitizeHtml"></span>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">{{ data.cancelText }}</button>
-  <button mat-button color="primary" (click)="onConfirm()" cdkFocusInitial>{{ data.confirmText }}</button>
+  <button mat-stroked-button (click)="onCancel()">{{ data.cancelText }}</button>
+  <button mat-stroked-button color="primary" (click)="onConfirm()" cdkFocusInitial>{{ data.confirmText }}</button>
 </mat-dialog-actions>
