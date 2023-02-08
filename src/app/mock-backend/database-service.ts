@@ -434,9 +434,9 @@ export class DatabaseService {
     }
 
     item.filter = filter;
-    item.budgetYears = this.db.budgetYears;
-    item.categories = this.db.categories;
-    item.units = this.db.units;
+    item.budgetYears = this.db.budgetYears.filter((x) => x.budgetId === filter.budgetId);
+    item.categories = this.db.categories.filter((x) => x.budgetId === filter.budgetId);
+    item.units = this.db.units.filter((x) => x.budgetId === filter.budgetId);
 
     return item;
   }
