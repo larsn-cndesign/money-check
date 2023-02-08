@@ -200,6 +200,20 @@ export function triggerEvent<T>(fixture: ComponentFixture<T>, testId: string, ev
 }
 
 /**
+ * Dispatches an event at the given element.
+ *
+ * @param fixture Component fixture.
+ * @param testId Test id set by `data-testid`
+ * @param type Event name, e.g. `input`
+ * @param bubbles Whether the event bubbles up in the DOM tree
+ */
+export function fakeEvent<T>(fixture: ComponentFixture<T>, testId: string, type: string, value: string): void {
+  const inputElement = findEl(fixture, testId).nativeElement;
+  inputElement.value = value;
+  inputElement.dispatchEvent(new Event(type));
+}
+
+/**
  * Checks or unchecks a checkbox or radio button.
  * Triggers appropriate events so Angular takes notice of the change.
  *

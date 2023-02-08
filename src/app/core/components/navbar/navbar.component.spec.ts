@@ -15,7 +15,7 @@ import { Budget } from 'src/app/feature/budget/shared/budget.model';
 import { click, findComponent, findEl } from 'src/app/mock-backend/element.spec-helper';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE_VALID, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
+import { BUDGET_STATE, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { routes } from '../../../app-routing.module';
 import { MenuComponent } from '../menu/menu.component';
@@ -25,7 +25,7 @@ type OmitFromBudgetState = OmitAllFromStore | 'getBudgetStateInStore' | 'setBudg
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetState(): Observable<BudgetState> {
-    return of(BUDGET_STATE_VALID);
+    return of(BUDGET_STATE);
   },
   changeBudget(budgetId: number): void {
     // this.item.budgetId = budgetId;
@@ -65,7 +65,7 @@ describe('NavbarComponent', () => {
     router = TestBed.inject(Router);
     ngZone = TestBed.inject(NgZone);
     component = fixture.componentInstance;
-    budgetState = deepCoyp(BUDGET_STATE_VALID) as BudgetState;
+    budgetState = deepCoyp(BUDGET_STATE) as BudgetState;
     component.budgetState$ = of(budgetState);
   });
 

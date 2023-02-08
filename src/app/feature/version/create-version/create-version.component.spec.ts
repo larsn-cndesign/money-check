@@ -16,7 +16,7 @@ import { setMatSelectValue, triggerEvent } from 'src/app/mock-backend/element.sp
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
 import {
-  BUDGET_STATE_VALID,
+  BUDGET_STATE,
   BUDGET_YEAR_1,
   CURRENCIES,
   MANAGE_BUDGET_YEAR,
@@ -74,7 +74,7 @@ type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate'
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE_VALID);
+    return of(BUDGET_STATE);
   },
 };
 

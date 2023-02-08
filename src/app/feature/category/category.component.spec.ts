@@ -13,7 +13,7 @@ import { findEl, setFieldValue } from 'src/app/mock-backend/element.spec-helper'
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
 import {
-  BUDGET_STATE_VALID,
+  BUDGET_STATE,
   CATEGORIES,
   CATEGORY_1,
   OmitAllFromStore,
@@ -51,7 +51,7 @@ type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate'
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE_VALID);
+    return of(BUDGET_STATE);
   },
 };
 

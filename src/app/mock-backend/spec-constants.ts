@@ -127,8 +127,8 @@ MANAGE_BUDGET_YEAR.budgetYear = BUDGET_YEAR_1;
 
 export const BUDGET = { id: 1, budgetName: 'Budget 1', selected: false } as Budget;
 
-export const BUDGET_STATE_VALID = { budgetId: 1, budgetName: 'Budget 1', hasBudget: true, budgets: [] } as BudgetState;
-BUDGET_STATE_VALID.budgets = [BUDGET];
+export const BUDGET_STATE = { budgetId: 1, budgetName: 'Budget 1', hasBudget: true, budgets: [] } as BudgetState;
+BUDGET_STATE.budgets = [BUDGET];
 
 export type OmitAllFromStore =
   | 'item$'

@@ -18,6 +18,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
 import {
   click,
+  fakeEvent,
   findEl,
   setFieldValue,
   setMatSelectValue,
@@ -27,7 +28,7 @@ import { deepCoyp, toDate } from 'src/app/shared/classes/common.fn';
 import {
   ACTUAL_ITEMS,
   ACTUAL_ITEM_1,
-  BUDGET_STATE_VALID,
+  BUDGET_STATE,
   MANAGE_ACTUAL_ITEM,
   OmitAllFromStore,
 } from 'src/app/mock-backend/spec-constants';
@@ -87,7 +88,7 @@ type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate'
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE_VALID);
+    return of(BUDGET_STATE);
   },
 };
 
@@ -133,8 +134,12 @@ describe('ActualItemComponent', () => {
     component.actualItems$ = of(ACTUAL_ITEMS);
   });
 
-  it('should create', () => {
+  it('creates the component and loads the page', () => {
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
+    expect(component.selectedCurrency).toBe('');
+    expect(component.pageLoaded).toBeTrue();
   });
 
   it('verifies that the document title is set', () => {
@@ -273,7 +278,7 @@ describe('ActualItemComponent', () => {
 
     const spy = spyOn(actualItemService, 'setFilterItem');
 
-    triggerEvent(fixture, 'filter-note', 'input', { value: 'filter text' });
+    fakeEvent(fixture, 'filter-note', 'input', 'filter text');
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledWith('filter text', 'note');

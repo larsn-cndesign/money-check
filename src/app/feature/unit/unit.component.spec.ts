@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
 import { checkField, findEl, setFieldValue } from 'src/app/mock-backend/element.spec-helper';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE_VALID, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
+import { BUDGET_STATE, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
 import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
@@ -47,7 +47,7 @@ type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate'
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE_VALID);
+    return of(BUDGET_STATE);
   },
 };
 
