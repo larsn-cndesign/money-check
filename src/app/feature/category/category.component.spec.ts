@@ -9,32 +9,29 @@ import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
-import { findEl, setFieldValue } from 'src/app/mock-backend/element.spec-helper';
+import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import {
-  BUDGET_STATE,
-  CATEGORIES,
-  CATEGORY_1,
-  OmitAllFromStore,
-} from 'src/app/mock-backend/spec-constants';
+import { BUDGET_STATE, CATEGORIES, CATEGORY_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CategoryComponent } from './category.component';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
+import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
+import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const categoryService: Omit<CategoryService, OmitFromStore> = {
-  loadCategoryPage(budgetId: number): Observable<Category[]> {
+  loadCategoryPage(_budgetId: number): Observable<Category[]> {
     return of(CATEGORIES);
   },
-  modifyCategory(categoryItem: Category, action: string): Observable<Category> {
+  modifyCategory(_categoryItem: Category, _action: string): Observable<Category> {
     return of(CATEGORY_1);
   },
-  duplicate(value: string, action: string): boolean {
+  duplicate(_value: string, _action: string): boolean {
     return false;
   },
   // StoreItem
@@ -58,7 +55,8 @@ const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
 describe('CategoryComponent', () => {
   let component: CategoryComponent;
   let fixture: ComponentFixture<CategoryComponent>;
-  let categories: Category[];
+  let messageBoxService: MessageBoxService;
+  let dialogService: ConfirmDialogService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -81,13 +79,18 @@ describe('CategoryComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(CategoryComponent);
+    messageBoxService = TestBed.inject(MessageBoxService);
+    dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
-    categories = deepCoyp(CATEGORIES) as Category[];
-    component.categories$ = of(categories);
+
+    component.categories$ = of(CATEGORIES);
   });
 
-  it('should create', () => {
+  it('creates the component and loads the page', () => {
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
+    expect(component.pageLoaded).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
@@ -95,8 +98,7 @@ describe('CategoryComponent', () => {
 
     const spy = spyOn(categoryService, 'clearSelection');
 
-    const element = findEl(fixture, 'action');
-    element.triggerEventHandler('change', { value: Modify.Add });
+    triggerEvent(fixture, 'action', 'change', { value: Modify.Add });
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
@@ -107,30 +109,28 @@ describe('CategoryComponent', () => {
 
     const spy = spyOn(categoryService, 'clearSelection');
 
-    const element = findEl(fixture, 'action');
-    element.triggerEventHandler('change', { value: Modify.Edit });
+    triggerEvent(fixture, 'action', 'change', { value: Modify.Edit });
 
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const category = deepCoyp(categories[0]) as Category;
+    const categories = deepCoyp(CATEGORIES) as Category[];
+    component.categories$ = of(categories);
     fixture.detectChanges();
 
-    component.categories$.subscribe((item) => {
-      category.selected = item[0].selected;
+    const spy = spyOn(categoryService, 'selectItem').and.callFake(() => {
+      categories[0].selected = true;
     });
 
-    categoryService.selectItem(category);
-
-    const element = findEl(fixture, 'select-item');
-    element.triggerEventHandler('click', { item: category });
+    triggerEvent(fixture, 'select-item', 'click');
     fixture.detectChanges();
 
     const selectedItems = fixture.debugElement.queryAll(By.css('.selected'));
 
+    expect(spy).toHaveBeenCalled();
     expect(selectedItems.length).toBe(1);
-    expect(category.selected).toBeTrue();
+    expect(categories[0].selected).toBeTrue();
   });
 
   it('submits the form successfully', () => {
@@ -146,11 +146,55 @@ describe('CategoryComponent', () => {
     expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
 
     const modifyCategorySpy = spyOn(categoryService, 'modifyCategory').and.returnValue(of(category));
+    const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
 
     findEl(fixture, 'form').triggerEventHandler('submit');
     fixture.detectChanges();
 
     expect(component.form.value.categoryName).toBeNull(); // Form has been reset
     expect(modifyCategorySpy).toHaveBeenCalledWith(category, Modify.Add);
+    expect(spyMessage).toHaveBeenCalled();
+  });
+
+  it('deletes an actual item', () => {
+    fixture.detectChanges();
+
+    const spyDialog = spyOn(dialogService, 'confirmed').and.returnValue(of(true));
+    const spyState = spyOn(BudgetState, 'getSelectedBudgetId').and.returnValue(CATEGORY_1.budgetId);
+    const spyCategory = spyOn(categoryService, 'modifyCategory').and.returnValue(of(CATEGORY_1));
+    const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
+
+    click(fixture, 'delete');
+
+    expect(spyDialog).toHaveBeenCalled();
+    expect(spyState).toHaveBeenCalled();
+    expect(spyCategory).toHaveBeenCalledWith(CATEGORY_1, Modify.Delete);
+    expect(spyMessage).toHaveBeenCalled();
+  });
+
+  it('sets a category name that already exist, when adding an item', () => {
+    fixture.detectChanges();
+
+    const spy = spyOn(categoryService, 'duplicate').and.returnValue(true);
+
+    setFieldValue(fixture, 'category', 'Category 1');
+    fixture.detectChanges();
+
+    const element = findEl(fixture, 'category-error').nativeElement as HTMLElement;
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(element.innerText).toContain('finns redan');
+  });
+
+  it('sets a category name that already exist, when editing an item', () => {
+    fixture.detectChanges();
+
+    spyOn(categoryService, 'duplicate').and.returnValue(false);
+
+    setFieldValue(fixture, 'category', 'Category 1');
+    fixture.detectChanges();
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
   });
 });

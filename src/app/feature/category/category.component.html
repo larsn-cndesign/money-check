@@ -20,7 +20,9 @@
           [errorStateMatcher]="matcher"
           data-testid="category"
         />
-        <mat-error *ngIf="categoryName?.invalid">{{ getErrorMessage(categoryName, 'Kategori') }}</mat-error>
+        <mat-error *ngIf="categoryName?.invalid" data-testid="category-error">
+          {{ getErrorMessage(categoryName, 'Kategori') }}
+        </mat-error>
       </mat-form-field>
     </div>
     <div *ngIf="form">
@@ -46,7 +48,13 @@
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let item">
-          <button mat-icon-button type="button" title="Ta bort kategori" (click)="onDeleteCategory($event, item)">
+          <button
+            mat-icon-button
+            type="button"
+            title="Ta bort kategori"
+            (click)="onDeleteCategory($event, item)"
+            data-testid="delete"
+          >
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>

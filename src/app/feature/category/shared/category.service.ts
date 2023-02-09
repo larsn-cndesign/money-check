@@ -2,10 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { StoreItems } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
-import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { Category } from './category.model';
 
@@ -30,11 +28,7 @@ export class CategoryService extends StoreItems<Category> {
    * @param errorService Application error service.
    * @param budgetStateService Manage the state of a budget.
    */
-  constructor(
-    private http: HttpClient,
-    private errorService: ErrorService,
-    private budgetStateService: BudgetStateService
-  ) {
+  constructor(private http: HttpClient, private errorService: ErrorService) {
     super();
   }
 
@@ -81,19 +75,11 @@ export class CategoryService extends StoreItems<Category> {
   /**
    * Validates unique constraint on category name.
    * @param value The new name of a category item
-   * @param action The action to perform (add, edit or delete).
+   * @param action The action to perform (add or edit).
    * @returns True if the uniqe constraint is violated.
    */
   duplicate(value: string, action: string): boolean {
-    if (!value || !action) {
-      return false;
-    }
-
     const items = this.getUnselectedItems(action, 'id');
     return items.findIndex((x) => x.categoryName.toLowerCase() === value.toLowerCase()) !== -1;
   }
-
-  // ------------------------------------
-  // Private helper methods
-  // ------------------------------------
 }
