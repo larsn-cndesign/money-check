@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/c
 import {
   AbstractControl,
   ControlValueAccessor,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormControl,
+  FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   Validator,
@@ -18,7 +18,6 @@ import { ErrorService } from '../../services/error.service';
 import { isNumberValidator } from '../../validators/common.validators';
 import { CurrencyTableService } from '../currency-table/shared/currency-table.service';
 import { duplicateValidator } from '../currency-table/shared/currency-table.validators';
-
 
 /**
  * Class representing a custom form control for managing currencies.
@@ -73,7 +72,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
    * The form group that holds the form controls.
    * @public
    */
-  form: UntypedFormGroup;
+  form: FormGroup;
 
   /**
    * An array of `Subscription` objects.
@@ -133,13 +132,13 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
    * @param errorService Application error service.
    */
   constructor(private currencyTableService: CurrencyTableService, private errorService: ErrorService) {
-    this.form = new UntypedFormGroup(
+    this.form = new FormGroup(
       {
-        action: new UntypedFormControl(Modify.Add),
-        id: new UntypedFormControl(-1),
-        currency: new UntypedFormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
-        budgetRate: new UntypedFormControl('', isNumberValidator()),
-        averageRate: new UntypedFormControl('', isNumberValidator()),
+        action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
+        id: new FormControl(-1, { nonNullable: true }),
+        currency: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
+        budgetRate: new FormControl('', isNumberValidator()),
+        averageRate: new FormControl('', isNumberValidator()),
       },
       { validators: [duplicateValidator(this.currencyTableService, 'currency', 'action')] }
     );

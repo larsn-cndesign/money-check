@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
@@ -75,7 +75,6 @@ export class LoginComponent extends CommonFormService implements OnInit {
    */
   constructor(
     private titleService: TitleService,
-    private fb: UntypedFormBuilder,
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
@@ -85,9 +84,9 @@ export class LoginComponent extends CommonFormService implements OnInit {
   ) {
     super(errorService, dialogService, messageBoxService);
 
-    this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+    this.form = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
   }
 

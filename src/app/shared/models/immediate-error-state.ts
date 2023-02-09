@@ -1,4 +1,4 @@
-import { UntypedFormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
 /**
@@ -13,7 +13,7 @@ export class ImmediateErrorMatcher implements ErrorStateMatcher {
    * @param _form A `FormGroupDirective` (not used)
    * @returns True if the form control is invalid.
    */
-  isErrorState(control: UntypedFormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
     return !!(control && control.invalid && (control.dirty || control.touched));
   }
 }
@@ -30,7 +30,7 @@ export class ImmediateUntouchedErrorMatcher implements ErrorStateMatcher {
    * @param _form A `FormGroupDirective` (not used)
    * @returns True if the form control is invalid.
    */
-  isErrorState(control: UntypedFormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
     return !!(control && control.invalid);
   }
 }
