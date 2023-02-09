@@ -36,10 +36,14 @@ const users = [{ email: FAKE_EMAIL, password: FAKE_USER_PASSWORD }] as any;
 
 /**
  * Method for storing token in localStorage. Need to run for a user to be able to login as there are no signup form.
- * @param key The local sorage key value.
+ * First login will always fail. Thereafter it will work as expected.
  */
-export function setTokensForTestUser(key: string): void {
-  localStorage.setItem(key, 'jwt-token');
+export function setTokenForTestUser(): void {
+  const testToken = localStorage.getItem(TEST_TOKEN);
+  if (!testToken) {
+    localStorage.setItem(ACCESS_TOKEN, 'jwt-token');
+    localStorage.setItem(TEST_TOKEN, 'jwt-token');
+  }
 }
 
 /**
@@ -49,14 +53,6 @@ export function setTokensForTestUser(key: string): void {
 export class FakeBackendInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body, params } = request;
-
-    /* --- RUN ONCE
-    Only needs to be run once after clicking on the login button!
-    Comment out after.
-    */
-    // setTokensForTestUser(ACCESS_TOKEN);
-    // setTokensForTestUser(TEST_TOKEN);
-    /* --- END RUN ONCE */
 
     // Wrap delayed observable to simulate server api call.
     // Call materialize and dematerialize to ensure delay even if an error is thrown
@@ -70,6 +66,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function handleRoute(): Observable<HttpEvent<any>> {
       switch (true) {
         case url.endsWith('/api/authenticate') && method === 'POST':
+          setTokenForTestUser();
           return authenticate();
 
         case url.endsWith('/api/LoadBudgetPage') && method === 'GET':
@@ -297,7 +294,9 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
     // Budget variance
     function loadVariancePage(): Observable<HttpEvent<any>> {
-      return of(new HttpResponse({ status: 200, body: DatabaseService.loadVariancePage(getParamId(params) as number) }));
+      return of(
+        new HttpResponse({ status: 200, body: DatabaseService.loadVariancePage(getParamId(params) as number) })
+      );
     }
     function getVarianceItems(): Observable<HttpEvent<any>> {
       return of(new HttpResponse({ status: 200, body: DatabaseService.getVarianceItems(getkey(body) as ItemFilter) }));

@@ -8,7 +8,7 @@ import { BudgetState } from '../shared/classes/budget-state.model';
 import { BudgetVersion } from 'src/app/feature/version/shared/budget-version.model';
 import { ItemFilter } from '../shared/classes/filter';
 
-/** Spec Helpers */
+/** Spec Helpers, DO NOT CHANGE! */
 
 export const ACTUAL_ITEM_1 = {
   id: 1,

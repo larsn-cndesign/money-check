@@ -9,7 +9,8 @@ The main purpose of the project is to develop Angular skills and to adhere to An
 - Language is currently only available in Swedish
 - Unit testing is ongoing. For a complete unit test of a feature, please see [feature/actual-item](https://github.com/larsn-cndesign/money-check/tree/main/src/app/feature/actual-item)
 - A fake backend interceptor is used to simulate HTTP requests to a server
-- **For login credentials**, please see the [fake-backend.ts](https://github.com/larsn-cndesign/money-check/blob/main/src/app/mock-backend/fake-backend.ts) file.
+- So far the app is mainly tested in Chrome
+
 
 ## Getting Started
 
@@ -48,18 +49,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Versioning
 
 For the versions available, see the [tags on this repository](https://github.com/larsn-cndesign/money-check/tags).
-
-## Future Updates
-
-- Complete set of unit tests
-- Add English language
-- Signup page
-- Budget follow-up chart
-- Remember sort order when filtering
-- Add possibility to remove a budget
-- Calculate expenses per day during travelling
-- Show user friendly alert message box
-
 
 ## Authors
 
