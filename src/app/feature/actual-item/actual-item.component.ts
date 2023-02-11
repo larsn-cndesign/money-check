@@ -15,7 +15,6 @@ import { ImmediateUntouchedErrorMatcher } from 'src/app/shared/models/immediate-
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
@@ -34,13 +33,6 @@ import { budgetYearNotExistValidator } from './shared/actual-item.validators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActualItemComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @private
-   * @readonly
-   */
-  readonly title = 'Hantera Transaktioner';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -168,7 +160,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services.
-   * @param titleService Manage title of the current HTML document.
    * @param actualItemService Manage actual item expenses.
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service.
@@ -176,7 +167,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private actualItemService: ActualItemService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
@@ -207,8 +197,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document and get acutal items from server
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
       .pipe(
         tap((budgetState) => {

@@ -1,4 +1,4 @@
-<h2>{{ title }} {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>Skapa Budgetår {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
 <ng-container *ngIf="budgetState.hasBudget; else noExistingBudget">
   <ng-container *ngIf="budgetYear$ | async as budget">

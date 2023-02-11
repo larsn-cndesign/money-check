@@ -11,8 +11,7 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
-import { ManageBudgetYear, Currency, BudgetYear } from '../shared/budget-year.model';
+import { BudgetYear, Currency, ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
 import { yearExistValidator } from '../shared/budget-year.validators';
 
@@ -28,13 +27,6 @@ import { yearExistValidator } from '../shared/budget-year.validators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateBudgetYearComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @private
-   * @readonly
-   */
-  readonly title = 'Skapa Budgetår';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -67,7 +59,6 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
 
   /**
    * Initializes form controls with validation, observables and services.
-   * @param titleService Manage title of the current HTML document.
    * @param budgetYearService Manage budget year.
    * @param currencyTableService Manage currencies.
    * @param budgetStateService Manage the state of a budget.
@@ -76,7 +67,6 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private budgetYearService: BudgetYearService,
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
@@ -105,8 +95,6 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
    * @description Set title of HTML document, get availables budget years and listen to budget state changes.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.item$, this.sub$)
       .pipe(
         tap((budgetState) => {

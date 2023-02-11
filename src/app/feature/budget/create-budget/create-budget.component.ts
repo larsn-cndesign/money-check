@@ -7,7 +7,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { Modify } from 'src/app/shared/enums/enums';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { Budget } from '../shared/budget.model';
 import { BudgetService } from '../shared/budget.service';
 import { duplicateValidator } from '../shared/budget.validators';
@@ -24,12 +23,6 @@ import { duplicateValidator } from '../shared/budget.validators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateBudgetComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Skapa Budget';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -70,14 +63,12 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services
-   * @param titleService Manage title of the current HTML document
    * @param budgetService Manage category items
    * @param errorService Application error service
    * @param dialogService Confirmation dialog service
    * @param messageBoxService Service to handle user messages
    */
   constructor(
-    private titleService: TitleService,
     private budgetService: BudgetService,
     protected errorService: ErrorService,
     protected dialogService: ConfirmDialogService,
@@ -101,8 +92,6 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document and get budgets from server.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetService.loadBudgetPage(), this.sub$).subscribe();
   }
 

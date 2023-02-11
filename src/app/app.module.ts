@@ -19,6 +19,8 @@ import { CreateVersionModule } from './feature/version/create-version/create-ver
 import { ModifyVersionModule } from './feature/version/modify-version/modify-version.module';
 import { MessageBoxModule } from './shared/components/message-box/message-box.module';
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
+import { TitleStrategy } from '@angular/router';
+import { PageTitleStrategy } from './shared/services/page-title-strategy.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeSv from '@angular/common/locales/sv';
@@ -66,6 +68,7 @@ import { fakeBackendProvider } from './mock-backend/fake-backend';
     { provide: LOCALE_ID, useValue: 'sv-SE' },
     { provide: MAT_DATE_LOCALE, useValue: 'sv-SE' },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
     /** @test Only for testing, should be removed if using a real backend. */
     fakeBackendProvider,
   ],

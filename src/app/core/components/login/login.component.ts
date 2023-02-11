@@ -7,7 +7,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { UserCredential } from '../../models/user-credential.model';
 
 /**
@@ -18,13 +17,7 @@ import { UserCredential } from '../../models/user-credential.model';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @public
-   */
-  readonly title = 'Logga In';
-
+export class LoginComponent extends CommonFormService {
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -66,15 +59,14 @@ export class LoginComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation and services
-   * @param titleService Manage title of the current HTML document
-   * @param fb Configuration of the form controls
    * @param authService Manage user authenticaton
    * @param router Navigation service
    * @param route Handle url parameters
-   * @param errorService Application error service
+   * @param errorService Application error service.
+   * @param dialogService Confirmation dialog service.
+   * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
@@ -88,13 +80,6 @@ export class LoginComponent extends CommonFormService implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
-  }
-
-  /**
-   * @description Set title of HTML document.
-   */
-  ngOnInit(): void {
-    this.titleService.setTitle(this.title);
   }
 
   /**

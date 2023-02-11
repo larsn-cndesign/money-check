@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { TitleService } from 'src/app/shared/services/title.service';
+import { Component } from '@angular/core';
 
 /**
  * Class representing the landing page after logging in.
@@ -10,23 +9,4 @@ import { TitleService } from 'src/app/shared/services/title.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
-  /**
-   * The title of the component.
-   * @private
-   * @readonly
-   */
-  private readonly title = 'Hem';
-
-  /**
-   * @param titleService Manage title of the current HTML document
-   */
-  constructor(private titleService: TitleService) {}
-
-  /**
-   * @description Set title of HTML document.
-   */
-  ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-  }
-}
+export class HomeComponent {}

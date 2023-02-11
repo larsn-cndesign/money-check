@@ -11,7 +11,6 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
 import { duplicateValidator } from './shared/category.validators';
@@ -28,12 +27,6 @@ import { duplicateValidator } from './shared/category.validators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Hantera Kategorier';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -74,7 +67,6 @@ export class CategoryComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services
-   * @param titleService Manage title of the current HTML document
    * @param categoryService Manage category items
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service
@@ -82,7 +74,6 @@ export class CategoryComponent extends CommonFormService implements OnInit {
    * @param messageBoxService Service to handle user messages
    */
   constructor(
-    private titleService: TitleService,
     private categoryService: CategoryService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
@@ -107,8 +98,6 @@ export class CategoryComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document, get budget state from `localStorage` and category items from server.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
       .pipe(
         tap((budgetState) => {
@@ -158,7 +147,7 @@ export class CategoryComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: `Ta bort ${this.title}?`,
+      title: `Ta bort kategori`,
       message: `Klicka OK för att ta bort kategori <strong>${item.categoryName}</strong> från budget
         ${this.budgetState.budgetName} permanent.`,
     };

@@ -12,7 +12,6 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { Unit } from './shared/unit.model';
 import { UnitService } from './shared/unit.service';
 import { duplicateValidator } from './shared/unit.validators';
@@ -29,12 +28,6 @@ import { duplicateValidator } from './shared/unit.validators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Hantera Enheter';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -84,7 +77,6 @@ export class UnitComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services.
-   * @param titleService Manage title of the current HTML document.
    * @param unitService Manage unit items.
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service.
@@ -92,7 +84,6 @@ export class UnitComponent extends CommonFormService implements OnInit {
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private unitService: UnitService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
@@ -118,8 +109,6 @@ export class UnitComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document, get budget state from `localStorage` and unit items from server.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
       .pipe(
         tap((budgetState) => {
@@ -179,7 +168,7 @@ export class UnitComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: `Ta bort ${this.title}?`,
+      title: `Ta bort enhet?`,
       message: `Klicka OK för att ta bort kategori <strong>${item.unitName}</strong> från budget
         ${this.budgetState.budgetName} permanent.`,
     };

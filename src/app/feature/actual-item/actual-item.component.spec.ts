@@ -24,7 +24,6 @@ import {
   setMatSelectValue,
   triggerEvent,
 } from 'src/app/mock-backend/element.spec-helper';
-import { deepCoyp, toDate } from 'src/app/shared/classes/common.fn';
 import {
   ACTUAL_ITEMS,
   ACTUAL_ITEM_1,
@@ -34,11 +33,11 @@ import {
   MANAGE_ACTUAL_ITEM,
   OmitAllFromStore,
 } from 'src/app/mock-backend/spec-constants';
+import { toDate } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { BudgetState } from '../../shared/classes/budget-state.model';
 import { ActualItemComponent } from './actual-item.component';
 import { ActualItem, ManageActualItem } from './shared/actual-item.model';
@@ -97,7 +96,6 @@ const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
 describe('ActualItemComponent', () => {
   let component: ActualItemComponent;
   let fixture: ComponentFixture<ActualItemComponent>;
-  let titleService: TitleService;
   let messageBoxService: MessageBoxService;
   let dialogService: ConfirmDialogService;
 
@@ -127,7 +125,6 @@ describe('ActualItemComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActualItemComponent);
-    titleService = TestBed.inject(TitleService);
     messageBoxService = TestBed.inject(MessageBoxService);
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
@@ -142,14 +139,6 @@ describe('ActualItemComponent', () => {
     expect(component).toBeTruthy();
     expect(component.selectedCurrency).toBe('');
     expect(component.pageLoaded).toBeTrue();
-  });
-
-  it('verifies that the document title is set', () => {
-    const spy = spyOn(titleService, 'setTitle');
-
-    component.ngOnInit();
-
-    expect(spy).toHaveBeenCalledWith('Hantera Transaktioner');
   });
 
   it('clears selection and reset form when selecting to add an item', () => {

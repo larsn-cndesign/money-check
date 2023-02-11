@@ -12,7 +12,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { BudgetYear, Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
 
@@ -28,12 +27,6 @@ import { BudgetVersionService } from '../shared/budget-version.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateVersionComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Skapa Version';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -66,7 +59,6 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
 
   /**
    * Initializes form controls with validation, observables and services.
-   * @param titleService Manage title of the current HTML document.
    * @param versionService Manage versions.
    * @param currencyTableService Manage currencies.
    * @param budgetStateService Manage the state of a budget.
@@ -75,7 +67,6 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private versionService: BudgetVersionService,
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
@@ -99,8 +90,6 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
    * @description Set title of HTML document, get availables budget years and listen to budget state changes.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
       .pipe(
         tap((budgetState) => {

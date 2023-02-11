@@ -12,7 +12,6 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { BudgetItemService } from './shared/budget-item.service';
 import { uniqueValidator } from './shared/budget-item.validators';
@@ -30,13 +29,6 @@ import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BudgetItemComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @private
-   * @readonly
-   */
-  readonly title = 'Hantera Budget';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -142,7 +134,6 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services.
-   * @param titleService Manage title of the current HTML document.
    * @param budgetItemService Manage expense budget items.
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service.
@@ -150,7 +141,6 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
-    private titleService: TitleService,
     private budgetItemService: BudgetItemService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
@@ -183,8 +173,6 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document and get budget items from server
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.item$, this.sub$)
       .pipe(
         tap((budgetState) => {

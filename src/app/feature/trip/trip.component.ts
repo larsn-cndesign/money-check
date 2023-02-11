@@ -12,7 +12,6 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { betweenDateValidator, rangeDateValidator } from './shared/trip.validators';
@@ -29,12 +28,6 @@ import { betweenDateValidator, rangeDateValidator } from './shared/trip.validato
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripComponent extends CommonFormService implements OnInit {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Hantera Resor';
-
   /**
    * Initializes a strictly typed form group.
    * @public
@@ -84,7 +77,6 @@ export class TripComponent extends CommonFormService implements OnInit {
 
   /**
    * Initializes form controls with validation, observables and services
-   * @param titleService Manage title of the current HTML document
    * @param tripService Manage trip items
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service
@@ -92,7 +84,6 @@ export class TripComponent extends CommonFormService implements OnInit {
    * @param messageBoxService Service to handle user messages
    */
   constructor(
-    private titleService: TitleService,
     private tripService: TripService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
@@ -121,8 +112,6 @@ export class TripComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document, get budget state from `localStorage` and trip items from server.
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
       .pipe(
         tap((budgetState) => {

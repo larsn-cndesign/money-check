@@ -5,9 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
-import { ItemFilter } from 'src/app/shared/classes/filter';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
-import { TitleService } from 'src/app/shared/services/title.service';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
 
@@ -24,12 +22,6 @@ import { BudgetVarianceService } from './shared/budget-variance.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BudgetVarianceComponent implements OnInit, OnDestroy {
-  /**
-   * The title of the component.
-   * @readonly
-   */
-  readonly title = 'Budget vs Utfall';
-
   /**
    * An observer of a `BudgetVariance` objects.
    * @public
@@ -69,15 +61,10 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
 
   /**
    * Creating a budget variance.
-   * @param titleService Manage title of the current HTML document.
    * @param budgetVarianceService A service managing budget variance.
    * @param budgetStateService Manage the state of a budget.
    */
-  constructor(
-    private titleService: TitleService,
-    private budgetVarianceService: BudgetVarianceService,
-    private budgetStateService: BudgetStateService
-  ) {
+  constructor(private budgetVarianceService: BudgetVarianceService, private budgetStateService: BudgetStateService) {
     this.budgetVariance$ = this.budgetVarianceService.item$;
     this.varianceItems$ = this.budgetVarianceService.items$;
   }
@@ -86,8 +73,6 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @description Set title of HTML document and get budget variance items from server
    */
   ngOnInit(): void {
-    this.titleService.setTitle(this.title);
-
     pipeTakeUntil(this.budgetStateService.item$, this.sub$)
       .pipe(
         tap((budgetState) => {

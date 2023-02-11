@@ -1,4 +1,4 @@
-<h2>{{ title }} {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>Ta Bort Budgetår {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
 <ng-container *ngIf="$any(budgetYear$ | async)?.budgetYears?.length !== 0; else noExistingYears">
   <form [formGroup]="form" (ngSubmit)="onDeleteBudgetYear($event)">
