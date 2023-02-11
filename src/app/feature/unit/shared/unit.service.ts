@@ -84,10 +84,6 @@ export class UnitService extends StoreItems<Unit> {
    * @returns True if the uniqe constraint is violated.
    */
   duplicate(value: string, action: string): boolean {
-    if (!value || !action) {
-      return false;
-    }
-
     const items = this.getUnselectedItems(action, 'id');
     return items.findIndex((x) => x.unitName.toLowerCase() === value.toLowerCase()) !== -1;
   }

@@ -10,11 +10,13 @@ import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
-import { checkField, findEl, setFieldValue } from 'src/app/mock-backend/element.spec-helper';
+import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { BUDGET_STATE, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
 import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
+import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
+import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { Unit } from './shared/unit.model';
@@ -24,13 +26,13 @@ import { UnitComponent } from './unit.component';
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const unitService: Omit<UnitService, OmitFromStore> = {
-  loadUnitPage(budgetId: number): Observable<Unit[]> {
+  loadUnitPage(_budgetId: number): Observable<Unit[]> {
     return of(UNITS);
   },
-  modifyUnit(categoryItem: Unit, action: string): Observable<Unit> {
+  modifyUnit(_unitItem: Unit, _action: string): Observable<Unit> {
     return of(UNIT_1);
   },
-  duplicate(value: string, action: string): boolean {
+  duplicate(_value: string, _action: string): boolean {
     return false;
   },
   // StoreItem
@@ -38,9 +40,7 @@ const unitService: Omit<UnitService, OmitFromStore> = {
     return UNITS;
   },
   clearSelection(): void {},
-  selectItem(item: Unit): void {
-    item.selected = true;
-  },
+  selectItem(_item: Unit): void {},
 };
 
 type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
@@ -54,7 +54,8 @@ const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
 describe('UnitComponent', () => {
   let component: UnitComponent;
   let fixture: ComponentFixture<UnitComponent>;
-  let units: Unit[];
+  let messageBoxService: MessageBoxService;
+  let dialogService: ConfirmDialogService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -80,22 +81,24 @@ describe('UnitComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UnitComponent);
+    messageBoxService = TestBed.inject(MessageBoxService);
+    dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
-    units = deepCoyp(UNITS) as Unit[];
-    component.units$ = of(units);
+
+    component.units$ = of([...UNITS]);
+
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
+    expect(component.pageLoaded).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(unitService, 'clearSelection');
 
-    const element = findEl(fixture, 'action');
-    element.triggerEventHandler('change', { value: Modify.Add });
+    triggerEvent(fixture, 'action', 'change', { value: Modify.Add });
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
@@ -106,36 +109,27 @@ describe('UnitComponent', () => {
 
     const spy = spyOn(unitService, 'clearSelection');
 
-    const element = findEl(fixture, 'action');
-    element.triggerEventHandler('change', { value: Modify.Edit });
+    triggerEvent(fixture, 'action', 'change', { value: Modify.Edit });
 
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const category = deepCoyp(units[0]) as Unit;
-    fixture.detectChanges();
-
-    component.units$.subscribe((item) => {
-      category.selected = item[0].selected;
+    const spy = spyOn(unitService, 'selectItem').and.callFake((item) => {
+      item.selected = true;
     });
 
-    unitService.selectItem(category);
-
-    const element = findEl(fixture, 'select-item');
-    element.triggerEventHandler('click', { item: category });
+    triggerEvent(fixture, 'select-item', 'click');
     fixture.detectChanges();
 
     const selectedItems = fixture.debugElement.queryAll(By.css('.selected'));
 
+    expect(spy).toHaveBeenCalled();
     expect(selectedItems.length).toBe(1);
-    expect(category.selected).toBeTrue();
   });
 
   it('submits the form successfully', () => {
     const unit = { id: -1, budgetId: -1, unitName: 'Unit 4', useCurrency: false } as Unit;
-
-    fixture.detectChanges();
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -154,8 +148,6 @@ describe('UnitComponent', () => {
   });
 
   it('toggles the state of a unit should use currency calculation or not', () => {
-    fixture.detectChanges();
-
     let element = findEl(fixture, 'use-currency');
     element.triggerEventHandler('change', { checked: true });
     fixture.detectChanges();
@@ -167,5 +159,41 @@ describe('UnitComponent', () => {
     fixture.detectChanges();
 
     expect(component.form.value.useCurrency).toBeFalse();
+  });
+
+  it('deletes a unit item', () => {
+    const unit = deepCoyp(UNIT_1) as Unit;
+
+    const spyDialog = spyOn(dialogService, 'confirmed').and.returnValue(of(true));
+    const spyState = spyOn(BudgetState, 'getSelectedBudgetId').and.returnValue(unit.budgetId);
+    const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
+
+    click(fixture, 'delete');
+
+    expect(spyDialog).toHaveBeenCalled();
+    expect(spyState).toHaveBeenCalled();
+    expect(spyMessage).toHaveBeenCalled();
+  });
+
+  it('sets a unit name that already exist, when adding an item', () => {
+    const spy = spyOn(unitService, 'duplicate').and.returnValue(true);
+
+    setFieldValue(fixture, 'unit', 'Unit 1');
+    fixture.detectChanges();
+
+    const element = findEl(fixture, 'unit-error').nativeElement as HTMLElement;
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(element.innerText).toContain('finns redan');
+  });
+
+  it('sets a unit name that already exist, when editing an item', () => {
+    spyOn(unitService, 'duplicate').and.returnValue(false);
+
+    setFieldValue(fixture, 'unit', 'Unit 1');
+    fixture.detectChanges();
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
   });
 });

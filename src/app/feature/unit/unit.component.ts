@@ -192,6 +192,7 @@ export class UnitComponent extends CommonFormService implements OnInit {
           budgetId: BudgetState.getSelectedBudgetId(),
           unitName: item.unitName,
           useCurrency: item.useCurrency,
+          selected: false,
         };
 
         this.modifyItem(unit, Modify.Delete);

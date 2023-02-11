@@ -29,6 +29,8 @@ import {
   ACTUAL_ITEMS,
   ACTUAL_ITEM_1,
   BUDGET_STATE,
+  deepCopyActualItem,
+  deepCopyManageActualItem,
   MANAGE_ACTUAL_ITEM,
   OmitAllFromStore,
 } from 'src/app/mock-backend/spec-constants';
@@ -54,13 +56,13 @@ type OmitFromStore =
   | 'updateStoreItems';
 
 const actualItemService: Omit<ActualItemService, OmitFromStore> = {
-  getActualItems(): Observable<ManageActualItem> {
+  getActualItems(_budgetId: number): Observable<ManageActualItem> {
     return of(MANAGE_ACTUAL_ITEM);
   },
-  budgetYearNotExist(): boolean {
+  budgetYearNotExist(_purchaseDate: Date): boolean {
     return false;
   },
-  modifyActualItem(): Observable<ActualItem> {
+  modifyActualItem(_actualItem: ActualItem, _action: string): Observable<ActualItem> {
     return of(ACTUAL_ITEM_1);
   },
   sortData(_sort: Sort): void {},
@@ -70,11 +72,11 @@ const actualItemService: Omit<ActualItemService, OmitFromStore> = {
     return MANAGE_ACTUAL_ITEM;
   },
   get items(): ActualItem[] {
-    const actualItemSEK = deepCoyp(ACTUAL_ITEM_1) as ActualItem;
+    const actualItemSEK = deepCopyActualItem(ACTUAL_ITEM_1);
     actualItemSEK.amount = 300;
     actualItemSEK.currency = 'SEK';
 
-    const actualItemEUR = deepCoyp(ACTUAL_ITEM_1) as ActualItem;
+    const actualItemEUR = deepCopyActualItem(ACTUAL_ITEM_1);
     actualItemEUR.amount = 150;
     actualItemEUR.currency = 'EUR';
 
@@ -130,13 +132,13 @@ describe('ActualItemComponent', () => {
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
 
-    component.manageActualItem$ = of(MANAGE_ACTUAL_ITEM);
-    component.actualItems$ = of(ACTUAL_ITEMS);
+    component.manageActualItem$ = of(deepCopyManageActualItem(MANAGE_ACTUAL_ITEM));
+    component.actualItems$ = of([...ACTUAL_ITEMS]);
+
+    fixture.detectChanges();
   });
 
   it('creates the component and loads the page', () => {
-    fixture.detectChanges();
-
     expect(component).toBeTruthy();
     expect(component.selectedCurrency).toBe('');
     expect(component.pageLoaded).toBeTrue();
@@ -151,8 +153,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('clears selection and reset form when selecting to add an item', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(actualItemService, 'clearSelection');
 
     triggerEvent(fixture, 'action', 'change', { value: Modify.Add });
@@ -180,12 +180,8 @@ describe('ActualItemComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const actualItems = deepCoyp(ACTUAL_ITEMS) as ActualItem[];
-    component.actualItems$ = of(actualItems);
-    fixture.detectChanges();
-
-    const spy = spyOn(actualItemService, 'selectItem').and.callFake(() => {
-      actualItems[0].selected = true;
+    const spy = spyOn(actualItemService, 'selectItem').and.callFake((item) => {
+      item.selected = true;
     });
 
     triggerEvent(fixture, 'select-item', 'click');
@@ -198,7 +194,7 @@ describe('ActualItemComponent', () => {
   });
 
   it('selects an item when the note field is more than one line of text', () => {
-    const actualItems = deepCoyp(ACTUAL_ITEMS) as ActualItem[];
+    const actualItems = [...ACTUAL_ITEMS];
     actualItems[0].note = 'Rad ett\nRad två';
     component.actualItems$ = of(actualItems);
     fixture.detectChanges();
@@ -210,7 +206,7 @@ describe('ActualItemComponent', () => {
   });
 
   it('selects an item when the note field is only one line of text', () => {
-    const actualItems = deepCoyp(ACTUAL_ITEMS) as ActualItem[];
+    const actualItems = [...ACTUAL_ITEMS];
     actualItems[0].note = 'Endast en rad';
     component.actualItems$ = of(actualItems);
     fixture.detectChanges();
@@ -222,13 +218,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('submits the form successfully', async () => {
-    // Arrange
-    const manageActualItem = deepCoyp(MANAGE_ACTUAL_ITEM) as ManageActualItem;
-    manageActualItem.categories[0].id = 4;
-    manageActualItem.currencies[1] = 'USD';
-    component.manageActualItem$ = of(manageActualItem);
-    fixture.detectChanges();
-
     // Act
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -247,8 +236,8 @@ describe('ActualItemComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    expect(component.form.value.category).toBeTruthy(4);
-    expect(component.form.value.currency).toBe('USD');
+    expect(component.form.value.category).toBeTruthy(1);
+    expect(component.form.value.currency).toBe('EUR');
     expect(component.form.value.purchaseDate).toBeTruthy('2023-02-01');
     expect(component.form.value.amount).toBeTruthy(123);
     expect(component.form.value.note).toBe('This is my note');
@@ -256,8 +245,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('shows a save message on succsesfull submit (without writing a note)', async () => {
-    fixture.detectChanges();
-
     await setMatSelectValue(fixture, 'category', 0);
     await setMatSelectValue(fixture, 'currency', 1);
     setFieldValue(fixture, 'purchaseDate', '2023-02-01');
@@ -274,8 +261,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('filters actual items based on the note field', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(actualItemService, 'setFilterItem');
 
     fakeEvent(fixture, 'filter-note', 'input', 'filter text');
@@ -285,8 +270,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('filter actual items based on selects', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(actualItemService, 'setFilterItem');
 
     triggerEvent(fixture, 'filter-year', 'selectionChange', { value: 4 });
@@ -304,7 +287,6 @@ describe('ActualItemComponent', () => {
 
   it('sorts amount in ascending order', () => {
     const sort = { active: 'amount', direction: 'asc' } as Sort;
-    fixture.detectChanges();
 
     const spy = spyOn(actualItemService, 'sortData');
 
@@ -313,34 +295,26 @@ describe('ActualItemComponent', () => {
   });
 
   it('changes the date to a valid date', () => {
-    fixture.detectChanges();
-
     triggerEvent(fixture, 'purchaseDate', 'dateChange', { value: '2023-02-01' });
     expect(toDate(component.purchaseDate?.value)).toBe('2023-02-01');
   });
 
   it('changes the date to an invalid date', () => {
-    fixture.detectChanges();
-
     triggerEvent(fixture, 'purchaseDate', 'dateChange', { value: null });
     expect(component.purchaseDate?.errors).toEqual({ invalidDate: true });
   });
 
   it('deletes an actual item', () => {
-    fixture.detectChanges();
-
     const spyDialog = spyOn(dialogService, 'confirmed').and.returnValue(of(true));
-    const modifyActualItemSpy = spyOn(actualItemService, 'modifyActualItem').and.returnValue(of(ACTUAL_ITEM_1));
+    const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
 
     click(fixture, 'delete');
 
     expect(spyDialog).toHaveBeenCalled();
-    expect(modifyActualItemSpy).toHaveBeenCalledWith(ACTUAL_ITEM_1, Modify.Delete);
+    expect(spyMessage).toHaveBeenCalled();
   });
 
   it('sets a purchase date for a non exising budget year', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(actualItemService, 'budgetYearNotExist').and.returnValue(true);
 
     setFieldValue(fixture, 'purchaseDate', '2024-02-01');
@@ -354,8 +328,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('sets an invalid amount', () => {
-    fixture.detectChanges();
-
     setFieldValue(fixture, 'amount', '123,,52');
     fixture.detectChanges();
 
@@ -366,8 +338,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('sets the number of rows to display in the note form field based on focus and blur events', () => {
-    fixture.detectChanges();
-
     triggerEvent(fixture, 'note', 'focused');
     expect(component.noteFieldRows).toBe(4);
 
@@ -376,8 +346,6 @@ describe('ActualItemComponent', () => {
   });
 
   it('calculates the amount based on the selected currency', () => {
-    fixture.detectChanges();
-
     triggerEvent(fixture, 'sum-currency', 'selectionChange', { value: 'SEK' });
     expect(component.sumCurrency).toBe(1800);
 

@@ -23,7 +23,9 @@
           [errorStateMatcher]="matcher"
           data-testid="unit"
         />
-        <mat-error *ngIf="unitName?.invalid">{{ getErrorMessage(unitName, 'Enhet') }}</mat-error>
+        <mat-error *ngIf="unitName?.invalid" data-testid="unit-error">{{
+          getErrorMessage(unitName, 'Enhet')
+        }}</mat-error>
       </mat-form-field>
 
       <mat-checkbox formControlName="useCurrency" (change)="onChangeUseCurrency($event)" data-testid="use-currency">
@@ -60,7 +62,13 @@
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let item">
-          <button mat-icon-button type="button" title="Ta bort enhet" (click)="onDeleteUnit($event, item)">
+          <button
+            mat-icon-button
+            type="button"
+            title="Ta bort enhet"
+            (click)="onDeleteUnit($event, item)"
+            data-testid="delete"
+          >
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>

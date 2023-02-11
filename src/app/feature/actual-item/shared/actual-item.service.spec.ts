@@ -8,6 +8,7 @@ import {
   ACTUAL_ITEM_1,
   ACTUAL_ITEM_2,
   BUDGET_YEARS,
+  deepCopyActualItem,
   FILTER,
   MANAGE_ACTUAL_ITEM,
 } from 'src/app/mock-backend/spec-constants';
@@ -35,6 +36,7 @@ describe('ActualItemService', () => {
     actualItemService.item.filter = FILTER;
     actualItemService.item.filter.budgetYearId = yearId;
     actualItemService.item.budgetYears = BUDGET_YEARS;
+    actualItemService.items.splice(0, actualItemService.items.length);
     actualItemService.items.push(ACTUAL_ITEM_1);
 
     actualItemService
@@ -59,9 +61,7 @@ describe('ActualItemService', () => {
    * @param ascending The sorting direction, asc|desc
    */
   function sortActualItems(active: string, direction: string): void {
-    actualItemService.items.splice(0, actualItemService.items.length);
-    actualItemService.items.push(ACTUAL_ITEM_1);
-    actualItemService.items.push(ACTUAL_ITEM_2);
+    setAcutalItemsArray();
 
     const sort = { active, direction } as Sort;
 
@@ -69,6 +69,17 @@ describe('ActualItemService', () => {
 
     expect(actualItemService.items[0].id).toBe(direction === 'asc' ? 1 : 2);
     expect(actualItemService.items[1].id).toBe(direction === 'asc' ? 2 : 1);
+  }
+
+  /**
+   * Make sure the acutal items array exist of exactly two items.
+   */
+  function setAcutalItemsArray(): void {
+    const item1 = deepCopyActualItem(ACTUAL_ITEM_1);
+    const item2 = deepCopyActualItem(ACTUAL_ITEM_2);
+    actualItemService.items.splice(0, actualItemService.items.length);
+    actualItemService.items.push(item1);
+    actualItemService.items.push(item2);
   }
 
   beforeEach(() => {
@@ -205,8 +216,7 @@ describe('ActualItemService', () => {
   });
 
   it('defaults to sort on purchase date if no sorting was provided', () => {
-    actualItemService.items.push(ACTUAL_ITEM_2);
-    actualItemService.items.push(ACTUAL_ITEM_1);
+    setAcutalItemsArray();
 
     actualItemService.sortData();
 

@@ -28,16 +28,16 @@ registerLocaleData(localeSv);
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const tripService: Omit<TripService, OmitFromStore> = {
-  loadTripPage(budgetId: number): Observable<Trip[]> {
+  loadTripPage(_budgetId: number): Observable<Trip[]> {
     return of(TRIPS);
   },
-  modifyTrip(categoryItem: Trip, action: string): Observable<Trip> {
+  modifyTrip(_categoryItem: Trip, _action: string): Observable<Trip> {
     return of(TRIP_1);
   },
-  betweenDates(value: string, action: string): boolean {
+  betweenDates(_value: string, _action: string): boolean {
     return false;
   },
-  rangeDateError(fromDate: string, _toDate: string): boolean {
+  rangeDateError(_fromDate: string, _toDate: string): boolean {
     return false;
   },
 
@@ -46,9 +46,7 @@ const tripService: Omit<TripService, OmitFromStore> = {
     return TRIPS;
   },
   clearSelection(): void {},
-  selectItem(item: Trip): void {
-    item.selected = true;
-  },
+  selectItem(_item: Trip): void {},
 };
 
 type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
@@ -62,7 +60,6 @@ const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
 describe('TripComponent', () => {
   let component: TripComponent;
   let fixture: ComponentFixture<TripComponent>;
-  let trips: Trip[];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -88,17 +85,18 @@ describe('TripComponent', () => {
 
     fixture = TestBed.createComponent(TripComponent);
     component = fixture.componentInstance;
-    trips = deepCoyp(TRIPS) as Trip[];
-    component.trips$ = of(trips);
+
+    component.trips$ = of([...TRIPS]);
+
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
+    expect(component.pageLoaded).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(tripService, 'clearSelection');
 
     triggerEvent(fixture, 'action', 'change', { value: Modify.Add });
@@ -118,28 +116,21 @@ describe('TripComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const category = deepCoyp(trips[0]) as Trip;
-    fixture.detectChanges();
-
-    component.trips$.subscribe((item) => {
-      category.selected = item[0].selected;
+    const spy = spyOn(tripService, 'selectItem').and.callFake((item) => {
+      item.selected = true;
     });
-
-    tripService.selectItem(category);
 
     triggerEvent(fixture, 'select-item', 'click');
     fixture.detectChanges();
 
     const selectedItems = fixture.debugElement.queryAll(By.css('.selected'));
 
+    expect(spy).toHaveBeenCalled();
     expect(selectedItems.length).toBe(1);
-    expect(category.selected).toBeTrue();
   });
 
   it('submits the form successfully', () => {
     const trip = { id: -1, budgetId: -1, fromDate: new Date('2023-01-01'), toDate: new Date('2023-01-10') } as Trip;
-
-    fixture.detectChanges();
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -161,8 +152,6 @@ describe('TripComponent', () => {
   });
 
   it('changes dates and validates them', async () => {
-    fixture.detectChanges();
-
     triggerEvent(fixture, 'fromDate', 'dateChange', { value: '2023-02-01' });
     expect(toDate(component.fromDate?.value)).toBe('2023-02-01');
 

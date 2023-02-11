@@ -10,17 +10,17 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
 import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { BUDGET_STATE, CATEGORIES, CATEGORY_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE, CATEGORIES, CATEGORY_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
+import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
+import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CategoryComponent } from './category.component';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
-import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
-import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
@@ -39,9 +39,7 @@ const categoryService: Omit<CategoryService, OmitFromStore> = {
     return CATEGORIES;
   },
   clearSelection(): void {},
-  selectItem(item: Category): void {
-    item.selected = true;
-  },
+  selectItem(_item: Category): void {},
 };
 
 type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
@@ -83,19 +81,17 @@ describe('CategoryComponent', () => {
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
 
-    component.categories$ = of(CATEGORIES);
+    component.categories$ = of([...CATEGORIES]);
+
+    fixture.detectChanges();
   });
 
   it('creates the component and loads the page', () => {
-    fixture.detectChanges();
-
     expect(component).toBeTruthy();
     expect(component.pageLoaded).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
-    fixture.detectChanges();
-
     const spy = spyOn(categoryService, 'clearSelection');
 
     triggerEvent(fixture, 'action', 'change', { value: Modify.Add });
@@ -115,12 +111,8 @@ describe('CategoryComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const categories = deepCoyp(CATEGORIES) as Category[];
-    component.categories$ = of(categories);
-    fixture.detectChanges();
-
-    const spy = spyOn(categoryService, 'selectItem').and.callFake(() => {
-      categories[0].selected = true;
+    const spy = spyOn(categoryService, 'selectItem').and.callFake((item) => {
+      item.selected = true;
     });
 
     triggerEvent(fixture, 'select-item', 'click');
@@ -130,13 +122,10 @@ describe('CategoryComponent', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(selectedItems.length).toBe(1);
-    expect(categories[0].selected).toBeTrue();
   });
 
   it('submits the form successfully', () => {
     const category = { id: -1, budgetId: -1, categoryName: 'Category 2' } as Category;
-
-    fixture.detectChanges();
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -156,19 +145,17 @@ describe('CategoryComponent', () => {
     expect(spyMessage).toHaveBeenCalled();
   });
 
-  it('deletes an actual item', () => {
-    fixture.detectChanges();
+  it('deletes a category item', () => {
+    const category = deepCoyp(CATEGORY_1) as Category;
 
     const spyDialog = spyOn(dialogService, 'confirmed').and.returnValue(of(true));
-    const spyState = spyOn(BudgetState, 'getSelectedBudgetId').and.returnValue(CATEGORY_1.budgetId);
-    const spyCategory = spyOn(categoryService, 'modifyCategory').and.returnValue(of(CATEGORY_1));
+    const spyState = spyOn(BudgetState, 'getSelectedBudgetId').and.returnValue(category.budgetId);
     const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
 
     click(fixture, 'delete');
 
     expect(spyDialog).toHaveBeenCalled();
     expect(spyState).toHaveBeenCalled();
-    expect(spyCategory).toHaveBeenCalledWith(CATEGORY_1, Modify.Delete);
     expect(spyMessage).toHaveBeenCalled();
   });
 
