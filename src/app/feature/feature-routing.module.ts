@@ -22,7 +22,6 @@ const routes: Routes = [
     component: FeatureComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: HomeComponent },
       { path: 'home', title: 'Hem', component: HomeComponent },
       { path: 'category', title: 'Hantera Kategorier', component: CategoryComponent },
       { path: 'unit', title: 'Hantera Enheter', component: UnitComponent },
@@ -35,6 +34,7 @@ const routes: Routes = [
       { path: 'actual-item', title: 'Hantera Transaktioner', component: ActualItemComponent },
       { path: 'budget-variance', title: 'Budget vs Utfall', component: BudgetVarianceComponent },
       { path: 'create-budget', title: 'Skapa Budget', component: CreateBudgetComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
 ];
