@@ -3,8 +3,8 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSelectChange } from '@angular/material/select';
 import { Sort } from '@angular/material/sort';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { lineCount, pipeTakeUntil, toNumber } from 'src/app/shared/classes/common.fn';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
@@ -91,6 +91,13 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @default 1 Show one row.
    */
   noteFieldRows = 1;
+
+  /**
+   * A Subject that emits and listen to value changes of the note filter input.
+   * @private
+   * @default new Subject<string>()
+   */
+  private filterNote$ = new Subject<string>();
 
   /**
    * Getter property for the action control
@@ -209,6 +216,13 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       .subscribe(() => {
         this.selectedCurrency = '';
         this.pageLoaded = true;
+      });
+
+    pipeTakeUntil(this.filterNote$, this.sub$)
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((note) => {
+        this.actualItemService.setFilterItem(note, 'note');
+        this.getActualItems();
       });
   }
 
@@ -336,15 +350,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   }
 
   /**
-   * Handles selection change event on the select.
-   * @description Get actual items for a combination of all filters from the server.
+   * Handles input event of the note filter field.
+   * @description Emits the input value to subscribers, essentially waiting for the user to stop
+   * writing before sending requesting the server with the note filter.
    * @param e The event object emitted by the select.
-   * @todo Implement delay before sending to server.
    */
   OnFilterNote(e: Event): void {
     const value = (e.target as HTMLInputElement).value;
-    this.actualItemService.setFilterItem(value, 'note');
-    this.getActualItems();
+    this.filterNote$.next(value);
   }
 
   /**
