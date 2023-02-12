@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'feature',
     loadChildren: () => import('./feature/feature.module').then((m) => m.FeatureModule),
-    canLoad: [AuthGuard],
+    canMatch: [AuthGuard],
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: LoginComponent },

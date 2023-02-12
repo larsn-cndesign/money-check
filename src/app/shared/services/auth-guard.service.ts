@@ -33,12 +33,12 @@ export class AuthGuard implements CanActivate {
   }
 
   /**
-   * Method to check if a child route can be loaded based a user's login state.
+   * Method to check if a if a Route can be matched based on a user's login state.
    * @param _route The active route (not used).
    * @param segments Current stat of the router i.e. current url.
    * @returns True if a user is logged in.
    */
-  canLoad(_route: Route, segments: UrlSegment[]): boolean {
+  canMatch(_route: Route, segments: UrlSegment[]): boolean {
     if (this.authService.isLoggedIn()) {
       return true;
     }
