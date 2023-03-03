@@ -192,8 +192,11 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
     }
   }
 
-  // Required by the ControlValueAccessor but not used
-  registerOnChange(): void {}
+  // Required by the ControlValueAccessor 
+  registerOnChange(onChange: any): void {
+    const sub = this.form.valueChanges.subscribe(onChange);
+    this.onChangeSubs.push(sub);
+  }
 
   // Required by the ControlValueAccessor but not used
   setDisabledState(): void {}

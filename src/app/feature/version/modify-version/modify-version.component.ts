@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
@@ -167,14 +167,42 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
    * @param formDirective Bind form controls to DOM. Used for clearing angular material validation errors.
    */
   onSaveVersion(formDirective: FormGroupDirective): void {
-    const val = this.form.getRawValue();
+    const newVersionName = this.form.value.versionName;
 
-    if (val.versionName) {
-      pipeTakeUntil(this.versionService.updateVersion(val.versionName), this.sub$).subscribe(() => {
-        formDirective.resetForm();
-        this.form.reset();
-        this.messageBoxService.show();
+    if (!newVersionName) return;
+
+    if (this.form.controls.currencyForm.valid) {
+      const options: DialogOptions = {
+        title: 'Ändrad Valuta',
+        message: `Vill du uppdatera version trots att du inte sparat ändringar av valuta?`,
+      };
+      this.dialogService.open(options);
+
+      pipeTakeUntil(this.dialogService.confirmed(), this.sub$)
+        .pipe(
+          switchMap((confirmed) => {
+            return confirmed ? pipeTakeUntil(this.versionService.updateVersion(newVersionName), this.sub$) : of(null);
+          })
+        )
+        .subscribe((result) => {
+          if (result) {
+            this.reset(formDirective);
+          }
+        });
+    } else {
+      pipeTakeUntil(this.versionService.updateVersion(newVersionName), this.sub$).subscribe(() => {
+        this.reset(formDirective);
       });
     }
+  }
+
+  /**
+   * Clear form after updateing the version
+   * @param formDirective Clear angular material validation errors.
+   */
+  private reset(formDirective: FormGroupDirective) {
+    formDirective.resetForm();
+    this.form.reset();
+    this.messageBoxService.show();
   }
 }
