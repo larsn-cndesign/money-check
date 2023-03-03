@@ -25,7 +25,7 @@ import { CategoryService } from './shared/category.service';
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const categoryService: Omit<CategoryService, OmitFromStore> = {
-  loadCategoryPage(_budgetId: number): Observable<Category[]> {
+  getCategories(_budgetId: number): Observable<Category[]> {
     return of(CATEGORIES);
   },
   modifyCategory(_categoryItem: Category, _action: string): Observable<Category> {

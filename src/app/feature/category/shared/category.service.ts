@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -37,8 +37,8 @@ export class CategoryService extends StoreItems<Category> {
    * @param budgetId The identity number of the selected budget.
    * @returns Observer of an array of `Category` objects.
    */
-  loadCategoryPage(budgetId: number): Observable<Category[]> {
-    return this.http.get<Category[]>(`/api/LoadCategoryPage`, { params: { budgetId } }).pipe(
+  getCategories(budgetId: number): Observable<Category[]> {
+    return this.http.get<Category[]>(`/api/category`, { params: { budgetId } }).pipe(
       tap((items) => {
         this.store.items = items;
         this.updateStore();

@@ -104,7 +104,7 @@ export class CategoryComponent extends CommonFormService implements OnInit {
           this.budgetState = budgetState;
         }),
         switchMap((budgetState: BudgetState) => {
-          return pipeTakeUntil(this.categoryService.loadCategoryPage(budgetState.budgetId), this.sub$);
+          return pipeTakeUntil(this.categoryService.getCategories(budgetState.budgetId), this.sub$);
         })
       )
       .subscribe(() => {

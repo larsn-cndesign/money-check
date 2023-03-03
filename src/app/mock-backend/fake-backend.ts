@@ -76,8 +76,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         case url.endsWith('/api/EditBudget') && method === 'POST':
           return editBudget();
 
-        case url.endsWith('/api/LoadCategoryPage') && method === 'GET':
-          return loadCategoryPage();
+        case url.endsWith('/api/category') && method === 'GET':
+          return getCategories();
         case url.endsWith('/api/AddCategory') && method === 'POST':
           return addCategory();
         case url.endsWith('/api/EditCategory') && method === 'POST':
@@ -176,7 +176,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     // Category
-    function loadCategoryPage(): Observable<HttpEvent<any>> {
+    function getCategories(): Observable<HttpEvent<any>> {
       return of(new HttpResponse({ status: 200, body: DatabaseService.getCategories(getParamId(params) as number) }));
     }
     function addCategory(): Observable<HttpEvent<any>> {

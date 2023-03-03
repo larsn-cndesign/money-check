@@ -60,7 +60,7 @@ describe('CategoryService', () => {
     const expectedUrl = '/api/LoadCategoryPage?budgetId=1';
 
     categoryService
-      .loadCategoryPage(budgetId)
+      .getCategories(budgetId)
       .pipe(first())
       .subscribe((items) => {
         categories = items;
@@ -82,7 +82,7 @@ describe('CategoryService', () => {
     const spy = spyOn(errorService, 'handleHttpError').and.callThrough();
 
     categoryService
-      .loadCategoryPage(budgetId)
+      .getCategories(budgetId)
       .pipe(first())
       .subscribe(
         () => fail('next handler must not be called'),
