@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { slideInFromLeft } from './shared/message-box.animations';
+import { dropDown, slideInFromLeft } from './shared/message-box.animations';
 import { MessageBox } from './shared/message-box.model';
 import { MessageBoxService } from './shared/message-box.service';
 
@@ -11,7 +11,7 @@ import { MessageBoxService } from './shared/message-box.service';
   selector: 'app-message-box',
   templateUrl: './message-box.component.html',
   styleUrls: ['./message-box.component.scss'],
-  animations: [slideInFromLeft],
+  animations: [slideInFromLeft, dropDown],
 })
 export class MessageBoxComponent implements OnInit, OnDestroy {
   /**
@@ -56,9 +56,23 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
       this.message = message;
       clearTimeout(this.timer);
 
-      this.timer = window.setTimeout(() => {
-        this.isOpen = false;
-      }, 2000);
+      if (message) {
+        this.message = message;
+        clearTimeout(this.timer);
+
+        switch (message.type) {
+          case 'success':
+            this.timer = window.setTimeout(() => {
+              this.isOpen = false;
+            }, 3500);
+            break;
+          case 'simple':
+            this.timer = window.setTimeout(() => {
+              this.isOpen = false;
+            }, 2000);
+            break;
+        }
+      }
     });
   }
 
@@ -69,5 +83,12 @@ export class MessageBoxComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  /**
+   * Close message box
+   */
+  onOK(): void {
+    this.messageBoxService.hide();
   }
 }

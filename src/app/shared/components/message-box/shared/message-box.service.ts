@@ -60,5 +60,37 @@ export class MessageBoxService {
   show(message = new MessageBox()): void {
     this.isOpen = true;
     this._model$.next(message);
+
+    // switch (message.type) {
+    //   case MessageType.Success:
+    //     this.message.border = '10px solid #4fc36a';
+    //     this.message.color = '#4fc36a';
+    //     this.message.icon = 'check_circle';
+    //     this.message.close = { 'message-close message-cancel message-sx': true };
+    //     break;
+    //   case MessageType.Info:
+    //     this.message.border = '10px solid #60a6ff';
+    //     this.message.color = '#60a6ff';
+    //     this.message.icon = 'info';
+    //     this.message.close = { 'message-close message-cancel message-ix': true };
+    //     break;
+    //   case MessageType.Warning:
+    //     this.message.border = '10px solid #E5AD0B';
+    //     this.message.color = '#E5AD0B';
+    //     this.message.icon = 'warning';
+    //     this.message.close = { 'message-close message-cancel message-wx': true };
+    //     break;
+    //   case MessageType.Error:
+    //     this.message.border = '10px solid #ff6b6b';
+    //     this.message.color = '#ff6b6b';
+    //     this.message.icon = 'error';
+    //     this.message.close = { 'message-close message-cancel message-dx': true };
+    //     break;
+    // }
+  }
+
+  hide(): void {
+    this.isOpen = false;
+    this._model$.next(new MessageBox());
   }
 }

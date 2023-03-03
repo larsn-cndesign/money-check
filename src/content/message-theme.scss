@@ -1,0 +1,144 @@
+@mixin message($color, $background-color) {
+  // ------------------------------
+  // Normal message box
+  // ------------------------------
+  .message-wrap,
+  .message-wrap-simple {
+    z-index: 1040;
+    position: fixed;
+    top: 57px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 0 3px;
+  }
+
+  .message-wrap {
+    background-color: $background-color;
+    color: $color;
+    left: 0;
+    right: 0;
+    padding: 10px;
+  }
+
+  .message-box {
+    position: relative;
+    min-height: 100%;
+    min-width: 100%;
+  }
+
+  .message-main {
+    width: 100%;
+    padding-bottom: 40px;
+  }
+
+  .message-head {
+    height: 40px;
+    width: 100%;
+    border-left: $background-color;
+  }
+
+  .message-content {
+    padding: 0 20px;
+    max-height: 180px;
+    max-width: 500px;
+    min-height: 50px;
+    min-width: 250px;
+    overflow: auto;
+    border-left: $background-color;
+  }
+
+  .message-title {
+    font-size: 16px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    color: $color;
+    border-left: $background-color;
+  }
+
+  .message-divider {
+    border-bottom: 1px solid #cccccc;
+  }
+
+  .message-foot {
+    position: relative;
+    margin-top: -40px;
+    clear: both;
+    height: 40px;
+    width: 100%;
+    padding-bottom: 5px;
+    border-left: $background-color;
+  }
+
+  .message-btn {
+    padding: 5px 20px 0 0;
+    float: right;
+  }
+
+  // ------------------------------
+  // Simple message box
+  // ------------------------------
+  .message-wrap-simple {
+    left: 0;
+    width: 250px;
+    background-color: $background-color;
+  }
+
+  .message-main-simple {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: $background-color;
+  }
+
+  .message-text-simple {
+    font-size: 24px;
+    margin-left: 10px;
+    color: $color;
+  }
+
+  .message-icon-simple {
+    color: $color;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .horz-icon > span,
+  .horz-icon > mat-icon,
+  .horz-icon > img {
+    vertical-align: middle;
+  }
+
+  .fai-32 {
+    font-size: 32px;
+  }
+
+  .fg-prim {
+    color: $color;
+  }
+
+  @media (max-width: 599px) {
+    .message-wrap {
+      top: 57px;
+      // right: 10px;
+      // left: auto;
+    }
+
+    .message-wrap-simple {
+      top: 57px;
+    }
+  }
+
+  // Greater than smart phones
+  @media (min-width: 600px) {
+    .message-wrap {
+      top: 65px;
+      max-width: 450px;
+      margin: auto;
+      width: 50%;
+    }
+
+    .message-wrap-simple {
+      top: 57px;
+    }
+  }
+}

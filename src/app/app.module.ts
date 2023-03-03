@@ -19,9 +19,10 @@ import { TripModule } from './feature/trip/trip.module';
 import { UnitModule } from './feature/unit/unit.module';
 import { CreateVersionModule } from './feature/version/create-version/create-version.module';
 import { ModifyVersionModule } from './feature/version/modify-version/modify-version.module';
-import { MessageBoxModule } from './shared/components/message-box/message-box.module';
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
 import { PageTitleStrategy } from './shared/services/page-title-strategy.service';
+import { MessageBoxModule } from './shared/components/message-box/message-box.module';
+import { ConfirmDialogModule } from './shared/components/confirm-dialog/confirm-dialog.module';
 
 import { registerLocaleData } from '@angular/common';
 import localeSv from '@angular/common/locales/sv';
@@ -52,6 +53,7 @@ import { fakeBackendProvider } from './mock-backend/fake-backend';
     ActualItemModule,
     BudgetVarianceModule,
     MessageBoxModule,
+    ConfirmDialogModule,
     CreateBudgetModule,
     JwtModule.forRoot({
       config: {

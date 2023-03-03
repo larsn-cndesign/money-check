@@ -5,10 +5,11 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SkipSanitizeHtmlPipe } from '../../pipes/skip-sanitize-html';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
-  declarations: [ConfirmDialogComponent, SkipSanitizeHtmlPipe],
+  declarations: [ConfirmDialogComponent],
+  imports: [SharedModule],
   exports: [ConfirmDialogComponent],
   providers: [ConfirmDialogService],
 })

@@ -4,7 +4,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { UnitComponent } from './unit.component';
 
 @NgModule({
-  imports: [CommonModule, SharedModule],
   declarations: [UnitComponent],
+  imports: [CommonModule, SharedModule],
 })
 export class UnitModule {}

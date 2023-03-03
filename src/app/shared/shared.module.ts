@@ -21,14 +21,14 @@ import { ConfirmDialogModule } from '../shared/components/confirm-dialog/confirm
 import { CurrencyTableComponent } from './components/currency-table/currency-table.component';
 import { CurrencyFormComponent } from './components/currency-form/currency-form.component';
 import { FocusDirective } from './directives/focus.directive';
+import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
 
 @NgModule({
-  declarations: [CurrencyTableComponent, CurrencyFormComponent, FocusDirective],
+  declarations: [CurrencyTableComponent, CurrencyFormComponent, FocusDirective, SkipSanitizeHtmlPipe],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ConfirmDialogModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -49,7 +49,6 @@ import { FocusDirective } from './directives/focus.directive';
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ConfirmDialogModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -68,6 +67,7 @@ import { FocusDirective } from './directives/focus.directive';
     CurrencyTableComponent,
     CurrencyFormComponent,
     FocusDirective,
+    SkipSanitizeHtmlPipe,
   ],
 })
 export class SharedModule {}

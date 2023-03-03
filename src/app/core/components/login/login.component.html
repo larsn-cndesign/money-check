@@ -2,12 +2,13 @@
   <h2>Logga In</h2>
 
   <form [formGroup]="form" (ngSubmit)="login()" data-testid="form">
-    <div class="server-error" *ngIf="invalidLogin" data-testid="server-error">
+    <!-- TODO Remove -->
+    <!-- <div class="server-error" *ngIf="invalidLogin" data-testid="server-error">
       Ogiltigt användarnamn och/eller lösenord
-    </div>
+    </div> -->
     <div class="form-field-error">
       <!-- TODO only for testing purpose -->
-      <div>Ange: test@test.com</div>
+      <!-- <div>Ange: test@test.com</div> -->
       <mat-form-field style="width: 234px">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />
@@ -18,7 +19,7 @@
     </div>
     <div class="form-field-error">
       <!-- TODO only for testing purpose -->
-      <div>Ange: 123456</div>
+      <!-- <div>Ange: 123456</div> -->
       <mat-form-field>
         <mat-label>Lösenord</mat-label>
         <input

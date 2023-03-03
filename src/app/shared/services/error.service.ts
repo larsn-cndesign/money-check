@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
+import { MessageBox } from '../components/message-box/shared/message-box.model';
+import { MessageBoxService } from '../components/message-box/shared/message-box.service';
 
 /**
  * Class representing error handling.
@@ -11,7 +13,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor(public router: Router) {}
+  constructor(public router: Router, private messageBoxService: MessageBoxService) {}
 
   /**
    * Get error messages for an invalid form control.
@@ -76,18 +78,22 @@ export class ErrorService {
    * @param error The error respoinse from a server http response.
    * @returns An observable of never.
    * @todo Log error.
-   * @todo Show error in an user friendly message alert.
    */
   handleHttpError = (error: HttpErrorResponse): Observable<never> => {
+    let errorDescription = '';
+    let title = 'Programfel';
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
     } else {
       if (error.status === 401) {
+        title = 'Behörighet saknas';
+        errorDescription = error.error;
         this.router.navigate(['/login']);
       }
-      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      // console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
-    alert(error);
+    console.log(error);
+    this.messageBoxService.show(new MessageBox(title, errorDescription, 'error'));
     return throwError(error);
   };
 }

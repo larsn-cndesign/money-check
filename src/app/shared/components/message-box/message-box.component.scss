@@ -1,52 +1,18 @@
 @use '../../../../content/variables.scss' as v;
+@use '../../../../content//message-theme.scss' as m;
 
-.message-wrap {
-  z-index: 1040;
-  position: fixed;
-  top: 65px;
-  left: 0;
-  width: 250px;
-  background-color: #8c9b8d;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  margin: 0 3px;
+.success {
+  @include m.message(v.$success-fg, v.$success-bg);
 }
-
-.message-main {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-  background-color: #000000;
+.info {
+  @include m.message(v.$info-fg, v.$info-bg);
 }
-
-.message-text {
-  font-size: 24px;
-  margin-left: 10px;
-  color: v.$primary;
+.warning {
+  @include m.message(v.$warning-fg, v.$warning-bg);
 }
-
-.message-icon {
-  color: v.$primary;
-  display: inline-block;
-  vertical-align: middle;
+.error {
+  @include m.message(v.$error-fg, v.$error-bg);
 }
-
-.horz-icon > span,
-.horz-icon > mat-icon,
-.horz-icon > img {
-  vertical-align: middle;
-}
-
-.fai-32 {
-  font-size: 32px;
-}
-
-.fg-prim {
-  color: v.$primary;
-}
-
-@media (max-width: 599px) {
-  .message-wrap {
-    top: 57px;
-  }
+.simple {
+  @include m.message(v.$simple-fg, v.$simple-bg);
 }

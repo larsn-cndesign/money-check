@@ -1,12 +1,21 @@
 $body-background: #4c4c4c;
 $table-header: #262626;
 $selected-bg: #384660;
-// $warn-fg: #f72828;
-$warn-fg: #e97171; 
 $page-fg: #e5e5e5;
-// $primary: #558b2f;
 $primary: #3cad1f;
 $border: #7a7a7a;
-$accent-fg: #539cf7; 
+$accent-fg: #539cf7;
 $link-hover: #91bbef;
 $link: $accent-fg;
+
+// Type of content
+$success-fg: $primary;
+$success-bg: #163d0c;
+$info-fg: #e97171;
+$info-bg: red;
+$warning-fg: #dfa559;
+$warning-bg: #6d4f29;
+$error-fg: #e97171;
+$error-bg: #581e1e;
+$simple-fg: $primary;
+$simple-bg: #000000;
