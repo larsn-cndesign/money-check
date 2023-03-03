@@ -75,7 +75,7 @@ export class AuthService {
    * @returns Token if found, otherwise null.
    */
   private getToken(headers: HttpHeaders): string | null {
-    const auth = headers.get('Authorization');
+    const auth = headers.get('authorization');
     if (!auth) {
       return null;
     }

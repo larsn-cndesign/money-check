@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  tokenName: 'test_token',
+  tokenName: 'access_token',
+  // tokenName: 'test_token',
   allowedDomains: 'localhost',
   disallowedRoutes: 'localhost/auth/login',
 };

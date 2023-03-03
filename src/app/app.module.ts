@@ -1,7 +1,9 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LOCALE_ID, NgModule } from '@angular/core';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TitleStrategy } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -19,7 +21,6 @@ import { CreateVersionModule } from './feature/version/create-version/create-ver
 import { ModifyVersionModule } from './feature/version/modify-version/modify-version.module';
 import { MessageBoxModule } from './shared/components/message-box/message-box.module';
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
-import { TitleStrategy } from '@angular/router';
 import { PageTitleStrategy } from './shared/services/page-title-strategy.service';
 
 import { registerLocaleData } from '@angular/common';
@@ -30,7 +31,6 @@ registerLocaleData(localeSv);
 import { AppComponent } from './app.component';
 
 /** @test Only for testing, should be removed if using a real backend. */
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { fakeBackendProvider } from './mock-backend/fake-backend';
 
 @NgModule({
@@ -70,7 +70,7 @@ import { fakeBackendProvider } from './mock-backend/fake-backend';
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     /** @test Only for testing, should be removed if using a real backend. */
-    fakeBackendProvider,
+    // fakeBackendProvider,
   ],
   bootstrap: [AppComponent],
 })

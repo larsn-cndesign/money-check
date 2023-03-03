@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 
 /**
@@ -10,7 +11,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor() {}
+  constructor(public router: Router) {}
 
   /**
    * Get error messages for an invalid form control.
@@ -77,13 +78,16 @@ export class ErrorService {
    * @todo Log error.
    * @todo Show error in an user friendly message alert.
    */
-  handleHttpError(error: HttpErrorResponse): Observable<never> {
+  handleHttpError = (error: HttpErrorResponse): Observable<never> => {
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
     } else {
+      if (error.status === 401) {
+        this.router.navigate(['/login']);
+      }
       console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
     alert(error);
     return throwError(error);
-  }
+  };
 }
