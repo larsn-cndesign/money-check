@@ -97,12 +97,12 @@ export class ActualItem {
   purchaseDate = new Date();
 
   /**
-   * The currency of an actual expense item (3 characters).
+   * The currency code of an actual expense item (3 characters).
    * @public
    * @default '' Actual item not initialized.
    * @example EUR
    */
-  currency = '';
+  currencyCode = '';
 
   /**
    * The amount of an expense item.
@@ -147,11 +147,11 @@ export class ActualItem {
  */
 export interface CurrencyItem {
   /**
-   * The currency of an expense item (3 characters).
+   * The currency code of an expense item (3 characters).
    * @public
    * @example EUR
    */
-  currency: string;
+  currencyCode: string;
 
   /**
    * The budget rate of a currency for the current version of a `BudgetYear`.

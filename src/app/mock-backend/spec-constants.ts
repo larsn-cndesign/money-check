@@ -16,7 +16,7 @@ export const ACTUAL_ITEM_1 = {
   amount: 50,
   budgetId: 1,
   categoryId: 1,
-  currency: 'EUR',
+  currencyCode: 'EUR',
   note: 'A',
   purchaseDate: new Date('2023-01-01'),
   tripId: 1,
@@ -29,7 +29,7 @@ export const ACTUAL_ITEM_2 = {
   amount: 100,
   budgetId: 1,
   categoryId: 1,
-  currency: 'SEK',
+  currencyCode: 'SEK',
   note: 'B',
   purchaseDate: new Date('2023-02-01'),
   tripId: 1,
@@ -45,7 +45,7 @@ export function deepCopyActualItem(item: ActualItem): ActualItem {
     amount: item.amount,
     budgetId: item.budgetId,
     categoryId: item.categoryId,
-    currency: item.currency,
+    currencyCode: item.currencyCode,
     note: item.note,
     purchaseDate: item.purchaseDate,
     tripId: item.tripId,
@@ -105,20 +105,27 @@ export const FILTER = {
   versionId: 1,
   budgetYearId: -1,
   categoryId: -1,
-  currency: '',
+  currencyCode: '',
   tripId: -1,
   note: '',
 } as ItemFilter;
 
-const CURRENCY_ITEM_SEK = { currency: 'SEK', budgetRate: 1 } as CurrencyItem;
-const CURRENCY_ITEM_EUR = { currency: 'EUR', budgetRate: 10 } as CurrencyItem;
+const CURRENCY_ITEM_SEK = { currencyCode: 'SEK', budgetRate: 1 } as CurrencyItem;
+const CURRENCY_ITEM_EUR = { currencyCode: 'EUR', budgetRate: 10 } as CurrencyItem;
 export const CURRENCY_ITEMS = [deepCoyp(CURRENCY_ITEM_SEK), deepCoyp(CURRENCY_ITEM_EUR)];
 
-const CURRENCY_1 = { id: 1, versionId: 1, currency: 'SEK', budgetRate: 1, averageRate: 1, selected: false } as Currency;
+const CURRENCY_1 = {
+  id: 1,
+  versionId: 1,
+  code: 'SEK',
+  budgetRate: 1,
+  averageRate: 1,
+  selected: false,
+} as Currency;
 const CURRENCY_2 = {
   id: 2,
   versionId: 1,
-  currency: 'EUR',
+  code: 'EUR',
   budgetRate: 10,
   averageRate: 10,
   selected: false,

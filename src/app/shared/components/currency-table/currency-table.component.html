@@ -1,6 +1,6 @@
 <div class="row-xl max-table-height">
   <table mat-table [dataSource]="$any(currencies$ | async)" class="tbl">
-    <ng-container matColumnDef="currency">
+    <ng-container matColumnDef="currencyCode">
       <th mat-header-cell *matHeaderCellDef>Valuta</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.code }}</mat-label>

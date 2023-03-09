@@ -43,8 +43,8 @@ export class CurrencyTableService extends StoreItems<Currency> {
    * Method for removing an existing currency in the table.
    * @param currency The currency object to be removed.
    */
-  deleteCurrency(curr: Currency): void {
-    const index = this.items.findIndex((x) => x.id === curr.id);
+  deleteCurrency(currency: Currency): void {
+    const index = this.items.findIndex((x) => x.id === currency.id);
 
     if (index === -1) {
       return;

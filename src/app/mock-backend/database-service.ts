@@ -460,7 +460,7 @@ export class DatabaseService {
       budgetItem.versionId = item.versionId;
       budgetItem.categoryId = item.categoryId;
       budgetItem.unitId = item.unitId;
-      budgetItem.currency = item.currency;
+      budgetItem.currencyCode = item.currencyCode;
       budgetItem.unitValue = item.unitValue;
       budgetItem.note = item.note;
     }
@@ -503,7 +503,7 @@ export class DatabaseService {
       if (currentVersion) {
         this.db.currencies.forEach((c) => {
           if (c.versionId === currentVersion.id) {
-            currencyItems.push({ currency: c.code, budgetRate: c.budgetRate } as CurrencyItem);
+            currencyItems.push({ currencyCode: c.code, budgetRate: c.budgetRate } as CurrencyItem);
           }
         });
       }
@@ -516,11 +516,11 @@ export class DatabaseService {
     });
 
     // Get uniqe currencies for selected period
-    currencies = Array.from(new Set(currencyItems.map((currencyItem) => currencyItem.currency)));
+    currencies = Array.from(new Set(currencyItems.map((currencyItem) => currencyItem.currencyCode)));
 
     // Filter transactions
-    if (filter.currency !== '') {
-      actualItems = [...actualItems.filter((x) => x.currency === filter.currency)];
+    if (filter.currencyCode !== '') {
+      actualItems = [...actualItems.filter((x) => x.currencyCode === filter.currencyCode)];
     }
     if (filter.categoryId !== -1) {
       actualItems = [...actualItems.filter((x) => x.categoryId === filter.categoryId)];
@@ -562,7 +562,7 @@ export class DatabaseService {
       actualItem.categoryId = item.categoryId;
       actualItem.tripId = item.tripId;
       actualItem.purchaseDate = item.purchaseDate;
-      actualItem.currency = item.currency;
+      actualItem.currencyCode = item.currencyCode;
       actualItem.amount = item.amount;
       actualItem.note = item.note;
     }
@@ -625,9 +625,9 @@ export class DatabaseService {
 
       // Currency
       item.currencies = this._versionCurrencies(version.id);
-      const currency = item.currencies.find((x) => x.code === filter.currency);
-      item.currency = filter.currency !== '' && currency ? currency : item.currencies[0];
-      filter.currency = item.currency.code;
+      const currency = item.currencies.find((x) => x.code === filter.currencyCode);
+      item.currency = filter.currencyCode !== '' && currency ? currency : item.currencies[0];
+      filter.currencyCode = item.currency.code;
 
       // Other
       item.categories = this.db.categories;
@@ -644,7 +644,7 @@ export class DatabaseService {
           const sumActual = this.db.actualItems
             .filter((x) => x.categoryId === category.id && new Date(x.purchaseDate).getFullYear() === budgetYear.year)
             .reduce((sum, current) => {
-              return sum + this._sumCurrency(current.amount, current.currency, item.currency, item.currencies);
+              return sum + this._sumCurrency(current.amount, current.currencyCode, item.currency, item.currencies);
             }, 0);
           varianceItem.actual = isNaN(sumActual) ? 0 : sumActual;
 
@@ -652,7 +652,7 @@ export class DatabaseService {
           const sumBudget = this.db.budgetItems
             .filter((x) => x.categoryId === category.id && x.versionId === item.version.id)
             .reduce((sum, current) => {
-              return sum * this._sumCurrency(current.unitValue, current.currency, item.currency, item.currencies);
+              return sum * this._sumCurrency(current.unitValue, current.currencyCode, item.currency, item.currencies);
             }, 1);
           varianceItem.budget = sumBudget === 1 || isNaN(sumBudget) ? 0 : sumBudget;
           varianceItem.variance = varianceItem.budget - varianceItem.actual;
@@ -695,15 +695,15 @@ export class DatabaseService {
   // Fake database helper methods
   // ------------------------------------
 
-  private static _sumCurrency(val: number, currency: string, selCurrency: Currency, currencies: Currency[]): number {
+  private static _sumCurrency(val: number, currencyCode: string, currency: Currency, currencies: Currency[]): number {
     let total = 0;
 
-    if (!selCurrency.code || currency === '' || currency === selCurrency.code) {
+    if (!currency.code || currencyCode === '' || currencyCode === currency.code) {
       total = val;
     } else {
-      const converCurrency = currencies.find((curr) => curr.code === currency);
+      const converCurrency = currencies.find((curr) => curr.code === currencyCode);
       if (converCurrency) {
-        total = val * (converCurrency.budgetRate / selCurrency.budgetRate);
+        total = val * (converCurrency.budgetRate / currency.budgetRate);
       } else {
         total = val;
       }
@@ -803,7 +803,7 @@ export class DatabaseService {
       versionId,
       categoryId: item.categoryId,
       unitId: item.unitId,
-      currency: item.currency,
+      currencyCode: item.currencyCode,
       unitValue: item.unitValue,
       note: item.note,
     } as BudgetItem;
@@ -835,7 +835,7 @@ export class DatabaseService {
       categoryId: item.categoryId,
       tripId: item.tripId,
       purchaseDate: item.purchaseDate,
-      currency: item.currency,
+      currencyCode: item.currencyCode,
       amount: item.amount,
       note: item.note,
     } as ActualItem;

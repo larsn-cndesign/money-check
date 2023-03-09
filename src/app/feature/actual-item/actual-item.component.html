@@ -47,12 +47,12 @@
 
           <mat-form-field>
             <mat-label>Välj Valuta</mat-label>
-            <mat-select formControlName="currency" [errorStateMatcher]="matcher" data-testid="currency">
+            <mat-select formControlName="currencyCode" [errorStateMatcher]="matcher" data-testid="currencyCode">
               <mat-option *ngFor="let item of actual.currencies" [value]="item">
                 {{ item }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="currency?.invalid">{{ getErrorMessage(currency) }}</mat-error>
+            <mat-error *ngIf="currencyCode?.invalid">{{ getErrorMessage(currencyCode) }}</mat-error>
           </mat-form-field>
 
           <mat-form-field>
@@ -91,7 +91,7 @@
               purchaseDate?.invalid ||
               category?.invalid ||
               trip?.invalid ||
-              currency?.invalid ||
+              currencyCode?.invalid ||
               category?.value === -1
             "
             data-testid="submit"
@@ -159,9 +159,9 @@
         <mat-form-field>
           <mat-label>Välj valuta</mat-label>
           <mat-select
-            [value]="actual.filter.currency"
+            [value]="actual.filter.currencyCode"
             (selectionChange)="onChangeFilter($event, 'currency')"
-            data-testid="filter-currency"
+            data-testid="filter-currency-code"
           >
             <mat-option [value]="''">Alla valutor</mat-option>
             <mat-option *ngFor="let item of actual.currencies" [value]="item">
@@ -214,10 +214,10 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="currency">
+          <ng-container matColumnDef="currencyCode">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Valuta</th>
             <td mat-cell *matCellDef="let item">
-              <mat-label>{{ item.currency !== '' ? item.currency : '-' }}</mat-label>
+              <mat-label>{{ item.currencyCode !== '' ? item.currencyCode : '-' }}</mat-label>
             </td>
           </ng-container>
 
@@ -255,7 +255,7 @@
               <mat-label style="margin-right: 6px">Summa</mat-label>
               <mat-form-field appearance="standard" floatlLabel="never">
                 <mat-select
-                  [value]="selectedCurrency"
+                  [value]="selCurrencyCode"
                   (selectionChange)="onChangeSumCurrency($event)"
                   placeholder="Välj valuta"
                   data-testid="sum-currency"
@@ -269,7 +269,7 @@
           </ng-container>
           <ng-container matColumnDef="sum-amount">
             <td mat-footer-cell *matFooterCellDef colspan="3">
-              <mat-label *ngIf="selectedCurrency !== ''">{{ sumCurrency | number : '1.0-2' }}</mat-label>
+              <mat-label *ngIf="selCurrencyCode !== ''">{{ sumCurrency | number : '1.0-2' }}</mat-label>
             </td>
           </ng-container>
 

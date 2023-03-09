@@ -38,11 +38,12 @@ export class ItemFilter {
   tripId = -1;
 
   /**
-   * Filter on currency.
+   * Filter on currency code.
    * @public
    * @default '' All currencies.
+   * @example EUR
    */
-  currency = '';
+  currencyCode = '';
 
   /**
    * Filter on note.

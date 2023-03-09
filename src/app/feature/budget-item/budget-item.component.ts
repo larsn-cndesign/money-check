@@ -37,7 +37,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
     action: FormControl<string>;
     id: FormControl<number>;
     category: FormControl<number | null>;
-    currency: FormControl<string | null>;
+    currencyCode: FormControl<string | null>;
     note: FormControl<string | null>;
     versionId: FormControl<number | null>;
     budgetYearId: FormControl<number | null>;
@@ -62,7 +62,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
    * A property that holds all columns to be displayed in a table
    * @public
    */
-  displayedColumns: string[] = ['category', 'unit', 'currency', 'unitValue', 'note', 'delete'];
+  displayedColumns: string[] = ['category', 'unit', 'currencyCode', 'unitValue', 'note', 'delete'];
 
   /**
    * A boolean flag that indicates if the selected unit use currency or not.
@@ -110,11 +110,11 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   }
 
   /**
-   * Getter property for the action form control
-   * @returns The action form control
+   * Getter property for the currency code form control
+   * @returns The currency code form control
    */
-  get currency(): AbstractControl | null {
-    return this.form.get('currency');
+  get currencyCode(): AbstractControl | null {
+    return this.form.get('currencyCode');
   }
 
   /**
@@ -158,7 +158,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
         versionName: new FormControl(''),
         category: new FormControl(-1, Validators.required),
         unit: new FormControl(-1, Validators.required),
-        currency: new FormControl('', Validators.required),
+        currencyCode: new FormControl('', Validators.required),
         unitValue: new FormControl<number | null>(null, [Validators.required, isNumberValidator()]),
         note: new FormControl(''),
       },
@@ -235,7 +235,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
       id: item.id,
       category: item.categoryId,
       unit: item.unitId,
-      currency: this.useCurrency ? item.currency : '',
+      currencyCode: this.useCurrency ? item.currencyCode : '',
       unitValue: item.unitValue,
       note: item.note,
     });
@@ -276,7 +276,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
         versionId: val.versionId,
         categoryId: val.category,
         unitId: val.unit,
-        currency: this.useCurrency && val.currency ? val.currency : '',
+        currencyCode: this.useCurrency && val.currencyCode ? val.currencyCode : '',
         unitValue: toNumber(val.unitValue),
         note: val.note ? val.note : '',
       };
@@ -348,7 +348,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   private resetForm(): void {
     this.category?.reset();
     this.unit?.reset();
-    this.currency?.reset();
+    this.currencyCode?.reset();
     this.unitValue?.reset();
     this.note?.reset();
 

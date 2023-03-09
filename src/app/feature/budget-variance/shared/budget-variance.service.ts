@@ -70,8 +70,8 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
       case 'version':
         this.item.filter.versionId = +value;
         break;
-      case 'currency':
-        this.item.filter.currency = value;
+      case 'currencyCode':
+        this.item.filter.currencyCode = value;
         break;
     }
     ItemFilter.setFilter(this.item.filter);

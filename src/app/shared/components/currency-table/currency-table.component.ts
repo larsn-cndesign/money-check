@@ -26,9 +26,9 @@ export class CurrencyTableComponent {
   @Input() set deletable(value: boolean) {
     this._deletable = value;
     if (this._deletable) {
-      this.displayedColumns = ['currency', 'budgetRate', 'averageRate', 'delete'];
+      this.displayedColumns = ['currencyCode', 'budgetRate', 'averageRate', 'delete'];
     } else {
-      this.displayedColumns = ['currency', 'budgetRate', 'averageRate'];
+      this.displayedColumns = ['currencyCode', 'budgetRate', 'averageRate'];
     }
   }
 

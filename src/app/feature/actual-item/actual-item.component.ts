@@ -43,7 +43,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     category: FormControl<number | null>;
     trip: FormControl<number>;
     purchaseDate: FormControl<Date | null>;
-    currency: FormControl<string | null>;
+    currencyCode: FormControl<string | null>;
     amount: FormControl<number | null>;
     note: FormControl<string | null>;
   }>;
@@ -61,23 +61,23 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   actualItems$: Observable<ActualItem[]>;
 
   /**
-   * A property that holds all columns to be displayed in a table
+   * A property that holds all columns to be displayed in a table.
    * @public
    */
-  displayedColumns: string[] = ['purchaseDate', 'categoryName', 'tripName', 'currency', 'amount', 'note', 'delete'];
+  displayedColumns: string[] = ['purchaseDate', 'categoryName', 'tripName', 'currencyCode', 'amount', 'note', 'delete'];
 
   /**
-   * A property that holds the sum of all transactions in a specific currency
+   * A property that holds the sum of all transactions in a specific currency.
    * @public
    */
   sumCurrency!: number;
 
   /**
    * A property holdning the currency selected for calculating the total amount of filtered actual items.
-   * @private
+   * @public
    * @default '' No currency selected.
    */
-  selectedCurrency = '';
+  selCurrencyCode = '';
 
   /**
    * A property to hold a custom error state matcher.
@@ -132,11 +132,11 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   }
 
   /**
-   * Getter property for the currency form control
-   * @returns The currency form control
+   * Getter property for the currencyCode form control
+   * @returns The currencyCode form control
    */
-  get currency(): AbstractControl | null {
-    return this.form.get('currency');
+  get currencyCode(): AbstractControl | null {
+    return this.form.get('currencyCode');
   }
 
   /**
@@ -191,7 +191,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         Validators.required,
         budgetYearNotExistValidator(this.actualItemService),
       ]),
-      currency: new FormControl<string | null>(null, Validators.required),
+      currencyCode: new FormControl<string | null>(null, Validators.required),
       amount: new FormControl<number | null>(null, [Validators.required, isNumberValidator()]),
       note: new FormControl(''),
     });
@@ -214,7 +214,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         })
       )
       .subscribe(() => {
-        this.selectedCurrency = '';
+        this.selCurrencyCode = '';
         this.pageLoaded = true;
       });
 
@@ -301,7 +301,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       category: item.categoryId,
       trip: item.tripId,
       purchaseDate: item.purchaseDate,
-      currency: item.currency,
+      currencyCode: item.currencyCode,
       amount: item.amount,
       note: item.note,
     });
@@ -313,14 +313,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   onSaveActualItem(): void {
     const val = this.form.getRawValue();
 
-    if (val.category && val.purchaseDate && val.currency && val.amount) {
+    if (val.category && val.purchaseDate && val.currencyCode && val.amount) {
       const actualItem = new ActualItem();
       actualItem.id = val.id;
       actualItem.budgetId = BudgetState.getSelectedBudgetId();
       actualItem.categoryId = val.category;
       actualItem.tripId = val.trip;
       actualItem.purchaseDate = val.purchaseDate;
-      actualItem.currency = val.currency;
+      actualItem.currencyCode = val.currencyCode;
       actualItem.amount = toNumber(val.amount);
       actualItem.note = val.note ? val.note : '';
 
@@ -334,7 +334,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param e The event object emitted by the select.
    */
   onChangeSumCurrency(e: MatSelectChange): void {
-    this.selectedCurrency = e.value as string;
+    this.selCurrencyCode = e.value as string;
     this.calculateTotalAmount();
   }
 
@@ -398,15 +398,15 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * Calculates the total amount for a currency based on the current filter.
    */
   private calculateTotalAmount(): void {
-    if (this.selectedCurrency !== '') {
+    if (this.selCurrencyCode !== '') {
       let amount = 0;
-      const selectedItem = this.findCurrency(this.selectedCurrency);
+      const selectedItem = this.findCurrency(this.selCurrencyCode);
 
       this.actualItemService.items.forEach((x) => {
-        if (!selectedItem || x.currency === selectedItem.currency) {
+        if (!selectedItem || x.currencyCode === selectedItem.currencyCode) {
           amount += x.amount;
         } else {
-          const currencyItem = this.findCurrency(x.currency);
+          const currencyItem = this.findCurrency(x.currencyCode);
           if (currencyItem) {
             amount += x.amount * (currencyItem.averageRate / selectedItem.averageRate);
           }
@@ -418,11 +418,11 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
 
   /**
    * Helper method to search for a currency in store.
-   * @param currency The currency to serach for.
+   * @param currencyCode The currency code to serach for.
    * @returns A `CurrencyItem` object if found. Otherwise undefined.
    */
-  private findCurrency(currency: string): CurrencyItem | undefined {
-    return this.actualItemService.item.currencyItems.find((c) => c.currency === currency);
+  private findCurrency(currencyCode: string): CurrencyItem | undefined {
+    return this.actualItemService.item.currencyItems.find((c) => c.currencyCode === currencyCode);
   }
 
   /**
@@ -431,10 +431,10 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   private resetForm(): void {
     this.category?.reset();
     this.trip?.reset();
-    this.currency?.reset();
+    this.currencyCode?.reset();
     this.amount?.reset();
     this.note?.reset();
 
-    this.form.patchValue({ action: Modify.Add, trip: -1, currency: '' });
+    this.form.patchValue({ action: Modify.Add, trip: -1, currencyCode: '' });
   }
 }

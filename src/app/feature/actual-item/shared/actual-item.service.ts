@@ -84,7 +84,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
           return compare(toDate(a.purchaseDate), toDate(b.purchaseDate), asc);
         case 'categoryName':
         case 'tripName':
-        case 'currency':
+        case 'currencyCode':
         case 'amount':
         case 'note':
           return compare(a[columnName], b[columnName], asc);
@@ -112,8 +112,8 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
       case 'trip':
         this.item.filter.tripId = +value;
         break;
-      case 'currency':
-        this.item.filter.currency = value as string;
+      case 'currencyCode':
+        this.item.filter.currencyCode = value as string;
         break;
       case 'note':
         this.item.filter.note = value as string;

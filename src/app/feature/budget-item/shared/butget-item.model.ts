@@ -82,8 +82,9 @@ export class BudgetItem {
   /**
    * The currency of a budget item (3 characters).
    * @public
+   * @example EUR
    */
-  currency = '';
+  currencyCode = '';
 
   /**
    * The value of a budget item.
