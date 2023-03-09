@@ -96,7 +96,7 @@ export class UnitComponent extends CommonFormService implements OnInit {
       {
         action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
         id: new FormControl(-1, { nonNullable: true }),
-        unitName: new FormControl('', [Validators.required]),
+        unitName: new FormControl('', [Validators.required, Validators.max(50)]),
         useCurrency: new FormControl<boolean>(false, { nonNullable: true }),
       },
       { validators: [duplicateValidator(unitService, 'unitName', 'action')] }
@@ -115,7 +115,7 @@ export class UnitComponent extends CommonFormService implements OnInit {
           this.budgetState = budgetState;
         }),
         switchMap((budgetState: BudgetState) => {
-          return pipeTakeUntil(this.unitService.loadUnitPage(budgetState.budgetId), this.sub$);
+          return pipeTakeUntil(this.unitService.getUnits(budgetState.budgetId), this.sub$);
         })
       )
       .subscribe(() => {

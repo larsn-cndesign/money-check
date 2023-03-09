@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { StoreItems } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
-import { ErrorService } from 'src/app/shared/services/error.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { Category } from './category.model';
 
 /**
@@ -16,19 +16,10 @@ import { Category } from './category.model';
 })
 export class CategoryService extends StoreItems<Category> {
   /**
-   * A property holding http header information
-   * @private
-   * @readonly
-   */
-  private readonly httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Initializes services.
-   * @param http Manage http requests.
-   * @param errorService Application error service.
-   * @param budgetStateService Manage the state of a budget.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private httpService: HttpService) {
     super();
   }
 
@@ -38,38 +29,33 @@ export class CategoryService extends StoreItems<Category> {
    * @returns Observer of an array of `Category` objects.
    */
   getCategories(budgetId: number): Observable<Category[]> {
-    return this.http.get<Category[]>(`/api/category`, { params: { budgetId } }).pipe(
+    return this.httpService.getItemsById<Category>(budgetId, 'category').pipe(
       tap((items) => {
         this.store.items = items;
         this.updateStore();
-      }),
-      catchError(this.errorService.handleHttpError)
+      })
     );
   }
 
   /**
    * Modify a category item.
-   * @param categoryItem The category item to be modified
-   * @param action The action to perform (add, edit or delete).
+   * @param budget The category item to be modified.
+   * @param action The action to perform (add, edit, delete).
    * @returns An observable of a `Category` representing the modified category item.
    */
-  modifyCategory(categoryItem: Category, action: string): Observable<Category> {
-    return this.http.post<Category>(`/api/${action}Category`, { categoryItem }, this.httpOptions).pipe(
-      tap((item) => {
-        switch (action) {
-          case Modify.Add:
-            this.addItem(item);
-            break;
-          case Modify.Edit:
-            this.editItem(item, 'id');
-            break;
-          case Modify.Delete:
-            this.deleteItem(item, 'id');
-            break;
-        }
-      }),
-      catchError(this.errorService.handleHttpError)
-    );
+  modifyCategory(category: Category, action: string): Observable<Category> {
+    switch (action) {
+      case Modify.Add:
+        return this.httpService.postItem<Category>(category, 'category').pipe(tap((item) => this.addItem(item)));
+      case Modify.Edit:
+        return this.httpService.putItem<Category>(category, 'category').pipe(tap((item) => this.editItem(item, 'id')));
+      case Modify.Delete:
+        return this.httpService
+          .deleteItem<Category>(category, 'category')
+          .pipe(tap((item) => this.deleteItem(item, 'id')));
+    }
+
+    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
   }
 
   /**
@@ -79,6 +65,10 @@ export class CategoryService extends StoreItems<Category> {
    * @returns True if the uniqe constraint is violated.
    */
   duplicate(value: string, action: string): boolean {
+    if (!value || !action) {
+      return false;
+    }
+
     const items = this.getUnselectedItems(action, 'id');
     return items.findIndex((x) => x.categoryName.toLowerCase() === value.toLowerCase()) !== -1;
   }

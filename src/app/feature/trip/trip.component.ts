@@ -118,7 +118,7 @@ export class TripComponent extends CommonFormService implements OnInit {
           this.budgetState = budgetState;
         }),
         switchMap((budgetState: BudgetState) => {
-          return pipeTakeUntil(this.tripService.loadTripPage(budgetState.budgetId), this.sub$);
+          return pipeTakeUntil(this.tripService.getTrips(budgetState.budgetId), this.sub$);
         })
       )
       .subscribe(() => {

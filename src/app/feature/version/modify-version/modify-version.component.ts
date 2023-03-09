@@ -125,7 +125,7 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
   onChangeYear(e: MatSelectChange): void {
     const budgetYear = this.versionService.getBudgetYearItem(+e.value);
     if (budgetYear) {
-      pipeTakeUntil(this.versionService.getCurrentVersion(budgetYear), this.sub$).subscribe(
+      pipeTakeUntil(this.versionService.getCurrentVersion(budgetYear.id), this.sub$).subscribe(
         (item: ManageBudgetYear) => {
           this.versionName?.setValue(item.version.versionName);
         }

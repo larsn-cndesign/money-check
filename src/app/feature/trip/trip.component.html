@@ -49,8 +49,8 @@
         Spara
       </button>
       <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
-        <mat-radio-button value="Add">Lägg till resa</mat-radio-button>
-        <mat-radio-button value="Edit" [disabled]="action?.value === 'Add'">Ändra vald resa</mat-radio-button>
+        <mat-radio-button value="add">Lägg till resa</mat-radio-button>
+        <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra vald resa</mat-radio-button>
       </mat-radio-group>
     </div>
   </form>

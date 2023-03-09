@@ -408,7 +408,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         } else {
           const currencyItem = this.findCurrency(x.currency);
           if (currencyItem) {
-            amount += x.amount * (currencyItem.budgetRate / selectedItem.budgetRate);
+            amount += x.amount * (currencyItem.averageRate / selectedItem.averageRate);
           }
         }
       });

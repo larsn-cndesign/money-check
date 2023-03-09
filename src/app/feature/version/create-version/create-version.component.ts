@@ -142,7 +142,7 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
       if (budgetYear) {
         const manageBudgetYear = this.createBudgetYear(budgetYear, val.copy);
 
-        pipeTakeUntil(this.versionService.createVersion(manageBudgetYear), this.sub$).subscribe(() => {
+        pipeTakeUntil(this.versionService.addVersion(manageBudgetYear), this.sub$).subscribe(() => {
           formDirective.resetForm();
           this.form.reset();
           this.messageBoxService.show();
@@ -162,7 +162,7 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
   getCurrentVersion(budgetYearId: number): void {
     const budgetYear = this.versionService.getBudgetYearItem(budgetYearId);
     if (budgetYear) {
-      pipeTakeUntil(this.versionService.getCurrentVersion(budgetYear), this.sub$).subscribe();
+      pipeTakeUntil(this.versionService.getCurrentVersion(budgetYear.id), this.sub$).subscribe();
     }
   }
 

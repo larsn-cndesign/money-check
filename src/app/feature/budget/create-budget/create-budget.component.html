@@ -18,8 +18,8 @@
   <div *ngIf="form">
     <button mat-raised-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
-      <mat-radio-button value="Add">Lägg till budget</mat-radio-button>
-      <mat-radio-button value="Edit" [disabled]="action?.value === 'Add'">Ändra vald budget</mat-radio-button>
+      <mat-radio-button value="add">Lägg till budget</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra vald budget</mat-radio-button>
     </mat-radio-group>
   </div>
 </form>

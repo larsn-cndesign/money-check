@@ -26,11 +26,11 @@ export class BudgetVariance {
    */
   currency!: Currency;
 
-  /**
-   * Hold a category item.
-   * @public
-   */
-  category!: Category;
+  // /**
+  //  * Hold a category item.
+  //  * @public
+  //  */
+  // category!: Category;
 
   /**
    * Hold a varaiance item.

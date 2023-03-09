@@ -159,4 +159,11 @@ export interface CurrencyItem {
    * @example 10,75
    */
   budgetRate: number;
+
+  /**
+   * The budget rate of a currency for the current version of a `BudgetYear`.
+   * @public
+   * @example 10,75
+   */
+  averageRate: number;
 }

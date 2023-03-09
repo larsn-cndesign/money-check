@@ -4,7 +4,7 @@ export const enum ItemType {
 }
 
 export enum Modify {
-  Add = 'Add',
-  Edit = 'Edit',
-  Delete = 'Delete',
+  Add = 'add',
+  Edit = 'edit',
+  Delete = 'delete',
 }

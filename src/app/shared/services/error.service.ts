@@ -13,6 +13,11 @@ import { MessageBoxService } from '../components/message-box/shared/message-box.
   providedIn: 'root',
 })
 export class ErrorService {
+  /**
+   * Initializes services.
+   * @param router Navigation service.
+   * @param messageBoxService Manage messages to show to the user.
+   */
   constructor(public router: Router, private messageBoxService: MessageBoxService) {}
 
   /**
@@ -82,14 +87,24 @@ export class ErrorService {
   handleHttpError = (error: HttpErrorResponse): Observable<never> => {
     let errorDescription = '';
     let title = 'Programfel';
+
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
     } else {
+      errorDescription = error.error;
+
+      if (error.status === 400 || error.status === 404) {
+        if (error.error?.title && error.error?.description) {
+          title = error.error.title;
+          errorDescription = error.error.description;
+        }
+      }
+
       if (error.status === 401) {
         title = 'Behörighet saknas';
-        errorDescription = error.error;
         this.router.navigate(['/login']);
       }
+
       // console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
     console.log(error);

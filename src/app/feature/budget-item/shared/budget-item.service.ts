@@ -1,11 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { ItemFilter } from 'src/app/shared/classes/filter';
 import { StoreItem } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
-import { ErrorService } from 'src/app/shared/services/error.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetItem, ManageBudgetItem } from './butget-item.model';
 
 /**
@@ -17,18 +17,10 @@ import { BudgetItem, ManageBudgetItem } from './butget-item.model';
 })
 export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
   /**
-   * A property holding http header information
-   * @private
-   * @readonly
-   */
-  private readonly httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Initializes services.
-   * @param http Manage http requests.
-   * @param errorService Application error service.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private httpService: HttpService) {
     super(new ManageBudgetItem());
   }
 
@@ -40,8 +32,9 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
   getBudgetItems(budgetId: number): Observable<ManageBudgetItem> {
     const filter = this.item.filter;
     filter.budgetId = budgetId;
+    // console.log(filter); // TODO ?
 
-    return this.http.post<ManageBudgetItem>(`/api/GetBudgetItems`, { filter }, this.httpOptions).pipe(
+    return this.httpService.postItemVar<ItemFilter, ManageBudgetItem>(filter, 'budgetItem/get').pipe(
       tap((budgetItem) => {
         if (budgetItem) {
           this.store.item = budgetItem;
@@ -49,8 +42,7 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
           this.updateStore();
           this.updateStoreItems(false);
         }
-      }),
-      catchError(this.errorService.handleHttpError)
+      })
     );
   }
 
@@ -61,22 +53,20 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
    * @returns An observable of a `BudgetItem` representing the modified budget item.
    */
   modifyBudgetItem(budgetItem: BudgetItem, action: string): Observable<BudgetItem> {
-    return this.http.post<BudgetItem>(`/api/${action}BudgetItem`, { budgetItem }, this.httpOptions).pipe(
-      tap((item) => {
-        switch (action) {
-          case Modify.Add:
-            this.addItem(item);
-            break;
-          case Modify.Edit:
-            this.editItem(item, 'id');
-            break;
-          case Modify.Delete:
-            this.deleteItem(item, 'id');
-            break;
-        }
-      }),
-      catchError(this.errorService.handleHttpError)
-    );
+    switch (action) {
+      case Modify.Add:
+        return this.httpService.postItem<BudgetItem>(budgetItem, 'budgetItem').pipe(tap((item) => this.addItem(item)));
+      case Modify.Edit:
+        return this.httpService
+          .putItem<BudgetItem>(budgetItem, 'budgetItem')
+          .pipe(tap((item) => this.editItem(item, 'id')));
+      case Modify.Delete:
+        return this.httpService
+          .deleteItem<BudgetItem>(budgetItem, 'budgetItem')
+          .pipe(tap((item) => this.deleteItem(item, 'id')));
+    }
+
+    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
   }
 
   /**

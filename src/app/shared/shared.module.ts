@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +16,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
-import { ConfirmDialogModule } from '../shared/components/confirm-dialog/confirm-dialog.module';
 import { CurrencyTableComponent } from './components/currency-table/currency-table.component';
 import { CurrencyFormComponent } from './components/currency-form/currency-form.component';
 import { FocusDirective } from './directives/focus.directive';
@@ -28,7 +26,6 @@ import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -48,7 +45,6 @@ import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
   exports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

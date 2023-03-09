@@ -69,8 +69,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
           setTokenForTestUser();
           return authenticate();
 
-        case url.endsWith('/api/LoadBudgetPage') && method === 'GET':
-          return loadBudgetPage();
+        case url.endsWith('/api/budget') && method === 'GET':
+          return getBudgets();
         case url.endsWith('/api/AddBudget') && method === 'POST':
           return addBudget();
         case url.endsWith('/api/EditBudget') && method === 'POST':
@@ -163,7 +163,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
 
     // Budget
-    function loadBudgetPage(): Observable<HttpEvent<any>> {
+    function getBudgets(): Observable<HttpEvent<any>> {
       return of(new HttpResponse({ status: 200, body: DatabaseService.getBudgets() }));
     }
     function addBudget(): Observable<HttpEvent<any>> {

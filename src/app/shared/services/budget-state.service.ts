@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { BudgetState } from '../classes/budget-state.model';
+import { ItemFilter } from '../classes/filter';
 import { StoreItem } from '../classes/store';
 import { ErrorService } from './error.service';
 
@@ -80,6 +81,9 @@ export class BudgetStateService extends StoreItem<BudgetState> {
    */
   private storeBudgetState(): void {
     BudgetState.setLocalStorage(this.item);
+    // TODO ?
+    // const filter = ItemFilter.getFilter();
+    // ItemFilter.setFilter(new ItemFilter()); // Clear filter
     this.updateStore();
   }
 }

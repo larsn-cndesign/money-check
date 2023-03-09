@@ -503,7 +503,7 @@ export class DatabaseService {
       if (currentVersion) {
         this.db.currencies.forEach((c) => {
           if (c.versionId === currentVersion.id) {
-            currencyItems.push({ currency: c.currency, budgetRate: c.budgetRate } as CurrencyItem);
+            currencyItems.push({ currency: c.code, budgetRate: c.budgetRate } as CurrencyItem);
           }
         });
       }
@@ -601,7 +601,7 @@ export class DatabaseService {
     const item = new BudgetVariance();
 
     // Year
-    item.budgetYears = this.db.budgetYears.filter((x) => x.id === filter.budgetId);
+    item.budgetYears = this.db.budgetYears.filter((x) => x.budgetId === filter.budgetId);
     filter.budgetYearId =
       filter.budgetYearId === -1 ? Math.max(...item.budgetYears.map((n) => n.id)) : filter.budgetYearId;
 
@@ -625,13 +625,13 @@ export class DatabaseService {
 
       // Currency
       item.currencies = this._versionCurrencies(version.id);
-      const currency = item.currencies.find((x) => x.currency === filter.currency);
+      const currency = item.currencies.find((x) => x.code === filter.currency);
       item.currency = filter.currency !== '' && currency ? currency : item.currencies[0];
-      filter.currency = item.currency.currency;
+      filter.currency = item.currency.code;
 
       // Other
       item.categories = this.db.categories;
-      item.category = { id: -1, budgetId: -1, categoryName: '' };
+      // item.category = { id: -1, budgetId: -1, categoryName: '' };
 
       // Sum category
       const varianceItems: VarianceItem[] = [];
@@ -698,10 +698,10 @@ export class DatabaseService {
   private static _sumCurrency(val: number, currency: string, selCurrency: Currency, currencies: Currency[]): number {
     let total = 0;
 
-    if (!selCurrency.currency || currency === '' || currency === selCurrency.currency) {
+    if (!selCurrency.code || currency === '' || currency === selCurrency.code) {
       total = val;
     } else {
-      const converCurrency = currencies.find((curr) => curr.currency === currency);
+      const converCurrency = currencies.find((curr) => curr.code === currency);
       if (converCurrency) {
         total = val * (converCurrency.budgetRate / selCurrency.budgetRate);
       } else {
@@ -774,7 +774,7 @@ export class DatabaseService {
       // Create currency object
       const currency: Currency = {
         id: this._incrementId(this.db.currencies),
-        currency: item.currency,
+        code: item.code,
         versionId,
         budgetRate: item.budgetRate,
         averageRate: item.averageRate,

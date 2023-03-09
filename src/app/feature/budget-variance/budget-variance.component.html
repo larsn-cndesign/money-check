@@ -24,8 +24,8 @@
       <mat-form-field>
         <mat-label>Välj valuta</mat-label>
         <mat-select [value]="variance.filter.currency" (selectionChange)="onChangeFilter($event, 'currency')">
-          <mat-option *ngFor="let item of variance.currencies" [value]="item.currency">
-            {{ item.currency }}
+          <mat-option *ngFor="let item of variance.currencies" [value]="item.code">
+            {{ item.code }}
           </mat-option>
         </mat-select>
       </mat-form-field>

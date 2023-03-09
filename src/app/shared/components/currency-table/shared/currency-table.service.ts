@@ -30,7 +30,7 @@ export class CurrencyTableService extends StoreItems<Currency> {
   editCurrency(currency: Currency): void {
     this.items.forEach((item) => {
       if (item.id === currency.id) {
-        item.currency = currency.currency;
+        item.code = currency.code;
         item.budgetRate = currency.budgetRate;
         item.averageRate = currency.averageRate;
       }
@@ -67,6 +67,6 @@ export class CurrencyTableService extends StoreItems<Currency> {
     }
 
     const items = this.getUnselectedItems(action, 'id');
-    return items.findIndex((x) => x.currency.toLowerCase() === value.toLowerCase()) !== -1;
+    return items.findIndex((x) => x.code.toLowerCase() === value.toLowerCase()) !== -1;
   }
 }

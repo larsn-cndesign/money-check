@@ -87,10 +87,10 @@ export interface Currency extends Selectable {
   versionId: number;
 
   /**
-   * The name of a currency.
+   * The currency code (3 letter code).
    * @public
    */
-  currency: string;
+  code: string;
 
   /**
    * The budget rate of the selected currency for the current version of the selected year(s).

@@ -53,8 +53,8 @@
             <mat-form-field *ngIf="useCurrency">
               <mat-label>Välj valuta</mat-label>
               <mat-select formControlName="currency" [errorStateMatcher]="matcher">
-                <mat-option *ngFor="let item of budget.currencies" [value]="item.currency">
-                  {{ item.currency }}
+                <mat-option *ngFor="let item of budget.currencies" [value]="item.code">
+                  {{ item.code }}
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="currency?.invalid">{{ getErrorMessage(currency) }}</mat-error>
@@ -98,8 +98,8 @@
               Spara budgetpost
             </button>
             <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
-              <mat-radio-button value="Add">Lägg till budgetpost</mat-radio-button>
-              <mat-radio-button value="Edit" [disabled]="action?.value === 'Add'">
+              <mat-radio-button value="add">Lägg till budgetpost</mat-radio-button>
+              <mat-radio-button value="edit" [disabled]="action?.value === 'add'">
                 Ändra vald budgetpost
               </mat-radio-button>
             </mat-radio-group>

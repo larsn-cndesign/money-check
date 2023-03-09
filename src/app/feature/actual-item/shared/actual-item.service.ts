@@ -1,13 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { compare, toDate } from 'src/app/shared/classes/common.fn';
 import { ItemFilter } from 'src/app/shared/classes/filter';
 import { StoreItem } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
-import { ErrorService } from 'src/app/shared/services/error.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { ActualItem, ManageActualItem } from './actual-item.model';
 
 /**
@@ -19,18 +19,10 @@ import { ActualItem, ManageActualItem } from './actual-item.model';
 })
 export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
   /**
-   * A property holding http header information.
-   * @private
-   * @readonly
-   */
-  private readonly httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Creates an actual item services.
-   * @param http Manage http requests.
-   * @param errorService A service for managing application errors.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private httpService: HttpService) {
     super(new ManageActualItem());
   }
 
@@ -43,7 +35,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
     const filter = this.item.filter;
     filter.budgetId = budgetId;
 
-    return this.http.post<ManageActualItem>(`/api/GetActualItems`, { filter }, this.httpOptions).pipe(
+    return this.httpService.postItemVar<ItemFilter, ManageActualItem>(filter, 'actualItem/get').pipe(
       tap((item) => {
         if (item) {
           this.store.item = item;
@@ -51,8 +43,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
           this.updateStore();
           this.updateStoreItems();
         }
-      }),
-      catchError(this.errorService.handleHttpError)
+      })
     );
   }
 
@@ -62,23 +53,21 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @param action The action to perform (add, edit or delete).
    * @returns An observable of a `ActualItem` representing the modified expense item.
    */
-  modifyActualItem(actualItem: ActualItem, action: string): Observable<ActualItem> {
-    return this.http.post<ActualItem>(`/api/${action}ActualItem`, { actualItem }, this.httpOptions).pipe(
-      tap((item) => {
-        switch (action) {
-          case Modify.Add:
-            this._addItem(item);
-            break;
-          case Modify.Edit:
-            this._editItem(item);
-            break;
-          case Modify.Delete:
-            this.deleteItem(item, 'id');
-            break;
-        }
-      }),
-      catchError(this.errorService.handleHttpError)
-    );
+  modifyActualItem(budgetItem: ActualItem, action: string): Observable<ActualItem> {
+    switch (action) {
+      case Modify.Add:
+        return this.httpService.postItem<ActualItem>(budgetItem, 'actualItem').pipe(tap((item) => this._addItem(item)));
+      case Modify.Edit:
+        return this.httpService
+          .putItem<ActualItem>(budgetItem, 'actualItem')
+          .pipe(tap((item) => this._editItem(item)));
+      case Modify.Delete:
+        return this.httpService
+          .deleteItem<ActualItem>(budgetItem, 'actualItem')
+          .pipe(tap((item) => this.deleteItem(item, 'id')));
+    }
+
+    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
   }
 
   /**

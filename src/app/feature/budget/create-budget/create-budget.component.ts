@@ -80,7 +80,7 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
       {
         action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
         id: new FormControl(-1, { nonNullable: true }),
-        budgetName: new FormControl('', [Validators.required]),
+        budgetName: new FormControl('', [Validators.required, Validators.max(45)]),
       },
       { validators: [duplicateValidator(budgetService, 'budgetName', 'action')] }
     );
@@ -92,7 +92,7 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document and get budgets from server.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetService.loadBudgetPage(), this.sub$).subscribe();
+    pipeTakeUntil(this.budgetService.getBudgets(), this.sub$).subscribe();
   }
 
   /**

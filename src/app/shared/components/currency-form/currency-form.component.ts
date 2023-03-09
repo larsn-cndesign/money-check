@@ -93,11 +93,11 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
   onTouched = () => {};
 
   /**
-   * Getter property for the currency form control
-   * @returns The currency form control
+   * Getter property for the code form control
+   * @returns The code form control
    */
-  get currency(): AbstractControl | null {
-    return this.form.get('currency');
+  get code(): AbstractControl | null {
+    return this.form.get('code');
   }
 
   /**
@@ -136,11 +136,11 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
       {
         action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
         id: new FormControl(-1, { nonNullable: true }),
-        currency: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
+        code: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]),
         budgetRate: new FormControl('', isNumberValidator()),
         averageRate: new FormControl('', isNumberValidator()),
       },
-      { validators: [duplicateValidator(this.currencyTableService, 'currency', 'action')] }
+      { validators: [duplicateValidator(this.currencyTableService, 'code', 'action')] }
     );
   }
 
@@ -162,7 +162,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
 
     const val = this.form.value;
     const currency = {
-      currency: val.currency,
+      code: val.code,
       id: val.id,
       budgetRate: toNumber(val.budgetRate),
       averageRate: toNumber(val.averageRate),
@@ -228,7 +228,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
 
     let errors: any = {};
 
-    errors = this.addControlErrors(errors, 'currency');
+    errors = this.addControlErrors(errors, 'code');
     errors = this.addControlErrors(errors, 'budgetRate');
     errors = this.addControlErrors(errors, 'averageRate');
 
@@ -266,7 +266,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
     this.form.patchValue({
       action: Modify.Edit,
       id: item.id,
-      currency: item.currency,
+      code: item.code,
       budgetRate: item.budgetRate.toString().replace('.', ','),
       averageRate: item.averageRate.toString().replace('.', ','),
     });

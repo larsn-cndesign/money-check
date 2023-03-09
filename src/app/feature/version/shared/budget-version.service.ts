@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StoreItem } from 'src/app/shared/classes/store';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetYear, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 
 /**
@@ -15,18 +15,11 @@ import { BudgetYear, ManageBudgetYear } from '../../budget-year/shared/budget-ye
 })
 export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
   /**
-   * A property holding http header information
-   * @private
-   * @readonly
-   */
-  private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Creates a BudgetVersionService.
-   * @param http Manage http requests.
    * @param currencyTableService A service for managing currencies.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private currencyTableService: CurrencyTableService) {
+  constructor(private currencyTableService: CurrencyTableService, private httpService: HttpService) {
     super(new ManageBudgetYear());
   }
 
@@ -35,7 +28,7 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @returns Observer of a `ManageBudgetYear` object.
    */
   getBudgetYear(budgetId: number): Observable<ManageBudgetYear> {
-    return this.http.get<ManageBudgetYear>('/api/GetBudgetYear', { params: { budgetId } }).pipe(
+    return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
           this.store.item = budgetYear;
@@ -50,18 +43,19 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
 
   /**
    * Method to get an open version with currencies for the selected year.
-   * @param @param budgetYear The selected budget year object to get the current version for.
+   * @param @param id The identifier of the selected budget year to get the current version for.
    * @returns Observer of a `ManageBudgetYear` object.
    */
-  getCurrentVersion(budgetYear: BudgetYear): Observable<ManageBudgetYear> {
-    return this.http.post<ManageBudgetYear>(`/api/GetCurrentVersion`, { budgetYear }, this.httpOptions).pipe(
-      tap((item: ManageBudgetYear) => {
-        item.copy = this.store.item.copy; // Preserve copy state.
-        this.store.item = item;
-        this.updateStore();
+  getCurrentVersion(id: number): Observable<ManageBudgetYear> {
+    return this.httpService.getItemById<ManageBudgetYear>(id, 'budgetVersion').pipe(
+      tap((budgetYear) => {
+        if (budgetYear) {
+          this.store.item = budgetYear;
+          this.updateStore();
 
-        this.currencyTableService.items = item.currencies;
-        this.currencyTableService.updateStore();
+          this.currencyTableService.items = budgetYear.currencies;
+          this.currencyTableService.updateStore();
+        }
       })
     );
   }
@@ -71,8 +65,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @param budgetYear A budget year obejct that includes the version to be created
    * @returns Observer of a `boolean` object.
    */
-  createVersion(budgetYear: ManageBudgetYear): Observable<boolean> {
-    return this.http.post<boolean>(`/api/CreateVersion`, { budgetYear }, this.httpOptions).pipe(
+  addVersion(budgetYear: ManageBudgetYear): Observable<boolean> {
+    return this.httpService.postItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
         this.currencyTableService.updateStore();
@@ -86,9 +80,9 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @returns Observer of a `boolean` object.
    */
   deleteVersion(): Observable<boolean> {
-    const budgetYear = this.store.item;
+    const budgetYear = this.store.item.budgetYear;
 
-    return this.http.post<boolean>(`/api/DeleteVersion`, { budgetYear }, this.httpOptions).pipe(
+    return this.httpService.deleteItemVar<BudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
         this.currencyTableService.updateStore();
@@ -105,10 +99,9 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
   updateVersion(versionName: string): Observable<boolean> {
     this.item.version.versionName = versionName;
     this.item.currencies = this.currencyTableService.items;
-
     const budgetYear = this.item;
 
-    return this.http.post<boolean>(`/api/UpdateVersion`, { budgetYear }, this.httpOptions).pipe(
+    return this.httpService.putItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
         this.currencyTableService.updateStore();

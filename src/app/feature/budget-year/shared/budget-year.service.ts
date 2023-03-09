@@ -1,10 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { isNumber } from 'src/app/shared/classes/common.fn';
 import { StoreItem } from 'src/app/shared/classes/store';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetYear, Currency, ManageBudgetYear } from './budget-year.model';
 
 /**
@@ -16,18 +16,11 @@ import { BudgetYear, Currency, ManageBudgetYear } from './budget-year.model';
 })
 export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   /**
-   * A property holding http header information.
-   * @private
-   * @readonly
-   */
-  private httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Creates a BudgetVersionService.
-   * @param http Manage http requests.
    * @param currencyTableService A service for managing currencies.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private currencyTableService: CurrencyTableService) {
+  constructor(private currencyTableService: CurrencyTableService, private httpService: HttpService) {
     super(new ManageBudgetYear());
   }
 
@@ -37,7 +30,7 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
    * @returns Observer of a `ManageBudgetYear` object.
    */
   getBudgetYear(budgetId: number): Observable<ManageBudgetYear> {
-    return this.http.get<ManageBudgetYear>('/api/GetBudgetYear', { params: { budgetId } }).pipe(
+    return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
           this.store.item = budgetYear;
@@ -55,10 +48,11 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
    * @param budgetYear The budget year objcet to create.
    * @returns Observer of a `ManageBudgetYear` object.
    */
-  createBudgetYear(budgetYear: ManageBudgetYear): Observable<ManageBudgetYear> {
-    return this.http.post<ManageBudgetYear>(`/api/CreateBudgetYear`, { budgetYear }, this.httpOptions).pipe(
-      tap((resultBudgetYear) => {
-        this.store.item = resultBudgetYear;
+  addBudgetYear(budgetYear: ManageBudgetYear): Observable<BudgetYear> {
+    return this.httpService.postItemVar<ManageBudgetYear, BudgetYear>(budgetYear, 'budgetYear').pipe(
+      tap((year) => {
+        this.store.item.copy = true;
+        this.store.item.budgetYears.push(year);
         this.updateStore();
 
         this.currencyTableService.items = budgetYear.currencies;
@@ -72,13 +66,10 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
    * @param budgetYear The budget year objcet to be deleted.
    * @returns Observer of a `ManageBudgetYear` object.
    */
-  deleteBudgetYear(budgetYear: BudgetYear): Observable<ManageBudgetYear> {
-    return this.http.post<ManageBudgetYear>(`/api/DeleteBudgetYear`, { budgetYear }, this.httpOptions).pipe(
-      tap((resultBudgetYear) => {
-        this.store.item = resultBudgetYear;
-        this.updateStore();
-      })
-    );
+  deleteBudgetYear(budgetYear: BudgetYear): Observable<boolean> {
+    return this.httpService
+      .deleteItemVar<BudgetYear, boolean>(budgetYear, 'budgetYear')
+      .pipe(tap(() => this.removeBudgetYear(budgetYear.id)));
   }
 
   /**
@@ -117,5 +108,17 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   changeCopyBudget(copyVersion: boolean): void {
     this.item.copy = copyVersion;
     this.updateStore();
+  }
+
+  /**
+   * Remove a budget year from store.
+   * @param id The identifier of a budget year
+   */
+  private removeBudgetYear(id: number) {
+    const index = this.store.item.budgetYears.findIndex((x) => x.id === id);
+    if (index !== -1) {
+      this.store.item.budgetYears.splice(index, 1);
+      this.updateStore();
+    }
   }
 }

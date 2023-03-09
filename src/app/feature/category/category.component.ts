@@ -86,7 +86,7 @@ export class CategoryComponent extends CommonFormService implements OnInit {
       {
         action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
         id: new FormControl(-1, { nonNullable: true }),
-        categoryName: new FormControl('', [Validators.required]),
+        categoryName: new FormControl('', [Validators.required, Validators.max(50)]),
       },
       { validators: [duplicateValidator(categoryService, 'categoryName', 'action')] }
     );

@@ -1,13 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { compare } from 'src/app/shared/classes/common.fn';
 import { ItemFilter } from 'src/app/shared/classes/filter';
 import { StoreItem } from 'src/app/shared/classes/store';
-import { ErrorService } from 'src/app/shared/services/error.service';
+import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetVariance, VarianceItem } from './budget-variance.model';
 
 /**
@@ -19,18 +18,11 @@ import { BudgetVariance, VarianceItem } from './budget-variance.model';
 })
 export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceItem> {
   /**
-   * A property holding http header information
-   * @private
-   * @readonly
-   */
-  private readonly httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  /**
    * Creates a budget varaiance.
-   * @param http Manage http requests
-   * @param errorService Application error service
+   * @param router Navigation service.
+   * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private http: HttpClient, private errorService: ErrorService, private router: Router) {
+  constructor(private router: Router, private httpService: HttpService) {
     super(new BudgetVariance());
   }
 
@@ -40,17 +32,10 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    * @returns Observer of `BudgetVariance` object.
    */
   loadVariancePage(budgetId: number): Observable<BudgetVariance> {
-    return this.http.get<BudgetVariance>('/api/LoadVariancePage', { params: { budgetId } }).pipe(
-      tap((item) => {
-        if (item) {
-          this.store.item = item;
-          this.store.items = item.varianceItems;
-          this.updateStore();
-          this.updateStoreItems(false);
-        }
-      }),
-      catchError(this.errorService.handleHttpError)
-    );
+    this.item.filter = new ItemFilter();
+    this.item.filter.budgetId = budgetId;
+
+    return this.getVarianceItems();
   }
 
   /**
@@ -60,7 +45,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
   getVarianceItems(): Observable<BudgetVariance> {
     const filter = this.item.filter;
 
-    return this.http.post<BudgetVariance>(`/api/GetVarianceItems`, { filter }, this.httpOptions).pipe(
+    return this.httpService.postItemVar<ItemFilter, BudgetVariance>(filter, 'varianceItem/get').pipe(
       tap((item) => {
         if (item) {
           this.store.item = item;
@@ -68,8 +53,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
           this.updateStore();
           this.updateStoreItems(false);
         }
-      }),
-      catchError(this.errorService.handleHttpError)
+      })
     );
   }
 
