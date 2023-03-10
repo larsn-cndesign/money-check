@@ -1,24 +1,15 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { BudgetState } from '../classes/budget-state.model';
-import { ItemFilter } from '../classes/filter';
 import { StoreItem } from '../classes/store';
-import { ErrorService } from './error.service';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BudgetStateService extends StoreItem<BudgetState> {
-  /**
-   * A property holding http header information
-   * @private
-   * @readonly
-   */
-  private readonly httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
-
-  constructor(private http: HttpClient, private errorService: ErrorService) {
+  constructor(private httpService: HttpService) {
     super(new BudgetState());
   }
 
@@ -36,13 +27,12 @@ export class BudgetStateService extends StoreItem<BudgetState> {
       return of(budgetState);
     }
 
-    return this.http.get<BudgetState>(`/api/GetBudgetState`, this.httpOptions).pipe(
+    return this.httpService.getItem<BudgetState>('budget/state').pipe(
       tap((item) => {
         this.store.item = item;
         this.updateStore();
         BudgetState.setLocalStorage(this.store.item);
-      }),
-      catchError(this.errorService.handleHttpError)
+      })
     );
   }
 
@@ -81,9 +71,6 @@ export class BudgetStateService extends StoreItem<BudgetState> {
    */
   private storeBudgetState(): void {
     BudgetState.setLocalStorage(this.item);
-    // TODO ?
-    // const filter = ItemFilter.getFilter();
-    // ItemFilter.setFilter(new ItemFilter()); // Clear filter
     this.updateStore();
   }
 }

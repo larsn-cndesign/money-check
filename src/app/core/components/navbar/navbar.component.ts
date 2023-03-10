@@ -90,12 +90,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    window.onbeforeunload = () => this.ngOnDestroy();
   }
 
   /**
    * @description Unsubscribe from all observables and complete the notifier$ subject.
    */
   ngOnDestroy(): void {
+    BudgetState.remove();
     this.notifier$.next();
     this.notifier$.complete();
   }

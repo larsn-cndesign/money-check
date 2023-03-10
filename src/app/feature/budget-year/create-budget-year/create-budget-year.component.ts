@@ -8,7 +8,6 @@ import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
-import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';

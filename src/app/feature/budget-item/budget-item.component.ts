@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil, toNumber } from 'src/app/shared/classes/common.fn';
+import { ItemFilter } from 'src/app/shared/classes/filter';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
@@ -177,19 +178,15 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
-          // TODO ?
-          // this.budgetItemService.item.filter.budgetYearId = -1;
-          // this.budgetItemService.updateStore();
-          // this.budgetYearId?.setValue(-1);
         }),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.budgetItemService.getBudgetItems(budgetState.budgetId), this.sub$);
         })
       )
       .subscribe((item) => {
-        if (item.budgetYears.length > 0) {
+        if (item && item.budgetYears.length > 0) {
           this.resetForm();
-          this.budgetYearId?.setValue(item.filter.budgetYearId);
+          this.budgetYearId?.setValue(-1);
           this.form.get('versionId')?.setValue(item.version.id);
         }
         this.pageLoaded = true;

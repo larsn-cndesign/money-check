@@ -24,6 +24,7 @@ export class HttpService {
 
   /**
    * Get all items from server.
+   * @param route The endpoint to send the request to.
    * @returns Observer of an array of `T` objects.
    * @template T Any type of object to be returned.
    */
@@ -32,8 +33,9 @@ export class HttpService {
   }
 
   /**
-   * Get all items from server based on an idintifier.
+   * Get all items from server based on an identifier.
    * @param id The identity number of the selected item.
+   * @param route The endpoint to send the request to.
    * @returns Observer of an array of `T` objects.
    * @template T Any type of object to be returned.
    */
@@ -42,8 +44,19 @@ export class HttpService {
   }
 
   /**
-   * Get item from server based on an idintifier.
+   * Get item from server.
+   * @param route The endpoint to send the request to.
+   * @returns Observer of an array of `T` objects.
+   * @template T Any type of object to be returned.
+   */
+  getItem<T>(route: string): Observable<T> {
+    return this.http.get<T>(`/api/${route}`).pipe(catchError(this.errorService.handleHttpError));
+  }
+
+  /**
+   * Get item from server based on an identifier.
    * @param id The identity number of the selected item.
+   * @param route The endpoint to send the request to.
    * @returns Observer of an array of `T` objects.
    * @template T Any type of object to be returned.
    */
@@ -52,11 +65,11 @@ export class HttpService {
   }
 
   /**
-   * Post an item to database.
-   * @param item The item to be added.
+   * Post an item to server.
+   * @param item The item to be sent.
    * @param route The endpoint to send the request to.
-   * @returns An observable of a `T` representing the added item.
-   * @template T Any type of object to be added.
+   * @returns An observable of a `T` representing the returned item.
+   * @template T <T< U> The type of object to be posted.
    */
   postItem<T>(item: T, route: string): Observable<T> {
     return this.http
@@ -65,12 +78,12 @@ export class HttpService {
   }
 
   /**
-   * Post an item to database.
-   * @param item The item to be added.
+   * Post an item to server.
+   * @param item The item to be sent.
    * @param route The endpoint to send the request to.
-   * @returns An observable of a `T` representing the added item.
-   * @template T The type of object to be added.
-   * @template U The type of object to be returned.
+   * @returns An observable of a `T` representing the returned item.
+   * @template T <T< U> The type of object to be posted.
+   * @template U <T< U> The type of object to be returned.
    */
   postItemVar<T, U>(item: T, route: string): Observable<U> {
     return this.http

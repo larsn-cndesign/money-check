@@ -32,7 +32,6 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
   getBudgetItems(budgetId: number): Observable<ManageBudgetItem> {
     const filter = this.item.filter;
     filter.budgetId = budgetId;
-    // console.log(filter); // TODO ?
 
     return this.httpService.postItemVar<ItemFilter, ManageBudgetItem>(filter, 'budgetItem/get').pipe(
       tap((budgetItem) => {
