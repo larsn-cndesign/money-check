@@ -7,6 +7,7 @@ import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
+import { MessageBox } from 'src/app/shared/components/message-box/shared/message-box.model';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
@@ -132,7 +133,9 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
       pipeTakeUntil(this.budgetYearService.addBudgetYear(budgetYear), this.sub$).subscribe(() => {
         formDirective.resetForm();
         this.form.reset();
-        this.messageBoxService.show();
+        this.messageBoxService.show(
+          new MessageBox('Budgetår skapat', 'Budgetår med version och valutor har skapats.', 'success')
+        );
       });
     }
   }

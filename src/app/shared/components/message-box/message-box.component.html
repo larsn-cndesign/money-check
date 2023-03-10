@@ -15,12 +15,7 @@
       <div class="message-box">
         <div class="message-main">
           <div class="message-head">
-            <!-- <div class="message-icon">
-            <mat-icon [style.color]="message.color">{{ message.icon }}</mat-icon>
-          </div> -->
-            <!-- <div class="message-logo">GolfScorePro</div> -->
             <div>MoneyCheck</div>
-            <!-- <div [ngClass]="message.close" (click)="onClose()" matTooltip="{{ 'ALL.CLOSE' | translate }}">X</div> -->
           </div>
           <div class="clearfix"></div>
 
@@ -36,18 +31,6 @@
       </div>
       <div class="message-foot">
         <div class="message-btn">
-          <!-- <ng-container *ngIf="message.showCancel">
-          <button
-            mat-stroked-button
-            type="button"
-            (click)="onClose()"
-            (mouseover)="hover = true"
-            (mouseleave)="hover = false"
-            [ngStyle]="{ backgroundColor: hover == true ? message.color : 'transparent' }"
-          >
-            {{ 'ALL.CLOSE' | translate }}
-          </button>
-        </ng-container> -->
           <button mat-stroked-button type="button" style="margin-left: 5px" (click)="onOK()">OK</button>
         </div>
       </div>
