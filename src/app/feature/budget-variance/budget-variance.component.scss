@@ -1,5 +1,9 @@
 // Override table styles
-table.tbl th:nth-child(n + 2),
 table.tbl td:nth-child(n + 2) {
   text-align: right;
+}
+
+table.tbl th:nth-child(n + 2) {
+  direction: rtl;
+  justify-content: flex-end;
 }

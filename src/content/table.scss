@@ -1,6 +1,6 @@
 table.tbl {
   width: 100%;
-  border: none;
+  // border: none;
 }
 
 table.tbl th,
@@ -15,12 +15,12 @@ table.tbl tr td {
 .max-table-height {
   max-height: 500px;
   overflow: auto;
+  position: relative;
 }
 
 .mat-table-sticky {
   background: v.$table-header;
   opacity: 1;
-  font-size: 16px;
 }
 
 .selected {

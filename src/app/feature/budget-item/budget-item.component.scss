@@ -1,0 +1,5 @@
+// Override table styles
+table.tbl td:nth-child(4),
+table.tbl th:nth-child(4) {
+  text-align: right;
+}

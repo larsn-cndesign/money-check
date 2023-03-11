@@ -1,0 +1,9 @@
+// Override table styles
+table.tbl td:nth-child(5) {
+  text-align: right;
+}
+
+table.tbl th:nth-child(5) {
+  direction: rtl;
+  justify-content: flex-end;
+}
