@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSelectChange } from '@angular/material/select';
@@ -100,6 +108,24 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   private filterNote$ = new Subject<string>();
 
   /**
+   * A Subject that emits and listen to value changes of the note filter input.
+   * @private
+   * @default new Subject<string>()
+   */
+  private tableRef!: ElementRef<HTMLDivElement>;
+
+  /**
+   * A setter for the table reference. Make table as tall as possible.
+   */
+  @ViewChild('tableWrapper', { static: false })
+  set tableElementContent(tableElementContent: ElementRef<HTMLDivElement>) {
+    if (tableElementContent) {
+      this.tableRef = tableElementContent;
+      this.setTableHeight(this.tableRef);
+    }
+  }
+
+  /**
    * Getter property for the action control
    * @returns The action control
    */
@@ -171,14 +197,16 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param budgetStateService Manage the state of a budget.
    * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
-   * @param messageBoxService Service to handle user messages.
+   * @param messageBoxService Service to manipulate the DOM.
+   * @param renderer DOM
    */
   constructor(
     private actualItemService: ActualItemService,
     private budgetStateService: BudgetStateService,
     protected errorService: ErrorService,
     protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    protected messageBoxService: MessageBoxService,
+    private renderer: Renderer2
   ) {
     super(errorService, dialogService, messageBoxService);
 
@@ -198,6 +226,15 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
 
     this.manageActualItem$ = this.actualItemService.item$;
     this.actualItems$ = this.actualItemService.items$;
+  }
+
+  /**
+   * Listerner for window resize event
+   * @param e The window resize event
+   */
+  @HostListener('window:resize', ['$event'])
+  onResizeWindow(_e: Event) {
+    this.setTableHeight(this.tableRef);
   }
 
   /**
@@ -436,5 +473,20 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     this.note?.reset();
 
     this.form.patchValue({ action: Modify.Add, trip: -1, currencyCode: '' });
+  }
+
+  /**
+   * Set table hight to fill up the remaining of the screen.
+   * @param tableRef Reference to the table wrapper of transactions
+   */
+  private setTableHeight(tableRef: ElementRef<HTMLDivElement>): void {
+    if (tableRef) {
+      setTimeout(() => {
+        // const height = `${window.innerHeight - tableRef.nativeElement.offsetTop - 100}px`;
+        const height = `${window.innerHeight - tableRef.nativeElement.getBoundingClientRect().top - 20}px`;
+
+        this.renderer.setStyle(tableRef.nativeElement, 'height', height);
+      }, 0);
+    }
   }
 }

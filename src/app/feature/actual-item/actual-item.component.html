@@ -183,7 +183,7 @@
       </div>
 
       <div>Antal transaktioner: {{ actual.actualItems.length }}</div>
-      <div class="max-table-height">
+      <div class="max-table-height" #tableWrapper>
         <table
           mat-table
           [dataSource]="$any(actualItems$ | async)"

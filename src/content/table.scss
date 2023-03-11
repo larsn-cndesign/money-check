@@ -1,6 +1,6 @@
 table.tbl {
   width: 100%;
-  // border: none;
+  border: none;
 }
 
 table.tbl th,
@@ -13,7 +13,7 @@ table.tbl tr td {
 }
 
 .max-table-height {
-  max-height: 500px;
+  min-height: 300px;
   overflow: auto;
   position: relative;
 }
