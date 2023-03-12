@@ -62,13 +62,4 @@ export class BudgetState {
   static setLocalStorage(budgetState: BudgetState): void {
     localStorage.setItem('budgetState', JSON.stringify(budgetState));
   }
-
-  /**
-   * Method to remove state from `localStorage`.
-   * @static
-   * @param budgetState The budget state to be stored.
-   */
-  static remove(): void {
-    localStorage.removeItem('budgetState');
-  }
 }

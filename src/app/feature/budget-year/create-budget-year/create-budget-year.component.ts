@@ -106,6 +106,7 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
         })
       )
       .subscribe((budgetYear: ManageBudgetYear) => {
+        this.year?.setValue(null);
         this.form.get('copy')?.setValue(budgetYear.copy);
       });
   }

@@ -71,6 +71,9 @@ export class BudgetStateService extends StoreItem<BudgetState> {
    */
   private storeBudgetState(): void {
     BudgetState.setLocalStorage(this.item);
+    // const item = new ItemFilter();
+    // item.budgetId = this.item.budgetId;
+    // ItemFilter.setFilter(item);
     this.updateStore();
   }
 }

@@ -160,7 +160,7 @@
           <mat-label>Välj valuta</mat-label>
           <mat-select
             [value]="actual.filter.currencyCode"
-            (selectionChange)="onChangeFilter($event, 'currency')"
+            (selectionChange)="onChangeFilter($event, 'currencyCode')"
             data-testid="filter-currency-code"
           >
             <mat-option [value]="''">Alla valutor</mat-option>

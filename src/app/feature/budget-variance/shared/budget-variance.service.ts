@@ -85,7 +85,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    * @param sort Holds the name of the column and sorting direction (optional).
    */
   sortData(sort?: Sort): void {
-    const asc = sort ? sort.direction === 'asc' : true;
+    const asc = sort ? sort.direction === 'desc' : true;
     const columnName = sort ? sort.active : 'category';
 
     this.store.items = this.items.sort((a, b) => {

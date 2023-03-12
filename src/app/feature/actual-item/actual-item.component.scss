@@ -7,3 +7,7 @@ table.tbl th:nth-child(5) {
   direction: rtl;
   justify-content: flex-end;
 }
+
+.max-table-height {
+  max-height: unset;
+}

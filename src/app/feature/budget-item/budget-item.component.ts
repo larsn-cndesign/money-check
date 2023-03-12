@@ -186,8 +186,12 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
       .subscribe((item) => {
         if (item && item.budgetYears.length > 0) {
           this.resetForm();
-          this.budgetYearId?.setValue(-1);
+          this.budgetYearId?.setValue(item.filter.budgetYearId);
           this.form.get('versionId')?.setValue(item.version.id);
+
+          if (item.currencies.length == 1) {
+            this.currencyCode?.setValue(item.currencies[0].code);
+          }
         }
         this.pageLoaded = true;
       });

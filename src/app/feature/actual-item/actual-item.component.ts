@@ -115,17 +115,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   private tableRef!: ElementRef<HTMLDivElement>;
 
   /**
-   * A setter for the table reference. Make table as tall as possible.
-   */
-  @ViewChild('tableWrapper', { static: false })
-  set tableElementContent(tableElementContent: ElementRef<HTMLDivElement>) {
-    if (tableElementContent) {
-      this.tableRef = tableElementContent;
-      this.setTableHeight(this.tableRef);
-    }
-  }
-
-  /**
    * Getter property for the action control
    * @returns The action control
    */
@@ -182,13 +171,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   }
 
   /**
-   * Get error messages for an invalid form control
-   * @param ctrl The form control
-   * @param {string} [title] The title of the control (optional)
-   * @returns The error message as a string
+   * A setter for the table reference. Make table as tall as possible.
    */
-  getErrorMessage(control: AbstractControl | null, title?: string): string {
-    return this.errorService.getFormErrorMessage(control, title);
+  @ViewChild('tableWrapper', { static: false })
+  set tableElementContent(tableElementContent: ElementRef<HTMLDivElement>) {
+    if (tableElementContent) {
+      this.tableRef = tableElementContent;
+      this.setTableHeight(this.tableRef);
+    }
   }
 
   /**
@@ -229,6 +219,16 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   }
 
   /**
+   * Get error messages for an invalid form control
+   * @param ctrl The form control
+   * @param {string} [title] The title of the control (optional)
+   * @returns The error message as a string
+   */
+  getErrorMessage(control: AbstractControl | null, title?: string): string {
+    return this.errorService.getFormErrorMessage(control, title);
+  }
+
+  /**
    * Listerner for window resize event
    * @param e The window resize event
    */
@@ -250,8 +250,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
           return pipeTakeUntil(this.actualItemService.getActualItems(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.selCurrencyCode = '';
+      .subscribe((item) => {
+        if (item.currencies.length == 1) {
+          this.currencyCode?.setValue(item.currencies[0]);
+          this.selCurrencyCode = item.currencies[0];
+          this.actualItemService.item.filter.currencyCode = this.selCurrencyCode;
+        } else {
+          this.selCurrencyCode = '';
+        }
         this.pageLoaded = true;
       });
 

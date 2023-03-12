@@ -58,9 +58,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
       case Modify.Add:
         return this.httpService.postItem<ActualItem>(budgetItem, 'actualItem').pipe(tap((item) => this._addItem(item)));
       case Modify.Edit:
-        return this.httpService
-          .putItem<ActualItem>(budgetItem, 'actualItem')
-          .pipe(tap((item) => this._editItem(item)));
+        return this.httpService.putItem<ActualItem>(budgetItem, 'actualItem').pipe(tap((item) => this._editItem(item)));
       case Modify.Delete:
         return this.httpService
           .deleteItem<ActualItem>(budgetItem, 'actualItem')
@@ -142,6 +140,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    */
   private _addItem(item: ActualItem): void {
     if (this.isYearInFilter(new Date(item.purchaseDate).getFullYear())) {
+      item.tripId = item.tripId == null ? item.tripId : -1;
       this.addItem(item);
     }
   }
@@ -152,6 +151,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    */
   private _editItem(item: ActualItem): void {
     if (this.isYearInFilter(new Date(item.purchaseDate).getFullYear())) {
+      item.tripId = item.tripId == null ? item.tripId : -1;
       this.editItem(item, 'id');
     } else {
       this.deleteItem(item, 'id');
