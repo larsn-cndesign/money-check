@@ -1,0 +1,15 @@
+export const MONTHS = [
+  { id: -1, name: 'Alla månader' },
+  { id: 1, name: 'Januari' },
+  { id: 2, name: 'Februari' },
+  { id: 3, name: 'Mars' },
+  { id: 4, name: 'April' },
+  { id: 5, name: 'Maj' },
+  { id: 6, name: 'Juni' },
+  { id: 7, name: 'Juli' },
+  { id: 8, name: 'Augusti' },
+  { id: 9, name: 'September' },
+  { id: 10, name: 'Oktober' },
+  { id: 11, name: 'November' },
+  { id: 12, name: 'December' },
+];

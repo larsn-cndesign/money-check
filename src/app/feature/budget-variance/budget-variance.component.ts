@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
+import { MONTHS } from 'src/app/shared/classes/constants';
 import { ListPos } from 'src/app/shared/components/filter-list/shared/filter-list.model';
 import { FilterListService } from 'src/app/shared/components/filter-list/shared/filter-list.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
@@ -60,6 +61,12 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @public
    */
   displayedColumns: string[] = ['category', 'budget', 'actual', 'variance'];
+
+  /**
+   * A property that holds all months to be displayed in the table.
+   * @public
+   */
+  months = MONTHS;
 
   /**
    * Creating a budget variance.

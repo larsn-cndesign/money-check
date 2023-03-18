@@ -29,6 +29,15 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Välj månad</mat-label>
+        <mat-select [value]="variance.filter.month" (selectionChange)="onChangeFilter($event, 'month')">
+          <mat-option *ngFor="let month of months" [value]="month.id">
+            {{ month.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <div class="max-table-height">

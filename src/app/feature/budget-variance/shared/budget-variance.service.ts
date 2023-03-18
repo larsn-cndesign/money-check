@@ -69,13 +69,19 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
         this.item.filter.budgetYearId = +value;
         this.item.filter.versionId = -1;
         this.item.filter.currencyCode = '';
+        this.item.filter.month = -1;
         break;
       case 'version':
         this.item.filter.versionId = +value;
         this.item.filter.currencyCode = '';
+        this.item.filter.month = -1;
         break;
       case 'currencyCode':
         this.item.filter.currencyCode = value;
+        this.item.filter.month = -1;
+        break;
+      case 'month':
+        this.item.filter.month = value;
         break;
     }
     ItemFilter.setFilter(this.item.filter);

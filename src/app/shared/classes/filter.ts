@@ -62,6 +62,13 @@ export class ItemFilter {
   list: FilterList[] = [];
 
   /**
+   * Filter on month.
+   * @public
+   * @default -1 All months.
+   */
+  month = -1;
+
+  /**
    * Method to get stored filter from `localStorage`.
    * @static
    * @returns A  filter to use on array of actual or budget items.
