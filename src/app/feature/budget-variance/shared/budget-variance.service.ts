@@ -6,6 +6,7 @@ import { tap } from 'rxjs/operators';
 import { compare } from 'src/app/shared/classes/common.fn';
 import { ItemFilter } from 'src/app/shared/classes/filter';
 import { StoreItem } from 'src/app/shared/classes/store';
+import { FilterList } from 'src/app/shared/components/filter-list/shared/filter-list.model';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetVariance, VarianceItem } from './budget-variance.model';
 
@@ -67,17 +68,32 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
       case 'budgetYearId':
         this.item.filter.budgetYearId = +value;
         this.item.filter.versionId = -1;
-        this.item.filter.currencyCode = "";
+        this.item.filter.currencyCode = '';
         break;
       case 'version':
         this.item.filter.versionId = +value;
-        this.item.filter.currencyCode = "";
+        this.item.filter.currencyCode = '';
         break;
       case 'currencyCode':
         this.item.filter.currencyCode = value;
         break;
     }
     ItemFilter.setFilter(this.item.filter);
+  }
+
+  /**
+   * Get filtered list or initialize it if neccessary.
+   */
+  getFilterList(): FilterList[] {
+    const filterList = this.item.filter.list;
+
+    if (filterList.length === 0) {
+      this.item.categories.forEach((item) => {
+        filterList.push({ id: item.id, name: item.categoryName, selected: true });
+      });
+    }
+
+    return filterList;
   }
 
   /**

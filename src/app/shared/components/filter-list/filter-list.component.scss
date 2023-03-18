@@ -1,0 +1,27 @@
+@use '../../../../content/variables.scss' as v;
+
+.wrapper {
+  position: absolute;
+  border: 1px solid #000000;
+  z-index: 1200;
+  background: v.$list-bg;
+  box-shadow: 10px 10px 21px -5px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 10px 10px 21px -5px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 21px -5px rgba(0, 0, 0, 0.75);
+}
+
+.list-content {
+  position: relative;
+  overflow: auto;
+  max-width: 400px;
+  max-height: 500px;
+}
+
+.list-footer {
+  position: relative;
+  text-align: right;
+  padding: 10px;
+}
+
+// @media (max-width: 599px) {
+// }

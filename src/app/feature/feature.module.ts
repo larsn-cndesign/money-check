@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FilterListModule } from '../shared/components/filter-list/filter-list.module';
 import { ActualItemModule } from './actual-item/actual-item.module';
 import { BudgetItemModule } from './budget-item/budget-item.module';
 import { BudgetVarianceModule } from './budget-variance/budget-variance.module';
@@ -30,6 +31,7 @@ import { ModifyVersionModule } from './version/modify-version/modify-version.mod
     ActualItemModule,
     BudgetVarianceModule,
     CreateBudgetModule,
+    FilterListModule
   ],
 })
 export class FeatureModule {}

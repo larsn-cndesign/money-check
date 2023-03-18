@@ -5,6 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
+import { ListPos } from 'src/app/shared/components/filter-list/shared/filter-list.model';
+import { FilterListService } from 'src/app/shared/components/filter-list/shared/filter-list.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
@@ -63,8 +65,13 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * Creating a budget variance.
    * @param budgetVarianceService A service managing budget variance.
    * @param budgetStateService Manage the state of a budget.
+   * @param filterListService Service to manage filtering of categories.
    */
-  constructor(private budgetVarianceService: BudgetVarianceService, private budgetStateService: BudgetStateService) {
+  constructor(
+    private budgetVarianceService: BudgetVarianceService,
+    private budgetStateService: BudgetStateService,
+    private filterListService: FilterListService
+  ) {
     this.budgetVariance$ = this.budgetVarianceService.item$;
     this.varianceItems$ = this.budgetVarianceService.items$;
   }
@@ -85,6 +92,14 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.pageLoaded = true;
       });
+
+    pipeTakeUntil(this.filterListService.item$, this.sub$).subscribe((item) => {
+      if (item && item.confirmed) {
+        this.budgetVarianceService.item.filter.list = item.list;
+        // this.budgetVarianceService.updateStore();
+        this.getFilteredItems();
+      }
+    });
   }
 
   /**
@@ -130,6 +145,19 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    */
   onDblClickItem(item: VarianceItem, type: string): void {
     this.budgetVarianceService.gotoDetails(item, type);
+  }
+
+  /**
+   * Opens the filter list item window.
+   * @param e The event object emitted by the mat-icon.
+   */
+  OnOpenFilterList(e: MouseEvent): void {
+    e.stopPropagation();
+
+    const listPos: ListPos = { x: e.clientX, y: e.clientY };
+    const filterList = this.budgetVarianceService.getFilterList();
+
+    this.filterListService.show(filterList, listPos);
   }
 
   // ------------------------------------

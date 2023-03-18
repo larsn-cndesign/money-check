@@ -1,0 +1,25 @@
+<ng-container *ngIf="filterListModel?.isOpen">
+  <div class="wrapper" [style.left.px]="filterListModel.pos.x" [style.top.px]="filterListModel.pos.y">
+    <div class="list-content">
+      <mat-selection-list>
+        <mat-list-option checkboxPosition="before" [selected]="filterListModel.selectAll" (click)="onSelectAll()">
+          (Välj alla)
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option
+          checkboxPosition="before"
+          *ngFor="let item of filterListModel.list"
+          [selected]="item.selected"
+          (click)="onClickListOption(item)"
+        >
+          {{ item.name }}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="list-footer">
+      <button mat-raised-button type="button" color="primary" (click)="onOK()">OK</button>
+      <button mat-raised-button type="button" style="margin-left: 10px" (click)="onCancel()">Avbryt</button>
+    </div>
+  </div>
+</ng-container>

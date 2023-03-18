@@ -1,3 +1,5 @@
+import { FilterList } from '../components/filter-list/shared/filter-list.model';
+
 /**
  * Class representing a filter for an array of items i.e. budget, actual, variance.
  */
@@ -51,6 +53,13 @@ export class ItemFilter {
    * @default '' All notes.
    */
   note = '';
+
+  /**
+   * Filter on a list of items.
+   * @public
+   * @default [] An empty list.
+   */
+  list: FilterList[] = [];
 
   /**
    * Method to get stored filter from `localStorage`.
