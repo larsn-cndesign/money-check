@@ -8,7 +8,7 @@ import { Trip } from '../feature/trip/shared/trip.model';
 import { Unit } from '../feature/unit/shared/unit.model';
 import { BudgetVersion } from '../feature/version/shared/budget-version.model';
 import { BudgetState } from '../shared/classes/budget-state.model';
-import { toDate } from '../shared/classes/common.fn';
+import { deepCoyp, toDate } from '../shared/classes/common.fn';
 import { ItemFilter } from '../shared/classes/filter';
 import { Selectable } from '../shared/interfaces/selectable';
 import { DatabaseServer } from './mock-database';
@@ -88,6 +88,7 @@ export class DatabaseService {
 
   static getCategories(budgetId: number): Category[] {
     this.readFromDatabase();
+
     return this._addItemsSelectedProperty(this.db.categories.filter((x) => x.budgetId === budgetId));
   }
 
@@ -339,33 +340,38 @@ export class DatabaseService {
     this.writeToDatabase();
   }
 
-  static getCurrentVersion(budgetYear: BudgetYear): ManageBudgetYear {
+  static getCurrentVersion(budgetYearId: number): ManageBudgetYear {
     this.readFromDatabase();
 
     const item = new ManageBudgetYear();
-    item.budgetYear = budgetYear;
-    item.budgetYears = this.db.budgetYears.filter((x) => x.budgetId === budgetYear.budgetId);
-    item.versions = this.db.versions.filter((x) => x.budgetYearId === budgetYear.id);
 
-    const currentVersion = this._currentVersion(budgetYear.id);
-    if (currentVersion) {
-      const currencies = this._versionCurrencies(currentVersion.id);
-      item.version = currentVersion;
-      item.currencies = currencies;
+    const budgetYear = this.db.budgetYears.find((x) => x.id === budgetYearId);
+
+    if (budgetYear) {
+      item.budgetYear = budgetYear;
+      item.budgetYears = this.db.budgetYears.filter((x) => x.budgetId === budgetYear.budgetId);
+      item.versions = this.db.versions.filter((x) => x.budgetYearId === budgetYear.id);
+
+      const currentVersion = this._currentVersion(budgetYear.id);
+      if (currentVersion) {
+        const currencies = this._versionCurrencies(currentVersion.id);
+        item.version = currentVersion;
+        item.currencies = currencies;
+      }
     }
 
     return item;
   }
 
-  static deleteVersion(item: ManageBudgetYear): void {
+  static deleteVersion(budgetYear: BudgetYear): void {
     this.readFromDatabase();
 
+    const versionIndex = this.db.versions.findIndex((x) => x.budgetYearId === budgetYear.id && !x.isClosed);
+
     // Reopen latest closed version
-    const closedVersions = this.db.versions.filter((x) => x.budgetYearId === item.budgetYear.id && x.isClosed);
+    const closedVersions = this.db.versions.filter((x) => x.budgetYearId === budgetYear.id && x.isClosed);
     const lastClosedVersion = closedVersions.reduce((prev, current) => (prev.id > current.id ? prev : current));
     lastClosedVersion.isClosed = false;
-
-    const versionIndex = this.db.versions.findIndex((x) => x.id === item.version.id);
 
     // For simplicity, keep not deleted items instead of deleting them
     let currencies: Currency[] = [];
@@ -630,36 +636,59 @@ export class DatabaseService {
       filter.currencyCode = item.currency.code;
 
       // Other
-      item.categories = this.db.categories;
-      // item.category = { id: -1, budgetId: -1, categoryName: '' };
+      item.categories = this.db.categories.filter((x) => x.budgetId === filter.budgetId);
 
       // Sum category
       const varianceItems: VarianceItem[] = [];
-      this.db.categories
-        .filter((x) => x.budgetId === filter.budgetId)
-        .forEach((category) => {
-          const varianceItem = new VarianceItem();
 
-          // Sum actual items
-          const sumActual = this.db.actualItems
-            .filter((x) => x.categoryId === category.id && new Date(x.purchaseDate).getFullYear() === budgetYear.year)
-            .reduce((sum, current) => {
-              return sum + this._sumCurrency(current.amount, current.currencyCode, item.currency, item.currencies);
-            }, 0);
-          varianceItem.actual = isNaN(sumActual) ? 0 : sumActual;
+      // Filter categories
+      let filteredCategories = deepCoyp(item.categories) as Category[];
+      if (filter.list.length > 0) {
+        filteredCategories = [];
 
-          // Sum budget items
-          const sumBudget = this.db.budgetItems
-            .filter((x) => x.categoryId === category.id && x.versionId === item.version.id)
-            .reduce((sum, current) => {
-              return sum * this._sumCurrency(current.unitValue, current.currencyCode, item.currency, item.currencies);
-            }, 1);
-          varianceItem.budget = sumBudget === 1 || isNaN(sumBudget) ? 0 : sumBudget;
-          varianceItem.variance = varianceItem.budget - varianceItem.actual;
-
-          varianceItem.category = category.categoryName;
-          varianceItems.push(varianceItem);
+        item.categories.forEach((category) => {
+          const categoryFound = filter.list.find((x) => x.id === category.id && x.selected);
+          if (categoryFound) {
+            filteredCategories.push(category);
+          }
         });
+      }
+
+      filteredCategories.forEach((category) => {
+        const varianceItem = new VarianceItem();
+
+        // Sum actual items
+        let actuals = this.db.actualItems.filter(
+          (x) => x.categoryId === category.id && new Date(x.purchaseDate).getFullYear() === budgetYear.year
+        );
+        if (filter.month != -1) {
+          actuals = actuals.filter((x) => new Date(x.purchaseDate).getMonth() + 1 === filter.month);
+        }
+
+        const sumActual = actuals
+          .filter((x) => x.categoryId === category.id && new Date(x.purchaseDate).getFullYear() === budgetYear.year)
+          .reduce((sum, current) => {
+            return sum + this._sumCurrency(current.amount, current.currencyCode, item.currency, item.currencies, true);
+          }, 0);
+        varianceItem.actual = isNaN(sumActual) ? 0 : sumActual;
+
+        // Sum budget items
+        const sumBudget = this.db.budgetItems
+          .filter((x) => x.categoryId === category.id && x.versionId === item.version.id)
+          .reduce((sum, current) => {
+            return (
+              sum * this._sumCurrency(current.unitValue, current.currencyCode, item.currency, item.currencies, false)
+            );
+          }, 1);
+        varianceItem.budget = sumBudget === 1 || isNaN(sumBudget) ? 0 : sumBudget;
+        if (filter.month != -1) {
+          varianceItem.budget /= 12;
+        }
+
+        varianceItem.variance = varianceItem.budget - varianceItem.actual;
+        varianceItem.category = category.categoryName;
+        varianceItems.push(varianceItem);
+      });
       item.varianceItems = varianceItems;
 
       // Calculate totals
@@ -695,15 +724,25 @@ export class DatabaseService {
   // Fake database helper methods
   // ------------------------------------
 
-  private static _sumCurrency(val: number, currencyCode: string, currency: Currency, currencies: Currency[]): number {
+  private static _sumCurrency(
+    val: number,
+    code: string,
+    currency: Currency,
+    currencies: Currency[],
+    isActual: boolean
+  ): number {
     let total = 0;
 
-    if (!currency.code || currencyCode === '' || currencyCode === currency.code) {
+    if (!currency.code || code === '' || code === currency.code) {
       total = val;
     } else {
-      const converCurrency = currencies.find((curr) => curr.code === currencyCode);
+      const converCurrency = currencies.find((c) => c.code === code);
       if (converCurrency) {
-        total = val * (converCurrency.budgetRate / currency.budgetRate);
+        if (isActual) {
+          total = val * (converCurrency.averageRate / currency.averageRate);
+        } else {
+          total = val * (converCurrency.budgetRate / currency.budgetRate);
+        }
       } else {
         total = val;
       }
@@ -757,7 +796,7 @@ export class DatabaseService {
     const version: BudgetVersion = {
       id: versionId,
       budgetYearId,
-      versionName: 'v' + this._incrementId(yearVersions),
+      versionName: 'v' + (yearVersions.length > 0 ? (yearVersions.length + 1).toString() : '1'),
       dateCreated: new Date(),
       isClosed: false,
     };

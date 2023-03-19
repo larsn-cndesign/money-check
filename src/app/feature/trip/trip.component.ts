@@ -20,6 +20,7 @@ import { betweenDateValidator, rangeDateValidator } from './shared/trip.validato
  * Class representing expense category management.
  * @extends CommonFormService
  * @implements OnInit
+ * @todo Add field to set name of trip
  */
 @Component({
   selector: 'app-trip',

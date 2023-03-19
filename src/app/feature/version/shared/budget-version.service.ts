@@ -46,8 +46,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @param @param id The identifier of the selected budget year to get the current version for.
    * @returns Observer of a `ManageBudgetYear` object.
    */
-  getCurrentVersion(id: number): Observable<ManageBudgetYear> {
-    return this.httpService.getItemById<ManageBudgetYear>(id, 'budgetVersion').pipe(
+  getCurrentVersion(budgetYearId: number): Observable<ManageBudgetYear> {
+    return this.httpService.getItemById<ManageBudgetYear>(budgetYearId, 'budgetVersion').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
           this.store.item = budgetYear;

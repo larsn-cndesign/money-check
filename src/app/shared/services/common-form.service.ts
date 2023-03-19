@@ -1,6 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { BudgetState } from '../classes/budget-state.model';
 import { ConfirmDialogService } from '../components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from '../components/message-box/shared/message-box.service';
@@ -38,6 +38,13 @@ export class CommonFormService implements OnDestroy {
    * @public
    */
   pageLoaded = false;
+
+  /**
+   * A boolean subject flag indicating if data has been loaded from server.
+   * @public
+   * @default false
+   */
+  pageLoaded$ = new BehaviorSubject<boolean>(false);
 
   /**
    * Get error messages for an invalid form control.

@@ -7,11 +7,10 @@ import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
-import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { BudgetYear, ManageBudgetYear } from '../shared/budget-year.model';
+import { ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
 
 /**
@@ -85,7 +84,9 @@ export class DeleteBudgetYearComponent extends CommonFormService implements OnIn
           return pipeTakeUntil(this.budgetYearService.getBudgetYear(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.pageLoaded$.next(true);
+      });
   }
 
   /**

@@ -151,6 +151,7 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
         formDirective.reset();
       }
       this.resetForm();
+      this.budgetService.updateBudgetState();
       this.messageBoxService.show();
     });
   }

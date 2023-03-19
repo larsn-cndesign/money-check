@@ -54,7 +54,7 @@ export class BudgetService extends StoreItems<Budget> {
         return this.httpService.putItem<Budget>(budget, 'budget').pipe(tap((item) => this.editItem(item, 'id')));
     }
 
-    this.updateBudgetState();
+    // this.updateBudgetState();
 
     throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
   }
@@ -74,15 +74,11 @@ export class BudgetService extends StoreItems<Budget> {
     return items.findIndex((x) => x.budgetName.toLowerCase() === value.toLowerCase()) !== -1;
   }
 
-  // ------------------------------------
-  // Private helper methods
-  // ------------------------------------
-
   /**
    * Helper method to update budget state in `localStorage` and memory store.
    * @description Get stored items from `localStorage` and modifies it with updated budget.
    */
-  private updateBudgetState(): void {
+  updateBudgetState(): void {
     const budgetState = BudgetState.getLocalStorage();
     budgetState.budgets = this.items;
     budgetState.hasBudget = true;

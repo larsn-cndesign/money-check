@@ -32,6 +32,7 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   getBudgetYear(budgetId: number): Observable<ManageBudgetYear> {
     return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
+        console.log(budgetYear);
         if (budgetYear) {
           this.store.item = budgetYear;
           this.updateStore();
@@ -46,7 +47,7 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   /**
    * Create a new budget year for a budget.
    * @param budgetYear The budget year objcet to create.
-   * @returns Observer of a `ManageBudgetYear` object.
+   * @returns Observer of a `BudgetYear` object.
    */
   addBudgetYear(budgetYear: ManageBudgetYear): Observable<BudgetYear> {
     return this.httpService.postItemVar<ManageBudgetYear, BudgetYear>(budgetYear, 'budgetYear').pipe(
@@ -64,7 +65,7 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   /**
    * Delete a budget year from a budget.
    * @param budgetYear The budget year objcet to be deleted.
-   * @returns Observer of a `ManageBudgetYear` object.
+   * @returns Observer of a boolean type.
    */
   deleteBudgetYear(budgetYear: BudgetYear): Observable<boolean> {
     return this.httpService

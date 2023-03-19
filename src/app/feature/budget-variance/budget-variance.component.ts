@@ -14,7 +14,6 @@ import { BudgetVarianceService } from './shared/budget-variance.service';
 
 /**
  * Class representing budget variance.
- * @todo Add filter on category.
  * @todo Add filter on trip.
  * @todo Add filter on cost per day on a trip.
  */
