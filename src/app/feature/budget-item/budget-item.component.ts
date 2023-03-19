@@ -178,6 +178,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
+          this.budgetItemService.item.filter = ItemFilter.getFilter();
         }),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.budgetItemService.getBudgetItems(budgetState.budgetId), this.sub$);

@@ -49,17 +49,12 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    */
   budgetState = new BudgetState();
 
-  // /**
-  //  * A boolean flag indicating if data has been loaded from server (@default false).
-  //  * @public
-  //  */
-  // pageLoaded = false;
   /**
    * A boolean subject flag indicating if data has been loaded from server.
    * @public
    * @default false
    */
-  pageLoaded$ = new BehaviorSubject<boolean>(false);  
+  pageLoaded$ = new BehaviorSubject<boolean>(false);
 
   /**
    * A property that holds all columns to be displayed in a table.

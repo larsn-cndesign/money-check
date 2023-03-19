@@ -135,6 +135,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
     filter.budgetYearId = this.item.filter.budgetYearId;
     const catgegory = this.item.categories.find((x) => x.categoryName === item.category);
     filter.categoryId = catgegory ? catgegory.id : -1;
+    filter.currencyCode = this.item.filter.currencyCode;
 
     ItemFilter.setFilter(filter);
 

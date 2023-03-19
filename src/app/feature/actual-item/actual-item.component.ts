@@ -15,6 +15,7 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { lineCount, pipeTakeUntil, toNumber } from 'src/app/shared/classes/common.fn';
+import { ItemFilter } from 'src/app/shared/classes/filter';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
@@ -245,6 +246,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
+          this.actualItemService.item.filter = ItemFilter.getFilter();
         }),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.actualItemService.getActualItems(budgetState.budgetId), this.sub$);
