@@ -26,7 +26,7 @@ import { UnitComponent } from './unit.component';
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const unitService: Omit<UnitService, OmitFromStore> = {
-  loadUnitPage(_budgetId: number): Observable<Unit[]> {
+  getUnits(budgetId: number): Observable<Unit[]> {
     return of(UNITS);
   },
   modifyUnit(_unitItem: Unit, _action: string): Observable<Unit> {
@@ -92,7 +92,7 @@ describe('UnitComponent', () => {
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded).toBeTrue();
+    expect(component.pageLoaded$.value).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {

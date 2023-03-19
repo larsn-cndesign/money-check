@@ -3,8 +3,8 @@
 
   <form [formGroup]="form" (ngSubmit)="login()" data-testid="form">
     <div class="form-field-error">
-      <!-- TODO only for testing purpose -->
-      <!-- <div>Ange: test@test.com</div> -->
+      <!-- @test only for testing purpose -->
+      <div>Ange: test@test.com</div>
       <mat-form-field style="width: 234px">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />
@@ -14,8 +14,8 @@
       </mat-form-field>
     </div>
     <div class="form-field-error">
-      <!-- TODO only for testing purpose -->
-      <!-- <div>Ange: 123456</div> -->
+      <!-- @test only for testing purpose -->
+      <div>Ange: 123456</div>
       <mat-form-field>
         <mat-label>Lösenord</mat-label>
         <input

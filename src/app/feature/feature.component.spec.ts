@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FilterListModule } from '../shared/components/filter-list/filter-list.module';
 import { SpinnerModule } from '../shared/components/spinner/spinner.module';
 import { SharedModule } from '../shared/shared.module';
 
@@ -11,7 +12,7 @@ describe('FeatureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedModule, RouterTestingModule, SpinnerModule],
+      imports: [SharedModule, RouterTestingModule, SpinnerModule, FilterListModule],
       declarations: [FeatureComponent],
     }).compileComponents();
   });

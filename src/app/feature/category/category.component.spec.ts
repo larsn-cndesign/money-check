@@ -88,7 +88,7 @@ describe('CategoryComponent', () => {
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded).toBeTrue();
+    expect(component.pageLoaded$.value).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {

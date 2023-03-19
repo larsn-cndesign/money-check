@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { MessageBoxModule } from './shared/components/message-box/message-box.module';
+import { SpinnerModule } from './shared/components/spinner/spinner.module';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -12,7 +13,7 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, CoreModule, MessageBoxModule],
+      imports: [RouterTestingModule, CoreModule, MessageBoxModule, SpinnerModule],
       declarations: [AppComponent],
     });
 

@@ -16,13 +16,12 @@ describe('CategoryService', () => {
 
   /**
    * Helper function to test category item modifications.
-   * @param url The expected url without '/api/'
    * @param action Type of action Add/Edit/Delete
    * @param itemCount The expected number of category items
    */
-  function modifyItem(url: string, action: string, itemCount: number): void {
+  function modifyItem(action: string, itemCount: number): void {
     let category: Category | undefined;
-    const expectedUrl = '/api/' + url;
+    const expectedUrl = '/api/category';
     categoryService.items.push(CATEGORY_1); // At least one item
 
     categoryService
@@ -36,7 +35,18 @@ describe('CategoryService', () => {
     req.flush(CATEGORY_1);
     httpMock.verify();
 
-    expect(req.request.method).toBe('POST');
+    switch (action) {
+      case Modify.Add:
+        expect(req.request.method).toBe('POST');
+        break;
+      case Modify.Edit:
+        expect(req.request.method).toBe('PUT');
+        break;
+      case Modify.Delete:
+        expect(req.request.method).toBe('DELETE');
+        break;
+    }
+
     expect(category).toEqual(CATEGORY_1);
     expect(categoryService.items.length).toBe(itemCount);
   }
@@ -57,7 +67,7 @@ describe('CategoryService', () => {
   it('gets all categories for a budget year on page load', () => {
     let categories: Category[] | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/LoadCategoryPage?budgetId=1';
+    const expectedUrl = '/api/category?id=1';
 
     categoryService
       .getCategories(budgetId)
@@ -77,7 +87,7 @@ describe('CategoryService', () => {
   it('passes through errors when getting category items', () => {
     let actualError: HttpErrorResponse | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/LoadCategoryPage?budgetId=1';
+    const expectedUrl = '/api/category?id=1';
 
     const spy = spyOn(errorService, 'handleHttpError').and.callThrough();
 
@@ -103,15 +113,15 @@ describe('CategoryService', () => {
   });
 
   it('adds a category item', () => {
-    modifyItem('AddCategory', Modify.Add, 2);
+    modifyItem(Modify.Add, 2);
   });
 
   it('edit a category item', () => {
-    modifyItem('EditCategory', Modify.Edit, 1);
+    modifyItem(Modify.Edit, 1);
   });
 
   it('delet a category item', () => {
-    modifyItem('DeleteCategory', Modify.Delete, 0);
+    modifyItem(Modify.Delete, 0);
   });
 
   it('validates that a category name exists or not', () => {

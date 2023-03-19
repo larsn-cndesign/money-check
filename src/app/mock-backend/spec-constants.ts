@@ -110,8 +110,8 @@ export const FILTER = {
   note: '',
 } as ItemFilter;
 
-const CURRENCY_ITEM_SEK = { currencyCode: 'SEK', budgetRate: 1 } as CurrencyItem;
-const CURRENCY_ITEM_EUR = { currencyCode: 'EUR', budgetRate: 10 } as CurrencyItem;
+const CURRENCY_ITEM_SEK = { currencyCode: 'SEK', budgetRate: 1, averageRate: 1 } as CurrencyItem;
+const CURRENCY_ITEM_EUR = { currencyCode: 'EUR', budgetRate: 10, averageRate: 10 } as CurrencyItem;
 export const CURRENCY_ITEMS = [deepCoyp(CURRENCY_ITEM_SEK), deepCoyp(CURRENCY_ITEM_EUR)];
 
 const CURRENCY_1 = {

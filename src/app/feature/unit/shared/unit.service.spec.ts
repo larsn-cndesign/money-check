@@ -16,13 +16,12 @@ describe('UnitService', () => {
 
   /**
    * Helper function to test category item modifications.
-   * @param url The expected url without '/api/'
    * @param action Type of action Add/Edit/Delete
    * @param itemCount The expected number of category items
    */
-  function modifyItem(url: string, action: string, itemCount: number): void {
+  function modifyItem(action: string, itemCount: number): void {
     let category: Unit | undefined;
-    const expectedUrl = '/api/' + url;
+    const expectedUrl = '/api/unit';
     unitService.items.push(UNIT_1); // At least one item
 
     unitService
@@ -36,7 +35,18 @@ describe('UnitService', () => {
     req.flush(UNIT_1);
     httpMock.verify();
 
-    expect(req.request.method).toBe('POST');
+    switch (action) {
+      case Modify.Add:
+        expect(req.request.method).toBe('POST');
+        break;
+      case Modify.Edit:
+        expect(req.request.method).toBe('PUT');
+        break;
+      case Modify.Delete:
+        expect(req.request.method).toBe('DELETE');
+        break;
+    }
+
     expect(category).toEqual(UNIT_1);
     expect(unitService.items.length).toBe(itemCount);
   }
@@ -57,10 +67,10 @@ describe('UnitService', () => {
   it('gets all units for a budget year on page load', () => {
     let categories: Unit[] | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/LoadUnitPage?budgetId=1';
+    const expectedUrl = '/api/unit?id=1';
 
     unitService
-      .loadUnitPage(budgetId)
+      .getUnits(budgetId)
       .pipe(first())
       .subscribe((items) => {
         categories = items;
@@ -77,12 +87,12 @@ describe('UnitService', () => {
   it('passes through errors when getting unit items', () => {
     let actualError: HttpErrorResponse | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/LoadUnitPage?budgetId=1';
+    const expectedUrl = '/api/unit?id=1';
 
     const spy = spyOn(errorService, 'handleHttpError').and.callThrough();
 
     unitService
-      .loadUnitPage(budgetId)
+      .getUnits(budgetId)
       .pipe(first())
       .subscribe(
         () => fail('next handler must not be called'),
@@ -103,15 +113,15 @@ describe('UnitService', () => {
   });
 
   it('adds a unit item', () => {
-    modifyItem('AddUnit', Modify.Add, 2);
+    modifyItem(Modify.Add, 2);
   });
 
   it('edit a unit item', () => {
-    modifyItem('EditUnit', Modify.Edit, 1);
+    modifyItem(Modify.Edit, 1);
   });
 
   it('delet a unit item', () => {
-    modifyItem('DeleteUnit', Modify.Delete, 0);
+    modifyItem(Modify.Delete, 0);
   });
 
   it('validates that a unit name exists or not', () => {

@@ -28,7 +28,7 @@ registerLocaleData(localeSv);
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const tripService: Omit<TripService, OmitFromStore> = {
-  loadTripPage(_budgetId: number): Observable<Trip[]> {
+  getTrips(budgetId: number): Observable<Trip[]> {
     return of(TRIPS);
   },
   modifyTrip(_categoryItem: Trip, _action: string): Observable<Trip> {
@@ -93,7 +93,7 @@ describe('TripComponent', () => {
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded).toBeTrue();
+    expect(component.pageLoaded$.value).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {

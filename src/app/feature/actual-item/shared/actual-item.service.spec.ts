@@ -25,14 +25,13 @@ describe('ActualItemService', () => {
 
   /**
    * Helper function to test actual item modifications.
-   * @param url The expected url without '/api/'
    * @param yearId The id of the year. -1: all years, 1:2022, 2:2023
    * @param action Type of action Add/Edit/Delete
    * @param itemCount The expected number of actual items
    */
-  function modifyItem(url: string, yearId: number, action: string, itemCount: number): void {
+  function modifyItem(yearId: number, action: string, itemCount: number): void {
     let actualItem: ActualItem | undefined;
-    const expectedUrl = '/api/' + url;
+    const expectedUrl = '/api/actualItem';
     actualItemService.item.filter = FILTER;
     actualItemService.item.filter.budgetYearId = yearId;
     actualItemService.item.budgetYears = BUDGET_YEARS;
@@ -50,7 +49,18 @@ describe('ActualItemService', () => {
     req.flush(ACTUAL_ITEM_1);
     httpMock.verify();
 
-    expect(req.request.method).toBe('POST');
+    switch (action) {
+      case Modify.Add:
+        expect(req.request.method).toBe('POST');
+        break;
+      case Modify.Edit:
+        expect(req.request.method).toBe('PUT');
+        break;
+      case Modify.Delete:
+        expect(req.request.method).toBe('DELETE');
+        break;
+    }
+
     expect(actualItem).toEqual(ACTUAL_ITEM_1);
     expect(actualItemService.items.length).toBe(itemCount);
   }
@@ -98,7 +108,7 @@ describe('ActualItemService', () => {
   it('gets actual expenses after applying a filter', () => {
     let manageActualItem: ManageActualItem | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/GetActualItems';
+    const expectedUrl = '/api/actualItem/get';
     actualItemService.item.filter = FILTER;
 
     actualItemService
@@ -119,7 +129,7 @@ describe('ActualItemService', () => {
   it('passes through errors when getting actual expense items', () => {
     let actualError: HttpErrorResponse | undefined;
     const budgetId = 1;
-    const expectedUrl = '/api/GetActualItems';
+    const expectedUrl = '/api/actualItem/get';
     actualItemService.item.filter = FILTER;
 
     const spy = spyOn(errorService, 'handleHttpError').and.callThrough();
@@ -146,27 +156,27 @@ describe('ActualItemService', () => {
   });
 
   it('adds an actual expense item (no filter)', () => {
-    modifyItem('AddActualItem', -1, Modify.Add, 2);
+    modifyItem(-1, Modify.Add, 2);
   });
 
   it('adds an actual expense item (with filter)', () => {
-    modifyItem('AddActualItem', 2, Modify.Add, 2);
+    modifyItem(2, Modify.Add, 2);
   });
 
   it('does NOT add an actual expense item (year not in filter)', () => {
-    modifyItem('AddActualItem', 1, Modify.Add, 1);
+    modifyItem(1, Modify.Add, 1);
   });
 
   it('edit an actual expense item (with filter)', () => {
-    modifyItem('EditActualItem', 2, Modify.Edit, 1);
+    modifyItem(2, Modify.Edit, 1);
   });
 
   it('edit an actual expense item but delete it from store as it is not in current filter year', () => {
-    modifyItem('EditActualItem', 1, Modify.Edit, 0);
+    modifyItem(1, Modify.Edit, 0);
   });
 
   it('delet an actual expense item (with filter)', () => {
-    modifyItem('DeleteActualItem', 2, Modify.Delete, 0);
+    modifyItem(2, Modify.Delete, 0);
   });
 
   it('validates that a year exists in a budget or not', () => {
@@ -186,7 +196,7 @@ describe('ActualItemService', () => {
     actualItemService.setFilterItem(2, 'budgetYearId');
     actualItemService.setFilterItem(3, 'category');
     actualItemService.setFilterItem(4, 'trip');
-    actualItemService.setFilterItem('USD', 'currency');
+    actualItemService.setFilterItem('USD', 'currencyCode');
     actualItemService.setFilterItem('Test note', 'note');
 
     const filter = ItemFilter.getFilter();
@@ -194,15 +204,15 @@ describe('ActualItemService', () => {
     expect(filter.budgetYearId).toBe(2);
     expect(filter.categoryId).toBe(3);
     expect(filter.tripId).toBe(4);
-    expect(filter.currency).toBe('USD');
+    expect(filter.currencyCode).toBe('USD');
     expect(filter.note).toBe('Test note');
   });
 
   it('sorts actual items based on column and direction', () => {
     sortActualItems('amount', 'asc');
     sortActualItems('amount', 'desc');
-    sortActualItems('currency', 'asc');
-    sortActualItems('currency', 'desc');
+    sortActualItems('currencyCode', 'asc');
+    sortActualItems('currencyCode', 'desc');
     sortActualItems('tripName', 'asc');
     sortActualItems('tripName', 'desc');
     sortActualItems('categoryName', 'asc');
