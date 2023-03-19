@@ -29,7 +29,7 @@ import { MOCK_DATA } from './mock-database';
 const FAKE_EMAIL = 'test@test.com';
 const FAKE_USER_PASSWORD = '123456';
 /** Simulate a delay of a http request in milliseconds */
-const SIMULATED_HTTPREQUEST_DEALY = 0;
+const SIMULATED_HTTPREQUEST_DEALY = 600;
 const ACCESS_TOKEN = 'access_token';
 const TEST_TOKEN = 'test_token';
 const MOCK_DATA_STORAGE = 'db';

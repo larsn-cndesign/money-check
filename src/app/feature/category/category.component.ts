@@ -108,7 +108,7 @@ export class CategoryComponent extends CommonFormService implements OnInit {
         })
       )
       .subscribe(() => {
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
   }
 

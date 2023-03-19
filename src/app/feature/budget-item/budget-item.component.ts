@@ -193,7 +193,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
             this.currencyCode?.setValue(item.currencies[0].code);
           }
         }
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
   }
 

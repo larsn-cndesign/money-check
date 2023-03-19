@@ -34,12 +34,6 @@ export class CommonFormService implements OnDestroy {
   budgetState = new BudgetState();
 
   /**
-   * A boolean flag indicating if data has been loaded from server (@default false).
-   * @public
-   */
-  pageLoaded = false;
-
-  /**
    * A boolean subject flag indicating if data has been loaded from server.
    * @public
    * @default false

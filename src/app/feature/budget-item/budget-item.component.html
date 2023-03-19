@@ -1,6 +1,6 @@
 <h2>Hantera Budget {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="manageBudgetItem$ | async as budget">
+<ng-container *ngIf="(pageLoaded$ | async) && (manageBudgetItem$ | async) as budget">
   <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
     <ng-container *ngIf="budget.categories.length !== 0; else noExistingCategories">
       <ng-container *ngIf="budget.units.length !== 0; else noExistingUnits">
@@ -180,17 +180,17 @@
 </ng-container>
 
 <ng-template #noExistingYears>
-  <div *ngIf="pageLoaded">Det finns ingen budget eller budgetår att hantera.</div>
+  <div *ngIf="pageLoaded$ | async">Det finns ingen budget eller budgetår att hantera.</div>
 </ng-template>
 
 <ng-template #noExistingCategories>
-  <div *ngIf="pageLoaded">
+  <div *ngIf="pageLoaded$ | async">
     Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.
   </div>
 </ng-template>
 
 <ng-template #noExistingUnits>
-  <div *ngIf="pageLoaded">
+  <div *ngIf="pageLoaded$ | async">
     Det finns ingen enhet upplagd för denna budget. <a href="/feature/unit">Lägg upp enhet</a>.
   </div>
 </ng-template>

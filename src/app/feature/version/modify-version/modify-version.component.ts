@@ -113,7 +113,7 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
         })
       )
       .subscribe(() => {
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
   }
 

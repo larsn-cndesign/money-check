@@ -258,7 +258,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         } else {
           this.selCurrencyCode = '';
         }
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
 
     pipeTakeUntil(this.filterNote$, this.sub$)

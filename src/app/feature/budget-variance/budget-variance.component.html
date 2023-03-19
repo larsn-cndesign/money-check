@@ -1,6 +1,6 @@
 <h2>Budget vs Utfall {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="budgetVariance$ | async as variance">
+<ng-container *ngIf="(pageLoaded$ | async) && (budgetVariance$ | async) as variance">
   <ng-container *ngIf="variance.budgetYears.length !== 0; else noExistingYears">
     <div>
       <mat-form-field>
@@ -125,5 +125,5 @@
 </ng-container>
 
 <ng-template #noExistingYears>
-  <div *ngIf="pageLoaded">Det finns ingen budget eller budgetår.</div>
+  <div *ngIf="pageLoaded$ | async">Det finns ingen budget eller budgetår.</div>
 </ng-template>

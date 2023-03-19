@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { Sort } from '@angular/material/sort';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
@@ -49,11 +49,17 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    */
   budgetState = new BudgetState();
 
+  // /**
+  //  * A boolean flag indicating if data has been loaded from server (@default false).
+  //  * @public
+  //  */
+  // pageLoaded = false;
   /**
-   * A boolean flag indicating if data has been loaded from server (@default false).
+   * A boolean subject flag indicating if data has been loaded from server.
    * @public
+   * @default false
    */
-  pageLoaded = false;
+  pageLoaded$ = new BehaviorSubject<boolean>(false);  
 
   /**
    * A property that holds all columns to be displayed in a table.
@@ -96,13 +102,12 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(() => {
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
 
     pipeTakeUntil(this.filterListService.item$, this.sub$).subscribe((item) => {
       if (item && item.confirmed) {
         this.budgetVarianceService.item.filter.list = item.list;
-        // this.budgetVarianceService.updateStore();
         this.getFilteredItems();
       }
     });

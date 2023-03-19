@@ -1,6 +1,6 @@
 <h2>Hantera Kategorier {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="budgetState.hasBudget; else noExistingBudget">
+<ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
   <form
     [formGroup]="form"
     #formDirective="ngForm"
@@ -73,7 +73,7 @@
 </ng-container>
 
 <ng-template #noExistingBudget>
-  <div *ngIf="pageLoaded">
+  <div *ngIf="pageLoaded$ | async">
     Det finns ingen budget upplagd som kategorier kan kopplas till.
     <a href="/feature/create-budget">Skapa en ny budget</a>.
   </div>

@@ -1,6 +1,6 @@
 <h2>Hantera Version* {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="budgetYear$ | async as budget">
+<ng-container *ngIf="(pageLoaded$ | async) && (budgetYear$ | async) as budget">
   <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
     <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
       <div class="form-field-error">
@@ -66,5 +66,5 @@
 </div>
 
 <ng-template #noExistingYears>
-  <div *ngIf="pageLoaded">Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
+  <div *ngIf="pageLoaded$ | async">Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
 </ng-template>

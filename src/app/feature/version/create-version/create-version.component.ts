@@ -101,7 +101,7 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
       )
       .subscribe((budgetYear: ManageBudgetYear) => {
         this.form.patchValue({ copy: budgetYear.copy });
-        this.pageLoaded = true;
+        this.pageLoaded$.next(true);
       });
   }
 

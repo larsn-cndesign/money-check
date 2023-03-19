@@ -1,6 +1,6 @@
 <h2>Skapa Budgetår {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="budgetState.hasBudget; else noExistingBudget">
+<ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
   <ng-container *ngIf="budgetYear$ | async as budget">
     <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateBudgetYear(formDirective)">
       <div class="form-field-error">
@@ -39,7 +39,7 @@
 </ng-container>
 
 <ng-template #noExistingBudget>
-  <div *ngIf="pageLoaded">
+  <div *ngIf="pageLoaded$ | async">
     Det finns ingen budget upplagd som ett budgetår kan kopplas till.
     <a href="/feature/create-budget">Skapa en ny budget</a>.
   </div>

@@ -1,6 +1,6 @@
 <h2>Hantera Transaktioner {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
 
-<ng-container *ngIf="manageActualItem$ | async as actual">
+<ng-container *ngIf="(pageLoaded$ | async) && (manageActualItem$ | async) as actual">
   <ng-container *ngIf="actual.budgetYears.length !== 0; else noExistingYears">
     <ng-container *ngIf="actual.categories.length !== 0; else noExistingCategories">
       <form [formGroup]="form" (ngSubmit)="onSaveActualItem()" data-testid="form">
@@ -290,11 +290,11 @@
 </ng-container>
 
 <ng-template #noExistingYears>
-  <div *ngIf="pageLoaded">Det finns ingen budget eller budgetår.</div>
+  <div *ngIf="pageLoaded$ | async">Det finns ingen budget eller budgetår.</div>
 </ng-template>
 
 <ng-template #noExistingCategories>
-  <div *ngIf="pageLoaded">
+  <div *ngIf="pageLoaded$ | async">
     Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.
   </div>
 </ng-template>
