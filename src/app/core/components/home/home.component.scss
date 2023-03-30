@@ -1,6 +1,6 @@
 button {
-  width: calc(50% - 20px);
-  height: 200px;
+  width: 80%;
+  height: 130px;
   margin: 10px;
   font-size: 28px;
 }
@@ -8,4 +8,14 @@ button {
 .mat-icon {
   transform: scale(2.5);
   margin-top: 20px;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------
+@media (min-width: 600px) {
+  button {
+    width: calc(50% - 20px);
+    height: 200px;
+  }
 }

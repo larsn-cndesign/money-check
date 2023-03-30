@@ -1,9 +1,12 @@
-<h2>Budget vs Utfall {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>
+  Budget vs Utfall
+  <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
+</h2>
 
 <ng-container *ngIf="(pageLoaded$ | async) && (budgetVariance$ | async) as variance">
   <ng-container *ngIf="variance.budgetYears.length !== 0; else noExistingYears">
     <div>
-      <mat-form-field>
+      <mat-form-field style="max-width: 130px">
         <mat-label>Välj budgetår</mat-label>
         <mat-select [value]="variance.filter.budgetYearId" (selectionChange)="onChangeFilter($event, 'budgetYearId')">
           <mat-option *ngFor="let item of variance.budgetYears" [value]="item.id">
@@ -12,7 +15,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field style="max-width: 130px">
         <mat-label>Välj version</mat-label>
         <mat-select [value]="variance.filter.versionId" (selectionChange)="onChangeFilter($event, 'version')">
           <mat-option *ngFor="let item of variance.versions" [value]="item.id">
@@ -21,7 +24,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field style="max-width: 130px">
         <mat-label>Välj valuta</mat-label>
         <mat-select [value]="variance.filter.currencyCode" (selectionChange)="onChangeFilter($event, 'currencyCode')">
           <mat-option *ngFor="let item of variance.currencies" [value]="item.code">
@@ -30,7 +33,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field style="max-width: 130px">
         <mat-label>Välj månad</mat-label>
         <mat-select [value]="variance.filter.month" (selectionChange)="onChangeFilter($event, 'month')">
           <mat-option *ngFor="let month of months" [value]="month.id">

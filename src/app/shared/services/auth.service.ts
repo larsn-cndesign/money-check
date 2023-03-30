@@ -45,9 +45,7 @@ export class AuthService {
         }
         return false;
       }),
-      catchError((error: HttpErrorResponse) => {
-        return error.status === 400 ? of(false) : this.errorService.handleHttpError(error);
-      })
+      catchError(this.errorService.handleHttpError)
     );
   }
 

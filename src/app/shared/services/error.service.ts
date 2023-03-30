@@ -107,7 +107,6 @@ export class ErrorService {
 
       // console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
-    console.log(error);
     this.messageBoxService.show(new MessageBox(title, errorDescription, 'error'));
     return throwError(error);
   };

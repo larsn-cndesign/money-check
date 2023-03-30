@@ -102,6 +102,13 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   noteFieldRows = 1;
 
   /**
+   * A property to hold to show or hide filter options.
+   * @public
+   * @default false Hide filter.
+   */
+  showFilter = false;
+
+  /**
    * A Subject that emits and listen to value changes of the note filter input.
    * @private
    * @default new Subject<string>()
@@ -488,7 +495,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @param tableRef Reference to the table wrapper of transactions
    */
   private setTableHeight(tableRef: ElementRef<HTMLDivElement>): void {
-    if (tableRef) {
+    if (tableRef && window.innerHeight > 600) {
       setTimeout(() => {
         // const height = `${window.innerHeight - tableRef.nativeElement.offsetTop - 100}px`;
         const height = `${window.innerHeight - tableRef.nativeElement.getBoundingClientRect().top - 20}px`;

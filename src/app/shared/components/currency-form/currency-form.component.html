@@ -13,7 +13,6 @@
     </mat-form-field>
 
     <mat-form-field>
-      <!-- TODO tooltip icon info -->
       <mat-label>Medlekurs</mat-label>
       <input matInput type="text" formControlName="averageRate" [errorStateMatcher]="matcher" required />
       <mat-error *ngIf="averageRate?.invalid">{{ getErrorMessage(averageRate, 'Kurs') }}</mat-error>
@@ -22,7 +21,7 @@
 
   <div>
     <button
-      mat-raised-button
+      mat-flat-button
       type="button"
       color="accent"
       [disabled]="!code?.valid || !budgetRate?.valid || !averageRate?.valid"

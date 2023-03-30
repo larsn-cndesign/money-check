@@ -32,7 +32,6 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   getBudgetYear(budgetId: number): Observable<ManageBudgetYear> {
     return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
-        console.log(budgetYear);
         if (budgetYear) {
           this.store.item = budgetYear;
           this.updateStore();

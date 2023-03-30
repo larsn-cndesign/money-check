@@ -261,6 +261,9 @@ describe('ActualItemComponent', () => {
   });
 
   it('filter actual items based on selects', () => {
+    triggerEvent(fixture, 'show-filter', 'click');
+    fixture.detectChanges();
+
     const spy = spyOn(actualItemService, 'setFilterItem');
 
     triggerEvent(fixture, 'filter-year', 'selectionChange', { value: 4 });

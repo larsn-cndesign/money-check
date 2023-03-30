@@ -79,6 +79,13 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   noteFieldRows = 1;
 
   /**
+   * A property to hold to show or hide filter options.
+   * @public
+   * @default false Hide filter.
+   */
+  showFilter = false;
+
+  /**
    * Getter property for the action form control
    * @returns The action form control
    */

@@ -1,5 +1,5 @@
 @use '../../../../content/variables.scss' as v;
-@use '../../../../content//message-theme.scss' as m;
+@use '../../../../content/message-theme.scss' as m;
 
 .success {
   @include m.message(v.$success-fg, v.$success-bg);

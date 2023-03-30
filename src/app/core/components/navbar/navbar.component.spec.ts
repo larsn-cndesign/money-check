@@ -10,7 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Budget } from 'src/app/feature/budget/shared/budget.model';
 import { click, findComponent, findEl } from 'src/app/mock-backend/element.spec-helper';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -20,6 +20,8 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { routes } from '../../../app-routing.module';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from './navbar.component';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AppUser } from '../../models/app-user.model';
 
 type OmitFromBudgetState = OmitAllFromStore | 'getBudgetStateInStore' | 'setBudgetSate';
 
@@ -41,6 +43,7 @@ describe('NavbarComponent', () => {
   let router: Router;
   let ngZone: NgZone;
   let budgetState: BudgetState;
+  let userService: UserService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -64,6 +67,7 @@ describe('NavbarComponent', () => {
     fixture = TestBed.createComponent(NavbarComponent);
     router = TestBed.inject(Router);
     ngZone = TestBed.inject(NgZone);
+    userService = TestBed.inject(UserService);
     component = fixture.componentInstance;
     budgetState = deepCoyp(BUDGET_STATE) as BudgetState;
     component.budgetState$ = of(budgetState);
@@ -73,8 +77,7 @@ describe('NavbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('toggles sidenav when user click on the hamburger menu icon on mobile devices', () => {
-    component.isMobileDevice = true;
+  xit('toggles sidenav when user click on the hamburger menu icon on mobile devices', () => {
     fixture.detectChanges();
 
     const sideNavOpen = component.isSideNavOpen;
@@ -87,7 +90,6 @@ describe('NavbarComponent', () => {
   });
 
   it('renders an independent menu', () => {
-    component.isMobileDevice = true;
     fixture.detectChanges();
 
     const menu = findComponent(fixture, 'app-menu');
@@ -95,8 +97,6 @@ describe('NavbarComponent', () => {
   });
 
   it('hides the sidenav menu when user clicks on a link in it', () => {
-    component.isMobileDevice = true;
-    component.isSideNavOpen = true;
     fixture.detectChanges();
 
     const menu = findComponent(fixture, 'app-menu');

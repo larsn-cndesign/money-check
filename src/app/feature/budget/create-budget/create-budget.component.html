@@ -1,7 +1,7 @@
 <h2>Skapa Budget</h2>
 
 <form [formGroup]="form" #formDirective="ngForm" autocomplete="off" (ngSubmit)="onSaveBudget(formDirective)">
-  <div class="form-field-error">
+  <div class="head-section form-field-error">
     <mat-form-field>
       <mat-label>Budget</mat-label>
       <input
@@ -16,7 +16,7 @@
     </mat-form-field>
   </div>
   <div *ngIf="form">
-    <button mat-raised-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
+    <button mat-flat-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
       <mat-radio-button value="add">Lägg till budget</mat-radio-button>
       <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra vald budget</mat-radio-button>

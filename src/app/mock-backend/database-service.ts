@@ -715,6 +715,7 @@ export class DatabaseService {
 
     budgetSate.budgets = this.db.budgets;
     budgetSate.budgetId = this.db.budgets.length > 0 ? this.db.budgets[0].id : -1;
+    budgetSate.budgetName = this.db.budgets.length > 0 ? this.db.budgets[0].budgetName : '';
     budgetSate.hasBudget = this.db.budgets.length > 0;
 
     return budgetSate;

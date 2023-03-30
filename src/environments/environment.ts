@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // tokenName: 'access_token', // @test Only for testing, should be removed if using a real backend.
-  tokenName: 'test_token',
+  // tokenName: 'access_token',
+  tokenName: 'test_token', // @test Only for testing, should be commented out if using a real backend.
   allowedDomains: 'localhost',
   disallowedRoutes: 'localhost/auth/login',
 };

@@ -1,9 +1,12 @@
-<h2>Hantera Version* {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>
+  Hantera Version*
+  <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
+</h2>
 
 <ng-container *ngIf="(pageLoaded$ | async) && (budgetYear$ | async) as budget">
   <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
     <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
-      <div class="form-field-error">
+      <div class="head-section form-field-error">
         <mat-form-field>
           <mat-label>Välj år</mat-label>
           <mat-select
@@ -20,22 +23,20 @@
         </mat-form-field>
       </div>
 
-      <div class="form-field-error">
-        <mat-form-field>
-          <mat-label>Namn</mat-label>
-          <input matInput type="text" formControlName="versionName" [errorStateMatcher]="matcher" required />
-          <mat-error *ngIf="versionName?.invalid">{{ getErrorMessage(versionName, 'Namnet') }}</mat-error>
-        </mat-form-field>
-        <button
-          *ngIf="budget.versions.length > 1"
-          mat-raised-button
-          type="button"
-          [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
-          (click)="onDeleteVersion($event)"
-        >
-          Ta bort aktuell version
-        </button>
-      </div>
+      <mat-form-field>
+        <mat-label>Namn</mat-label>
+        <input matInput type="text" formControlName="versionName" [errorStateMatcher]="matcher" required />
+        <mat-error *ngIf="versionName?.invalid">{{ getErrorMessage(versionName, 'Namnet') }}</mat-error>
+      </mat-form-field>
+      <button
+        *ngIf="budget.versions.length > 1"
+        mat-flat-button
+        type="button"
+        [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
+        (click)="onDeleteVersion($event)"
+      >
+        Ta bort aktuell version
+      </button>
 
       <div *ngIf="year?.value && year?.value !== -1">
         <app-currency-form
@@ -47,7 +48,7 @@
 
       <div>
         <button
-          mat-raised-button
+          mat-flat-button
           color="primary"
           type="submit"
           [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"

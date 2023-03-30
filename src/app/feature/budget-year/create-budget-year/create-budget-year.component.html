@@ -1,9 +1,12 @@
-<h2>Skapa Budgetår {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>
+  Skapa Budgetår
+  <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
+</h2>
 
 <ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
   <ng-container *ngIf="budgetYear$ | async as budget">
     <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateBudgetYear(formDirective)">
-      <div class="form-field-error">
+      <div class="head-section form-field-error">
         <mat-form-field>
           <mat-label>Budgetår</mat-label>
           <input matInput type="text" formControlName="year" [errorStateMatcher]="matcher" required />
@@ -24,9 +27,9 @@
         ></app-currency-form>
       </div>
 
-      <div>
+      <div class="row-xl">
         <button
-          mat-raised-button
+          mat-flat-button
           color="primary"
           type="submit"
           [disabled]="($any(currencies$ | async).length === 0 && !budget.copy) || !year?.valid"

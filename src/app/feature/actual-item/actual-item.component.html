@@ -1,4 +1,7 @@
-<h2>Hantera Transaktioner {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>
+  Hantera Transaktioner
+  <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
+</h2>
 
 <ng-container *ngIf="(pageLoaded$ | async) && (manageActualItem$ | async) as actual">
   <ng-container *ngIf="actual.budgetYears.length !== 0; else noExistingYears">
@@ -45,7 +48,7 @@
             <mat-error *ngIf="trip?.invalid">{{ getErrorMessage(trip) }}</mat-error>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field style="max-width: 130px">
             <mat-label>Välj Valuta</mat-label>
             <mat-select formControlName="currencyCode" [errorStateMatcher]="matcher" data-testid="currencyCode">
               <mat-option *ngFor="let item of actual.currencies" [value]="item">
@@ -84,7 +87,7 @@
 
         <div>
           <button
-            mat-raised-button
+            mat-flat-button
             type="submit"
             [disabled]="
               amount?.invalid ||
@@ -104,82 +107,87 @@
             (change)="onChangeAction()"
             data-testid="action"
           >
-            <mat-radio-button value="add">Lägg till transaktion</mat-radio-button>
-            <mat-radio-button value="edit" [disabled]="action?.value === 'add'"
-              >Ändra vald transaktion</mat-radio-button
-            >
+            <mat-radio-button value="add">Lägg till</mat-radio-button>
+            <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
           </mat-radio-group>
         </div>
       </form>
 
       <div class="row-xl filter">
-        <mat-icon>filter_alt</mat-icon>
-        <mat-form-field>
-          <mat-label>Välj budgetår</mat-label>
-          <mat-select
-            [value]="actual.filter.budgetYearId"
-            (selectionChange)="onChangeFilter($event, 'budgetYearId')"
-            data-testid="filter-year"
-          >
-            <mat-option [value]="-1">Alla år</mat-option>
-            <mat-option *ngFor="let item of actual.budgetYears" [value]="item.id">
-              {{ item.year }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div>
+          <button mat-icon-button matPrefix type="button" (click)="showFilter = !showFilter" data-testid="show-filter">
+            <mat-icon>filter_alt</mat-icon>
+            Filter
+          </button>
+        </div>
+        <ng-container *ngIf="showFilter">
+          <mat-form-field>
+            <mat-label>Välj budgetår</mat-label>
+            <mat-select
+              [value]="actual.filter.budgetYearId"
+              (selectionChange)="onChangeFilter($event, 'budgetYearId')"
+              data-testid="filter-year"
+            >
+              <mat-option [value]="-1">Alla år</mat-option>
+              <mat-option *ngFor="let item of actual.budgetYears" [value]="item.id">
+                {{ item.year }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Välj kategori</mat-label>
-          <mat-select
-            [value]="actual.filter.categoryId"
-            (selectionChange)="onChangeFilter($event, 'category')"
-            data-testid="filter-category"
-          >
-            <mat-option [value]="-1">Alla kategorier</mat-option>
-            <mat-option *ngFor="let item of actual.categories" [value]="item.id">
-              {{ item.categoryName }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Välj kategori</mat-label>
+            <mat-select
+              [value]="actual.filter.categoryId"
+              (selectionChange)="onChangeFilter($event, 'category')"
+              data-testid="filter-category"
+            >
+              <mat-option [value]="-1">Alla kategorier</mat-option>
+              <mat-option *ngFor="let item of actual.categories" [value]="item.id">
+                {{ item.categoryName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Välj resa</mat-label>
-          <mat-select
-            [value]="actual.filter.tripId"
-            (selectionChange)="onChangeFilter($event, 'trip')"
-            data-testid="filter-trip"
-          >
-            <mat-option [value]="-1">Alla resor</mat-option>
-            <mat-option *ngFor="let item of actual.trips" [value]="item.id">
-              {{ item.fromDate | date : 'yyyy-MM-dd' }} / {{ item.toDate | date : 'yyyy-MM-dd' }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Välj resa</mat-label>
+            <mat-select
+              [value]="actual.filter.tripId"
+              (selectionChange)="onChangeFilter($event, 'trip')"
+              data-testid="filter-trip"
+            >
+              <mat-option [value]="-1">Alla resor</mat-option>
+              <mat-option *ngFor="let item of actual.trips" [value]="item.id">
+                {{ item.fromDate | date : 'yyyy-MM-dd' }} / {{ item.toDate | date : 'yyyy-MM-dd' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Välj valuta</mat-label>
-          <mat-select
-            [value]="actual.filter.currencyCode"
-            (selectionChange)="onChangeFilter($event, 'currencyCode')"
-            data-testid="filter-currency-code"
-          >
-            <mat-option [value]="''">Alla valutor</mat-option>
-            <mat-option *ngFor="let item of actual.currencies" [value]="item">
-              {{ item }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Välj valuta</mat-label>
+            <mat-select
+              [value]="actual.filter.currencyCode"
+              (selectionChange)="onChangeFilter($event, 'currencyCode')"
+              data-testid="filter-currency-code"
+            >
+              <mat-option [value]="''">Alla valutor</mat-option>
+              <mat-option *ngFor="let item of actual.currencies" [value]="item">
+                {{ item }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Notering</mat-label>
-          <input
-            matInput
-            type="text"
-            [value]="actual.filter.note"
-            (input)="OnFilterNote($event)"
-            data-testid="filter-note"
-          />
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>Notering</mat-label>
+            <input
+              matInput
+              type="text"
+              [value]="actual.filter.note"
+              (input)="OnFilterNote($event)"
+              data-testid="filter-note"
+            />
+          </mat-form-field>
+        </ng-container>
       </div>
 
       <div>Antal transaktioner: {{ actual.actualItems.length }}</div>

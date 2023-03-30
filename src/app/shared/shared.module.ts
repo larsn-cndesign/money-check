@@ -20,6 +20,7 @@ import { CurrencyTableComponent } from './components/currency-table/currency-tab
 import { CurrencyFormComponent } from './components/currency-form/currency-form.component';
 import { FocusDirective } from './directives/focus.directive';
 import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [CurrencyTableComponent, CurrencyFormComponent, FocusDirective, SkipSanitizeHtmlPipe],
@@ -41,6 +42,7 @@ import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSortModule,
+    MatTooltipModule,
   ],
   exports: [
     CommonModule,
@@ -60,6 +62,7 @@ import { SkipSanitizeHtmlPipe } from './pipes/skip-sanitize-html';
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSortModule,
+    MatTooltipModule,
     CurrencyTableComponent,
     CurrencyFormComponent,
     FocusDirective,

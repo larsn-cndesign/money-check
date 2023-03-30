@@ -162,7 +162,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       const { email, password } = body;
       const user = users.find((x: any) => x.email === email && x.password === password);
       if (!user) {
-        return badRequest({ message: 'Bad request' });
+        return badRequest({
+          title: 'Fel vid inlogging',
+          description: 'Användarnamn eller lösenord är felaktigt',
+        });
       }
       return ok(headers, {
         name: 'Test user',

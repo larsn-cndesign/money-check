@@ -1,4 +1,7 @@
-<h2>Hantera Budget {{ budgetState.hasBudget ? '- Budget: ' + budgetState.budgetName : '' }}</h2>
+<h2>
+  Hantera Budget
+  <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
+</h2>
 
 <ng-container *ngIf="(pageLoaded$ | async) && (manageBudgetItem$ | async) as budget">
   <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
@@ -83,7 +86,7 @@
 
           <div>
             <button
-              mat-raised-button
+              mat-flat-button
               type="submit"
               [disabled]="
                 category?.invalid ||
@@ -98,17 +101,20 @@
               Spara budgetpost
             </button>
             <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
-              <mat-radio-button value="add">Lägg till budgetpost</mat-radio-button>
-              <mat-radio-button value="edit" [disabled]="action?.value === 'add'">
-                Ändra vald budgetpost
-              </mat-radio-button>
+              <mat-radio-button value="add">Lägg till</mat-radio-button>
+              <mat-radio-button value="edit" [disabled]="action?.value === 'add'"> Ändra </mat-radio-button>
             </mat-radio-group>
           </div>
         </form>
 
         <div class="row-xl filter">
-          <mat-icon>filter_alt</mat-icon>
-          <mat-form-field>
+          <div>
+            <button mat-icon-button matPrefix type="button" (click)="showFilter = !showFilter">
+              <mat-icon>filter_alt</mat-icon>
+              Filter
+            </button>
+          </div>
+          <mat-form-field *ngIf="showFilter">
             <mat-label>Välj kategori</mat-label>
             <mat-select [value]="budget.filter.categoryId" (selectionChange)="onChangeFilter($event, 'category')">
               <mat-option [value]="-1">Alla kategorier</mat-option>

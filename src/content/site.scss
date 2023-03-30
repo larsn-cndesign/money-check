@@ -95,7 +95,7 @@ body {
 }
 
 .form-field-error .mat-form-field {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .mat-form-field {
@@ -103,8 +103,10 @@ body {
 }
 
 .v-radio-group .mat-radio-button {
-  margin: 5px 0;
-  width: 100%;
+  // margin: 5px 0;
+  // width: 100%;
+  width: auto;
+  margin: 0 8px;
 }
 
 .year-version {
@@ -127,8 +129,11 @@ input:-webkit-autofill:active {
 // Computer
 // -------------------------------
 @media (min-width: 600px) {
-  .v-radio-group .mat-radio-button {
-    width: auto;
-    margin: 0 5px;
+  // .v-radio-group .mat-radio-button {
+  //   width: auto;
+  //   margin: 0 5px;
+  // }
+  .form-field-error .mat-form-field {
+    margin-bottom: 12px;
   }
 }

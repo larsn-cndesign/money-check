@@ -1,12 +1,13 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AppUser } from '../../models/app-user.model';
 
 /**
  * Class representing a responsible `toolbar` with `sidenav` for mobile devices.
@@ -16,7 +17,7 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * An observer of a `BudgetState` object.
    * @public
@@ -24,18 +25,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   budgetState$: Observable<BudgetState>;
 
   /**
-   * A Subject that emits values to subscribers.
-   * @private
-   * @default new Subject<void>() A new subject.
-   */
-  private notifier$ = new Subject<void>();
-
-  /**
-   * A boolean flag that indicates if the screen size matches a mobile device.
+   * An Observable that emits a `BreakpointState` object representing whether the application
+   * is currently running in a mobile device breakpoint.
    * @public
-   * @default false Not a mobile device.
    */
-  isMobileDevice = false;
+  isMobile: Observable<BreakpointState>;
 
   /**
    * A boolean flag that indicates if the `sidenav` menu is open or not.
@@ -52,24 +46,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showBudget = false;
 
   /**
+   * An observer of a user.
+   * @public
+   */
+  user$!: Observable<AppUser>;
+
+  /**
+   * A Subject that emits values to subscribers.
+   * @private
+   * @default new Subject<void>() A new subject.
+   */
+  private notifier$ = new Subject<void>();
+
+  /**
    * Initializes services and listen to screen size changes.
    * @param breakpointObserver Media query matching utility.
+   * @param budgetStateService Manage the state of a budget.
+   * @param router Navigation service.
+   * @param userService A service manage users.
    */
   constructor(
-    breakpointObserver: BreakpointObserver,
+    private breakpointObserver: BreakpointObserver,
     private budgetStateService: BudgetStateService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {
-    breakpointObserver
-      .observe([Breakpoints.XSmall])
-      .pipe(takeUntil(this.notifier$))
-      .subscribe((result) => {
-        for (const query of Object.keys(result.breakpoints)) {
-          this.isMobileDevice = result.breakpoints[query];
-          this.isSideNavOpen = !this.isMobileDevice;
-        }
-      });
-
+    this.isMobile = this.breakpointObserver.observe(Breakpoints.Handset);
     this.budgetState$ = this.budgetStateService.item$;
   }
 
@@ -92,6 +94,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.user$ = this.userService.item$;
+  }
+
   /**
    * @description Unsubscribe from all observables and complete the notifier$ subject.
    */
@@ -101,10 +107,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Show or hide `sidenav` menu.
+   * Handles selection change event on the select.
+   * @description Update budget state in localStorage and in memory store.
+   * @param e The event object emitted by the select.
    */
-  onToggleSidenav(): void {
-    this.isSideNavOpen = !this.isSideNavOpen;
+  onChangeBudget(e: MatSelectChange): void {
+    this.budgetStateService.changeBudget(+e.value);
   }
 
   /**
@@ -116,11 +124,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles selection change event on the select.
-   * @description Update budget state in localStorage and in memory store.
-   * @param e The event object emitted by the select.
+   * Show or hide `sidenav` menu.
    */
-  onChangeBudget(e: MatSelectChange): void {
-    this.budgetStateService.changeBudget(+e.value);
+  onToggleSidenav(): void {
+    this.isSideNavOpen = !this.isSideNavOpen;
   }
 }
