@@ -347,12 +347,13 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     this.actualItemService.selectItem(item);
 
     this.noteFieldRows = lineCount(item.note) > 1 ? 4 : 1;
+    const tripId = item.tripId ?? -1;
 
     this.form.patchValue({
       action: Modify.Edit,
       id: item.id,
       category: item.categoryId,
-      trip: item.tripId,
+      trip: tripId,
       purchaseDate: item.purchaseDate,
       currencyCode: item.currencyCode,
       amount: item.amount,
