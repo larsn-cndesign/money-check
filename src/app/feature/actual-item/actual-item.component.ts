@@ -300,7 +300,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   onChangeAction(): void {
     if (this.action?.value === Modify.Add) {
       this.actualItemService.clearSelection();
-      this.resetForm();
+      // this.resetForm();
     }
   }
 
@@ -498,9 +498,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   private setTableHeight(tableRef: ElementRef<HTMLDivElement>): void {
     if (tableRef && window.innerHeight > 600) {
       setTimeout(() => {
-        // const height = `${window.innerHeight - tableRef.nativeElement.offsetTop - 100}px`;
         const height = `${window.innerHeight - tableRef.nativeElement.getBoundingClientRect().top - 20}px`;
-
         this.renderer.setStyle(tableRef.nativeElement, 'height', height);
       }, 0);
     }
