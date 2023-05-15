@@ -142,7 +142,7 @@ export class StoreItem<T, U extends Selectable = any> {
    * @param item The item to add.
    */
   addItem(item: U): void {
-    this.store.items = [...this.store.items, item];
+    this.store.items = [item, ...this.store.items];
     this.updateStoreItems(false);
   }
 
