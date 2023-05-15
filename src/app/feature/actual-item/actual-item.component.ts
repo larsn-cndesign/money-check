@@ -28,6 +28,7 @@ import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
 import { budgetYearNotExistValidator } from './shared/actual-item.validators';
+import { toDate } from 'src/app/shared/classes/common.fn';
 
 /**
  * Class representing actual transactions of expenses.
@@ -312,7 +313,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     if (e.value === null) {
       this.purchaseDate?.setErrors({ invalidDate: true });
     } else {
-      this.purchaseDate?.setValue(e.value);
+      this.purchaseDate?.setValue(toDate(e.value));
     }
   }
 
