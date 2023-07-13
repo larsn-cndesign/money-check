@@ -136,7 +136,7 @@ export class TripComponent extends CommonFormService implements OnInit {
     if (e.value === null) {
       this.fromDate?.setErrors({ invalidDate: true });
     } else {
-      this.fromDate?.setValue(e.value);
+      this.fromDate?.setValue(toDate(e.value));
     }
   }
 
@@ -149,7 +149,7 @@ export class TripComponent extends CommonFormService implements OnInit {
     if (e.value === null) {
       this.toDate?.setErrors({ invalidDate: true });
     } else {
-      this.toDate?.setValue(e.value);
+      this.toDate?.setValue(toDate(e.value));
     }
   }
 
