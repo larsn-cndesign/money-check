@@ -9,21 +9,16 @@
 
 .container {
   display: flex;
-}
-
-.left {
-  width: 50%;
-  text-align: left;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .center {
-  width: 50%;
-  text-align: left;
+  margin-left: 10px;
 }
 
 .right {
   width: 0%;
-  text-align: right;
 }
 
 .menu-font {
@@ -43,17 +38,8 @@
     justify-content: space-between;
   }
 
-  .left {
-    width: 20%;
-  }
-
-  .center {
-    width: 60%;
-    text-align: center;
-  }
-
   .right {
-    width: 20%;
+    width: auto;
   }
 
   .menu-font {
