@@ -28,4 +28,11 @@ export interface Trip extends Selectable {
    * @public
    */
   toDate: Date;
+
+  /**
+   * Notes of the trip. Could for example show the total trip dates when splitting expenses.
+   * @public
+   * @default '' No note.
+   */
+  note: string;
 }

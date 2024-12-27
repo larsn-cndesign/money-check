@@ -38,6 +38,7 @@ export class TripComponent extends CommonFormService implements OnInit {
     id: FormControl<number>;
     fromDate: FormControl<Date | null>;
     toDate: FormControl<Date | null>;
+    note: FormControl<string | null>;
   }>;
 
   /**
@@ -50,7 +51,7 @@ export class TripComponent extends CommonFormService implements OnInit {
    * A property that holds all columns to be displayed in a table
    * @public
    */
-  displayedColumns: string[] = ['fromDate', 'toDate', 'delete'];
+  displayedColumns: string[] = ['fromDate', 'toDate', 'note', 'delete'];
 
   /**
    * Getter property for the action form control
@@ -74,6 +75,14 @@ export class TripComponent extends CommonFormService implements OnInit {
    */
   get toDate(): AbstractControl | null {
     return this.form.get('toDate');
+  }
+
+  /**
+   * Getter property for the v form control
+   * @returns The note form control
+   */
+  get note(): AbstractControl | null {
+    return this.form.get('note');
   }
 
   /**
@@ -102,6 +111,7 @@ export class TripComponent extends CommonFormService implements OnInit {
           betweenDateValidator(tripService, 'action'),
         ]),
         toDate: new FormControl<Date | null>(null, [Validators.required, betweenDateValidator(tripService, 'action')]),
+        note: new FormControl(''),
       },
       { validators: [rangeDateValidator(tripService, 'fromDate', 'toDate')] }
     );
@@ -176,6 +186,7 @@ export class TripComponent extends CommonFormService implements OnInit {
       id: item.id,
       fromDate: item.fromDate,
       toDate: item.toDate,
+      note: item.note,
     });
   }
 
@@ -202,6 +213,7 @@ export class TripComponent extends CommonFormService implements OnInit {
           budgetId: BudgetState.getSelectedBudgetId(),
           fromDate: item.fromDate,
           toDate: item.toDate,
+          note: item.note,
         };
 
         this.modifyItem(trip, Modify.Delete);
@@ -223,6 +235,7 @@ export class TripComponent extends CommonFormService implements OnInit {
         budgetId: BudgetState.getSelectedBudgetId(),
         fromDate: val.fromDate,
         toDate: val.toDate,
+        note: val.note ?? '',
       };
 
       this.modifyItem(trip, val.action, formDirective);

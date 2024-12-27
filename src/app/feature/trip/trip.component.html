@@ -45,12 +45,15 @@
         <mat-datepicker #toDatePicker></mat-datepicker>
         <mat-error *ngIf="toDate?.invalid"> {{ getErrorMessage(toDate, 'Resa') }} </mat-error>
       </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Notering</mat-label>
+        <input matInput type="text" formControlName="note" data-testid="note" />
+      </mat-form-field>
     </div>
 
     <div *ngIf="form">
-      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">
-        Spara
-      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
       <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
         <mat-radio-button value="add">Lägg till</mat-radio-button>
         <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
@@ -73,6 +76,13 @@
           <mat-label>{{ item.toDate | date : 'yyyy-MM-dd' }}</mat-label>
         </td>
       </ng-container>
+
+      <ng-container matColumnDef="note">
+        <th mat-header-cell *matHeaderCellDef>Notering</th>
+        <td mat-cell *matCellDef="let item">
+          <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
+        </td>
+      </ng-container>      
 
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
