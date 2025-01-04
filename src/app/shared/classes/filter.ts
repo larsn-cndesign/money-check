@@ -69,6 +69,20 @@ export class ItemFilter {
   month = -1;
 
   /**
+   * Filter on days traveled/stayed during the seleced period.
+   * @public
+   * @default false No filter.
+   */
+  travelDay = false;
+
+  /**
+   * The number of days traveled/stayed during the seleced period.
+   * @public
+   * @default 1 No filter = divide by 1.
+   */
+  travelDayCount = 1;
+
+  /**
    * Method to get stored filter from `localStorage`.
    * @static
    * @returns A  filter to use on array of actual or budget items.

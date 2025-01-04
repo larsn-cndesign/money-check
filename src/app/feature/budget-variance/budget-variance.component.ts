@@ -11,6 +11,7 @@ import { FilterListService } from 'src/app/shared/components/filter-list/shared/
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 /**
  * Class representing budget variance.
@@ -132,6 +133,17 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    */
   onChangeFilter(e: MatSelectChange, filterType: string): void {
     this.budgetVarianceService.setFilterItem(e.value, filterType);
+    this.getFilteredItems();
+  }
+
+  /**
+   * Handles selection change event on the checkbox.
+   * @description Filters the budget variance based on a combination of select's and checkbox.
+   * @param e The event object emitted by the checkbox.
+   * @param filterType A type representing the select that triggered the change event.
+   */
+  onChangeTravelDay(e: MatCheckboxChange, filterType: string): void {
+    this.budgetVarianceService.setFilterItem(e.checked, filterType);
     this.getFilteredItems();
   }
 

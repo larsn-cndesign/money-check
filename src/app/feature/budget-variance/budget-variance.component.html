@@ -41,6 +41,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-checkbox [checked]="variance.filter.travelDay" (change)="onChangeTravelDay($event, 'day')">
+        Antal resdagar {{ variance.filter.travelDay ? variance.filter.travelDayCount : '' }}
+      </mat-checkbox>
     </div>
 
     <div class="max-table-height">

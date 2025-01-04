@@ -4,7 +4,7 @@
   <form [formGroup]="form" (ngSubmit)="login()" data-testid="form">
     <div class="form-field-error">
       <!-- @test only for testing purpose -->
-      <div>Ange: test@test.com</div>
+      <div>Ange: test&#64;test.com</div>
       <mat-form-field style="width: 234px">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />

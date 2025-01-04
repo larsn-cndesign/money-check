@@ -83,6 +83,9 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
       case 'month':
         this.item.filter.month = value;
         break;
+      case 'day':
+        this.item.filter.travelDay = value;
+        break;
     }
     ItemFilter.setFilter(this.item.filter);
   }
