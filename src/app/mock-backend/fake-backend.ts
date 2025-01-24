@@ -7,6 +7,7 @@ import {
   HttpRequest,
   HttpResponse,
   HTTP_INTERCEPTORS,
+  HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -22,17 +23,16 @@ import { Unit } from '../feature/unit/shared/unit.model';
 import { ItemFilter } from '../shared/classes/filter';
 import { DatabaseService } from './database-service';
 import { MOCK_DATA } from './mock-database';
+import { LS_ACCESS_TOKEN } from '../shared/classes/constants';
 
 // ------------------------------------
 // CONSTANTS FOR TEST ONLY
 // ------------------------------------
+export const MOCK_DATA_STORAGE = 'db';
 const FAKE_EMAIL = 'test@test.com';
 const FAKE_USER_PASSWORD = '123456';
 /** Simulate a delay of a http request in milliseconds */
 const SIMULATED_HTTPREQUEST_DEALY = 600;
-const ACCESS_TOKEN = 'access_token';
-const TEST_TOKEN = 'test_token';
-const MOCK_DATA_STORAGE = 'db';
 /** Fake user credentials */
 const users = [{ email: FAKE_EMAIL, password: FAKE_USER_PASSWORD }] as any;
 
@@ -41,10 +41,9 @@ const users = [{ email: FAKE_EMAIL, password: FAKE_USER_PASSWORD }] as any;
  * First login will always fail. Thereafter it will work as expected.
  */
 export function setTokenForTestUser(): void {
-  const testToken = localStorage.getItem(TEST_TOKEN);
+  const testToken = localStorage.getItem(LS_ACCESS_TOKEN);
   if (!testToken) {
-    localStorage.setItem(ACCESS_TOKEN, 'jwt-token');
-    localStorage.setItem(TEST_TOKEN, 'jwt-token');
+    localStorage.setItem(LS_ACCESS_TOKEN, 'jwt-token');
   }
 }
 
@@ -167,6 +166,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
           description: 'Användarnamn eller lösenord är felaktigt',
         });
       }
+
+      // Add the Authorization header
+      const token = localStorage.getItem(LS_ACCESS_TOKEN);
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+
       return ok(headers, {
         name: 'Test user',
         isAdmin: true,
