@@ -2,7 +2,6 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-// @test Uncomment if using real backend
 import { LS_ACCESS_TOKEN } from 'src/app/shared/classes/constants';
 
 export const environment = {

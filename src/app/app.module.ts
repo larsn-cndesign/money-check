@@ -20,7 +20,7 @@ registerLocaleData(localeSv);
 
 import { AppComponent } from './app.component';
 
-/** @test Only for testing, should be removed if using a real backend. */
+/** @Test Only for testing, should be removed if using a real backend. */
 import { fakeBackendProvider } from './mock-backend/fake-backend';
 
 @NgModule({
@@ -52,7 +52,7 @@ import { fakeBackendProvider } from './mock-backend/fake-backend';
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
     { provide: TitleStrategy, useClass: PageTitleStrategy },
     { provide: APP_BASE_HREF, useValue: '/' },
-    /** @test Only for testing, should be removed if using a real backend. */
+    /** @Test Only for testing, should be removed if using a real backend. */
     fakeBackendProvider,
   ],
   bootstrap: [AppComponent],

@@ -22,4 +22,5 @@ export const LS_BUDGET_STATE = 'budgetState';
 export const LS_FILTER = 'filter';
 
 /** Defines the localStorage token item */
-export const LS_ACCESS_TOKEN = 'test_token'; // @test - Change to access_token if using a real backend.
+// export const LS_ACCESS_TOKEN = 'access_token'; // Uncomment if using a real backend.
+export const LS_ACCESS_TOKEN = 'test_token'; // @Test - Only for testing

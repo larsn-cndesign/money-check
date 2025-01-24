@@ -224,6 +224,7 @@ export class DatabaseService {
     if (trip) {
       trip.fromDate = item.fromDate;
       trip.toDate = item.toDate;
+      trip.note = item.note;
       this.writeToDatabase();
     }
 
@@ -326,11 +327,12 @@ export class DatabaseService {
     const currentVersion = this._currentVersion(item.budgetYear.id);
     const newVersionId = this._incrementId(this.db.versions);
 
-    // Close previous version
+    // Close current version
     if (currentVersion) {
       currentVersion.isClosed = true;
     }
 
+    // Add new version
     this._addVersion(item.budgetYear.id, newVersionId);
 
     this._addCurrencies(item.currencies, newVersionId);
