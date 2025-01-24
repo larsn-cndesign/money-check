@@ -1,4 +1,5 @@
 import { Budget } from 'src/app/feature/budget/shared/budget.model';
+import { LS_BUDGET_STATE } from './constants';
 
 /**
  * Class representing the state of a budget.
@@ -34,7 +35,7 @@ export class BudgetState {
    * @returns The budget state.
    */
   static getLocalStorage(): BudgetState {
-    const budgetState = localStorage.getItem('budgetState');
+    const budgetState = localStorage.getItem(LS_BUDGET_STATE);
     if (budgetState) {
       return JSON.parse(budgetState) as BudgetState;
     }
@@ -60,6 +61,6 @@ export class BudgetState {
    * @param budgetState The budget state to be stored.
    */
   static setLocalStorage(budgetState: BudgetState): void {
-    localStorage.setItem('budgetState', JSON.stringify(budgetState));
+    localStorage.setItem(LS_BUDGET_STATE, JSON.stringify(budgetState));
   }
 }

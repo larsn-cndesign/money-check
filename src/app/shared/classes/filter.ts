@@ -1,4 +1,5 @@
 import { FilterList } from '../components/filter-list/shared/filter-list.model';
+import { LS_FILTER } from './constants';
 
 /**
  * Class representing a filter for an array of items i.e. budget, actual, variance.
@@ -88,7 +89,7 @@ export class ItemFilter {
    * @returns A  filter to use on array of actual or budget items.
    */
   static getFilter(): ItemFilter {
-    const storedFilter = localStorage.getItem('filter');
+    const storedFilter = localStorage.getItem(LS_FILTER);
     if (storedFilter) {
       return JSON.parse(storedFilter) as ItemFilter;
     }
@@ -102,6 +103,6 @@ export class ItemFilter {
    * @param filter The filter item to be stored.
    */
   static setFilter(filter: ItemFilter): void {
-    localStorage.setItem('filter', JSON.stringify(filter));
+    localStorage.setItem(LS_FILTER, JSON.stringify(filter));
   }
 }

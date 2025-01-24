@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppUser } from 'src/app/core/models/app-user.model';
 import { StoreItem } from '../classes/store';
+import { LS_ACCESS_TOKEN } from '../classes/constants';
 
 /**
  * Class representing a service for managing a user.
@@ -31,7 +32,7 @@ export class UserService extends StoreItem<AppUser> {
    * @param user The user of the application.
    */
   storeUser(token: string, user: AppUser): void {
-    localStorage.setItem('access_token', token);
+    localStorage.setItem(LS_ACCESS_TOKEN, token);
     localStorage.setItem('user', JSON.stringify(user));
     this.store.item = user;
     this.updateStore();

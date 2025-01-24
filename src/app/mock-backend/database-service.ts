@@ -12,6 +12,7 @@ import { deepCoyp, toDate } from '../shared/classes/common.fn';
 import { ItemFilter } from '../shared/classes/filter';
 import { Selectable } from '../shared/interfaces/selectable';
 import { DatabaseServer } from './mock-database';
+import { MOCK_DATA_STORAGE } from './fake-backend';
 
 interface PrimaryKey {
   id: number;
@@ -27,11 +28,11 @@ export class DatabaseService {
   private static db = new DatabaseServer();
 
   static writeToDatabase(): void {
-    localStorage.setItem('db', JSON.stringify(this.db));
+    localStorage.setItem(MOCK_DATA_STORAGE, JSON.stringify(this.db));
   }
 
   static readFromDatabase(): void {
-    const dbStore = localStorage.getItem('db');
+    const dbStore = localStorage.getItem(MOCK_DATA_STORAGE);
     const db = new DatabaseServer();
     if (dbStore) {
       const dbServer = JSON.parse(dbStore) as DatabaseServer;
@@ -207,6 +208,7 @@ export class DatabaseService {
       budgetId: item.budgetId,
       fromDate: item.fromDate,
       toDate: item.toDate,
+      note: item.note,
     };
     this.db.trips.push(trip);
 

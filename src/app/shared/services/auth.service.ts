@@ -7,6 +7,7 @@ import { AppUser } from 'src/app/core/models/app-user.model';
 import { UserCredential } from 'src/app/core/models/user-credential.model';
 import { ErrorService } from './error.service';
 import { UserService } from './user.service';
+import { LS_ACCESS_TOKEN } from '../classes/constants';
 
 /**
  * Class representing a service for managing authentication of users.
@@ -54,7 +55,7 @@ export class AuthService {
    * @returns True if token item is found in localStorage.
    */
   isLoggedIn(): boolean {
-    return localStorage.getItem('access_token') != null;
+    return localStorage.getItem(LS_ACCESS_TOKEN) != null;
   }
 
   /**
@@ -63,7 +64,7 @@ export class AuthService {
    */
   logout(): void {
     this.userService.clearStoredUser();
-    localStorage.removeItem('access_token');
+    localStorage.removeItem(LS_ACCESS_TOKEN);
     this.router.navigate(['/login']);
   }
 
