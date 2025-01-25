@@ -1,53 +1,45 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Route, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
+import { inject } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  CanMatchFn,
+  Route,
+  Router,
+  RouterStateSnapshot,
+  UrlSegment,
+} from '@angular/router';
 import { AuthService } from './auth.service';
 
 /**
- * Class representing a guard to prevent unauthorized users to navigate to restriced pages.
- * @implements CanActivate.
+ * Function to check if a route can be activated based a user's login state.
+ * @param _route The active route (not used).
+ * @param state Current stat of the router i.e. current url.
+ * @returns True if a user is logged in.
  */
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard implements CanActivate {
-  /**
-   * Create a navigation guard.
-   * @param authService Service for managing user authentication.
-   * @param router Navigation service.
-   */
-  constructor(private authService: AuthService, private router: Router) {}
+export const canActivate: CanActivateFn = (_route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  /**
-   * Method to check if a route can be activated based a user's login state.
-   * @param _route The active route (not used).
-   * @param state Current stat of the router i.e. current url.
-   * @returns True if a user is logged in.
-   */
-  canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (this.authService.isLoggedIn()) {
-      return true;
-    }
+  if (authService.isLoggedIn()) return true;
 
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-    return false;
-  }
+  return router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+};
 
-  /**
-   * Method to check if a if a Route can be matched based on a user's login state.
-   * @param _route The active route (not used).
-   * @param segments Current stat of the router i.e. current url.
-   * @returns True if a user is logged in.
-   */
-  canMatch(_route: Route, segments: UrlSegment[]): boolean {
-    if (this.authService.isLoggedIn()) {
-      return true;
-    }
+/**
+ * Method to check if a if a Route can be matched based on a user's login state.
+ * @param _route The active route (not used).
+ * @param segments Current stat of the router i.e. current url.
+ * @returns True if a user is logged in.
+ */
+export const canMatch: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-    const stateUrl = segments.reduce((path, currentSegment) => {
-      return `${path}/${currentSegment.path}`;
-    }, '');
+  const stateUrl = segments.reduce((path, currentSegment) => {
+    return `${path}/${currentSegment.path}`;
+  }, '');
 
-    this.router.navigate(['/login'], { queryParams: { returnUrl: stateUrl } });
-    return false;
-  }
-}
+  if (authService.isLoggedIn()) return true;
+
+  return router.navigate(['/login'], { queryParams: { returnUrl: stateUrl } });
+};
