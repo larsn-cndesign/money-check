@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { HomeComponent } from '../core/components/home/home.component';
-import { AuthGuard } from '../shared/services/auth-guard.service';
 import { ActualItemComponent } from './actual-item/actual-item.component';
 import { BudgetItemComponent } from './budget-item/budget-item.component';
 import { BudgetVarianceComponent } from './budget-variance/budget-variance.component';
@@ -15,12 +13,13 @@ import { TripComponent } from './trip/trip.component';
 import { UnitComponent } from './unit/unit.component';
 import { CreateVersionComponent } from './version/create-version/create-version.component';
 import { ModifyVersionComponent } from './version/modify-version/modify-version.component';
+import { canActivate } from '../shared/services/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     component: FeatureComponent,
-    canActivate: [AuthGuard],
+    canActivate: [canActivate],
     children: [
       { path: 'home', title: 'Hem', component: HomeComponent },
       { path: 'category', title: 'Hantera Kategorier', component: CategoryComponent },

@@ -1,4 +1,4 @@
-button {
+.home-btn  {
   width: 80%;
   height: 130px;
   margin: 10px;
@@ -10,11 +10,15 @@ button {
   margin-top: 20px;
 }
 
+.btn-title {
+  padding: 20px 0 0 10px;
+}
+
 // -------------------------------
 // Computer
 // -------------------------------
 @media (min-width: 600px) {
-  button {
+  .home-btn {
     width: calc(50% - 20px);
     height: 200px;
   }
