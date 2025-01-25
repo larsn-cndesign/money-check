@@ -1,3 +1,5 @@
+@use '../content/variables.scss' as v;
+
 *,
 *::before,
 *::after {
@@ -98,8 +100,17 @@ body {
   margin-bottom: 0;
 }
 
-.mat-form-field {
+// .mat-form-field {
+//   margin-right: 3px;
+// }
+.mdc-form-field {
   margin-right: 3px;
+  color: v.$color !important;
+}
+
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label,
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: v.$color !important;
 }
 
 .v-radio-group .mat-radio-button {
@@ -122,17 +133,14 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: v.$light0;
 }
 
 // -------------------------------
 // Computer
 // -------------------------------
 @media (min-width: 600px) {
-  // .v-radio-group .mat-radio-button {
-  //   width: auto;
-  //   margin: 0 5px;
-  // }
   .form-field-error .mat-form-field {
     margin-bottom: 12px;
   }

@@ -261,7 +261,7 @@
           <ng-container matColumnDef="sum-currency">
             <td mat-footer-cell *matFooterCellDef colspan="4">
               <mat-label style="margin-right: 6px">Summa</mat-label>
-              <mat-form-field appearance="standard" floatlLabel="never">
+              <mat-form-field appearance="outline" floatlLabel="never">
                 <mat-select
                   [value]="selCurrencyCode"
                   (selectionChange)="onChangeSumCurrency($event)"

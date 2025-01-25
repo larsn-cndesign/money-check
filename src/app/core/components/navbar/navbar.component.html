@@ -14,7 +14,7 @@
   </div>
   <div class="center">
     <ng-container *ngIf="budgetState$ | async as budgetState" style="text-align: center">
-      <mat-form-field class="menu-font budget" *ngIf="showBudget" appearance="standard" floatlLabel="never">
+      <mat-form-field class="menu-font budget" *ngIf="showBudget" appearance="outline" floatlLabel="never">
         <mat-select
           (selectionChange)="onChangeBudget($event)"
           [value]="budgetState.budgetId"
