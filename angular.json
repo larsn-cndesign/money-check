@@ -77,18 +77,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "money-check:build"
+            "buildTarget": "money-check:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "money-check:build:production"
+              "buildTarget": "money-check:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "money-check:build"
+            "buildTarget": "money-check:build"
           }
         },
         "test": {
