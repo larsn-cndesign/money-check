@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { SharedModule } from '../../shared.module';
 import { dropDown, slideInFromLeft } from './shared/message-box.animations';
 import { MessageBox } from './shared/message-box.model';
 import { MessageBoxService } from './shared/message-box.service';
@@ -9,6 +10,8 @@ import { MessageBoxService } from './shared/message-box.service';
  */
 @Component({
   selector: 'app-message-box',
+  standalone: true,
+  imports: [SharedModule],
   templateUrl: './message-box.component.html',
   styleUrls: ['./message-box.component.scss'],
   animations: [slideInFromLeft, dropDown],

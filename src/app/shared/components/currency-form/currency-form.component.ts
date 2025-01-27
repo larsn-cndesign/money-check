@@ -6,18 +6,25 @@ import {
   FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
   Validator,
   Validators,
 } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 import { Observable, Subscription } from 'rxjs';
 import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
 import { toNumber } from '../../classes/common.fn';
 import { Modify } from '../../enums/enums';
 import { ImmediateErrorMatcher } from '../../models/immediate-error-state';
 import { ErrorService } from '../../services/error.service';
+import { SharedModule } from '../../shared.module';
 import { isNumberValidator } from '../../validators/common.validators';
 import { CurrencyTableService } from '../currency-table/shared/currency-table.service';
 import { duplicateValidator } from '../currency-table/shared/currency-table.validators';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { CurrencyTableComponent } from '../currency-table/currency-table.component';
 
 /**
  * Class representing a custom form control for managing currencies.
@@ -39,6 +46,8 @@ import { duplicateValidator } from '../currency-table/shared/currency-table.vali
  */
 @Component({
   selector: 'app-currency-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
   templateUrl: './currency-form.component.html',
   styleUrls: ['./currency-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -192,7 +201,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
     }
   }
 
-  // Required by the ControlValueAccessor 
+  // Required by the ControlValueAccessor
   registerOnChange(onChange: any): void {
     const sub = this.form.valueChanges.subscribe(onChange);
     this.onChangeSubs.push(sub);

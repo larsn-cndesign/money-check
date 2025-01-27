@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -10,6 +11,7 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
 
@@ -20,6 +22,8 @@ import { BudgetYearService } from '../shared/budget-year.service';
  */
 @Component({
   selector: 'app-delete-budget-year',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
   templateUrl: './delete-budget-year.component.html',
   styleUrls: ['./delete-budget-year.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

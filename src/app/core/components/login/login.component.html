@@ -8,9 +8,11 @@
       <mat-form-field style="width: 234px">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />
-        <mat-error *ngIf="email?.invalid">
+        @if(email?.invalid) {
+        <mat-error>
           <span data-testid="email-error">{{ getErrorMessage(email, 'Email') }}</span>
         </mat-error>
+        }
       </mat-form-field>
     </div>
     <div class="form-field-error">
@@ -35,9 +37,11 @@
         >
           <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="password?.invalid">
+        @if(password?.invalid) {
+        <mat-error>
           <span data-testid="password-error">{{ getErrorMessage(password, 'Lösenord') }}</span>
         </mat-error>
+        }
       </mat-form-field>
     </div>
 

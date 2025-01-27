@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -15,6 +22,7 @@ import { ErrorService } from 'src/app/shared/services/error.service';
 import { BudgetYear, Currency, ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
 import { yearExistValidator } from '../shared/budget-year.validators';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 /**
  * Class representing creation of a new budget year.
@@ -23,6 +31,8 @@ import { yearExistValidator } from '../shared/budget-year.validators';
  */
 @Component({
   selector: 'app-create-budget-year',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule],
   templateUrl: './create-budget-year.component.html',
   styleUrls: ['./create-budget-year.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

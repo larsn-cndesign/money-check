@@ -1,16 +1,17 @@
+@if (user$ | async; as user) {
 <!-- Menu level 1 -->
-<button mat-button *ngIf="(user$ | async)?.name" routerLink="/feature/budget-variance" data-testid="budget-variance">
-  Utfall
-</button>
-<button mat-button *ngIf="(user$ | async)?.isAdmin" routerLink="/feature/actual-item" data-testid="admin">
-  Transaktoner
-</button>
-<button mat-button *ngIf="(user$ | async)?.isAdmin" [matMenuTriggerFor]="budget" data-testid="admin">
+@if(user.name) {
+<button mat-button routerLink="/feature/budget-variance" data-testid="budget-variance">Utfall</button>
+} @if(user.isAdmin) {
+<button mat-button routerLink="/feature/actual-item" data-testid="admin">Transaktoner</button>
+<button mat-button [matMenuTriggerFor]="budget" data-testid="admin">
   <span>Budget</span>
 </button>
-<button mat-button *ngIf="(user$ | async)?.name" (click)="logout()" data-testid="logout">
+} @if(user.name) {
+<button mat-button (click)="logout()" data-testid="logout">
   <span>Logga ut</span>
 </button>
+}
 <!-- Menu level 2 -->
 <mat-menu #budget="matMenu" [overlapTrigger]="false">
   <button mat-menu-item routerLink="/feature/budget-item">Hantera budget</button>
@@ -31,3 +32,4 @@
   <button mat-menu-item routerLink="/feature/create-version">Skapa ny version</button>
   <button mat-menu-item routerLink="/feature/modify-version">Ändra/Ta bort version</button>
 </mat-menu>
+}

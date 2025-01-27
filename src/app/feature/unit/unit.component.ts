@@ -1,6 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -12,6 +21,7 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Unit } from './shared/unit.model';
 import { UnitService } from './shared/unit.service';
 import { duplicateValidator } from './shared/unit.validators';
@@ -23,6 +33,8 @@ import { duplicateValidator } from './shared/unit.validators';
  */
 @Component({
   selector: 'app-unit',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
   templateUrl: './unit.component.html',
   styleUrls: ['./unit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

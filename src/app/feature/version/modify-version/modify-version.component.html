@@ -3,69 +3,75 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-<ng-container *ngIf="(pageLoaded$ | async) && (budgetYear$ | async) as budget">
-  <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
-    <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
-      <div class="head-section form-field-error">
-        <mat-form-field>
-          <mat-label>Välj år</mat-label>
-          <mat-select
-            formControlName="year"
-            [errorStateMatcher]="matcher"
-            (selectionChange)="onChangeYear($event)"
-            required
-          >
-            <mat-option *ngFor="let item of budget.budgetYears" [value]="item.id">
-              {{ item.year }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="year?.invalid">{{ getErrorMessage(year) }}</mat-error>
-        </mat-form-field>
-      </div>
-
-      <mat-form-field>
-        <mat-label>Namn</mat-label>
-        <input matInput type="text" formControlName="versionName" [errorStateMatcher]="matcher" required />
-        <mat-error *ngIf="versionName?.invalid">{{ getErrorMessage(versionName, 'Namnet') }}</mat-error>
-      </mat-form-field>
-      <button
-        *ngIf="budget.versions.length > 1"
-        mat-flat-button
-        type="button"
-        [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
-        (click)="onDeleteVersion($event)"
+@if((pageLoaded$ | async) && (budgetYear$ | async); as budget) {
+<!-- Check if budget exist -->
+@if(budget.budgetYears.length !== 0) {
+<form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
+  <div class="head-section form-field-error">
+    <mat-form-field>
+      <mat-label>Välj år</mat-label>
+      <mat-select
+        formControlName="year"
+        [errorStateMatcher]="matcher"
+        (selectionChange)="onChangeYear($event)"
+        required
       >
-        Ta bort aktuell version
-      </button>
+        @for (item of budget.budgetYears; track item.id) {
+        <mat-option [value]="item.id">
+          {{ item.year }}
+        </mat-option>
+        }
+      </mat-select>
+      @if(year?.invalid) {
+      <mat-error>{{ getErrorMessage(year) }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
 
-      <div *ngIf="year?.value && year?.value !== -1">
-        <app-currency-form
-          [currencies$]="currencies$"
-          [deletable]="false"
-          formControlName="currencyForm"
-        ></app-currency-form>
-      </div>
+  <mat-form-field>
+    <mat-label>Namn</mat-label>
+    <input matInput type="text" formControlName="versionName" [errorStateMatcher]="matcher" required />
+    @if(versionName?.invalid) {
+    <mat-error>{{ getErrorMessage(versionName, 'Namnet') }}</mat-error>
+    }
+  </mat-form-field>
+  @if(budget.versions.length > 1) {
+  <button
+    mat-flat-button
+    type="button"
+    [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
+    (click)="onDeleteVersion($event)"
+  >
+    Ta bort aktuell version
+  </button>
+  } @if(year?.value && year?.value !== -1) {
+  <div>
+    <app-currency-form
+      [currencies$]="currencies$"
+      [deletable]="false"
+      formControlName="currencyForm"
+    ></app-currency-form>
+  </div>
+  }
 
-      <div>
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
-        >
-          Uppdatera version
-        </button>
-      </div>
-    </form>
-  </ng-container>
-</ng-container>
+  <div>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
+    >
+      Uppdatera version
+    </button>
+  </div>
+</form>
+<!-- No budget -->
+} @else { @if(pageLoaded$ | async) {
+<div>Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
+} }}
 
 <div class="row-xl">
   <span style="font-style: italic">
     * Version kan endast tas bort om det finns mer än en version för det valda året
   </span>
 </div>
-
-<ng-template #noExistingYears>
-  <div *ngIf="pageLoaded$ | async">Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
-</ng-template>

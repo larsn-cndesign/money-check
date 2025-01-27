@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable } from 'rxjs';
+import { SharedModule } from '../../shared.module';
 import { SpinnerService } from './spinner.service';
 
 /**
@@ -7,6 +9,8 @@ import { SpinnerService } from './spinner.service';
  */
 @Component({
   selector: 'app-spinner',
+  standalone: true,
+  imports: [SharedModule, MatProgressSpinnerModule],
   templateUrl: './spinner.component.html',
   styleUrls: ['./spinner.component.scss'],
 })

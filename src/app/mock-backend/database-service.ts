@@ -424,11 +424,12 @@ export class DatabaseService {
 
     const item = new ManageBudgetItem();
 
+    const latestBudgetYearId = Math.max(...this.db.budgetYears.map((n) => n.id)); // Get latest year
     if (filter.budgetYearId === -1) {
-      item.filter.budgetYearId = Math.max(...this.db.budgetYears.map((n) => n.id)); // Get latest year
+      item.filter.budgetYearId = latestBudgetYearId;
     } else {
       const selectedBudgetYear = this.db.budgetYears.find((x) => x.id === filter.budgetYearId);
-      item.filter.budgetYearId = selectedBudgetYear?.id ?? -1;
+      item.filter.budgetYearId = selectedBudgetYear?.id ?? latestBudgetYearId;
     }
 
     // Get current version
@@ -513,7 +514,11 @@ export class DatabaseService {
       if (currentVersion) {
         this.db.currencies.forEach((c) => {
           if (c.versionId === currentVersion.id) {
-            currencyItems.push({ currencyCode: c.code, budgetRate: c.budgetRate } as CurrencyItem);
+            currencyItems.push({
+              currencyCode: c.code,
+              budgetRate: c.budgetRate,
+              averageRate: c.averageRate,
+            } as CurrencyItem);
           }
         });
       }
@@ -912,6 +917,7 @@ export class DatabaseService {
 
   private static _selectBudgetYears(budgetId: number, budgetYearId: number): BudgetYear[] {
     const budgetYears = this.db.budgetYears.filter((x) => x.budgetId === budgetId);
-    return budgetYearId === -1 ? budgetYears : budgetYears.filter((x) => x.id === budgetYearId);
+    const budgetYearsByYearId = budgetYears.filter((x) => x.id === budgetYearId);
+    return budgetYearId === -1 ? budgetYears : budgetYearsByYearId.length > 0 ? budgetYearsByYearId : budgetYears;
   }
 }

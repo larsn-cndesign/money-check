@@ -7,14 +7,16 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatSelectChange } from '@angular/material/select';
-import { Sort } from '@angular/material/sort';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
-import { lineCount, pipeTakeUntil, toNumber } from 'src/app/shared/classes/common.fn';
+import { lineCount, pipeTakeUntil, toDate, toNumber } from 'src/app/shared/classes/common.fn';
 import { ItemFilter } from 'src/app/shared/classes/filter';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
@@ -24,11 +26,11 @@ import { ImmediateUntouchedErrorMatcher } from 'src/app/shared/models/immediate-
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
 import { budgetYearNotExistValidator } from './shared/actual-item.validators';
-import { toDate } from 'src/app/shared/classes/common.fn';
 
 /**
  * Class representing actual transactions of expenses.
@@ -38,6 +40,16 @@ import { toDate } from 'src/app/shared/classes/common.fn';
  */
 @Component({
   selector: 'app-actual-item',
+  standalone: true,
+  imports: [
+    SharedModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatSortModule,
+  ],
   templateUrl: './actual-item.component.html',
   styleUrls: ['./actual-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

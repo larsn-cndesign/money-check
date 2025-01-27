@@ -1,17 +1,26 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Observable, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
+import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/currency-form.component';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
 import { duplicateValidator } from '../shared/budget-version.validators';
@@ -23,6 +32,8 @@ import { duplicateValidator } from '../shared/budget-version.validators';
  */
 @Component({
   selector: 'app-modify-version',
+  standalone: true,
+  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
   templateUrl: './modify-version.component.html',
   styleUrls: ['./modify-version.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

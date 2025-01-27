@@ -3,47 +3,51 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-<ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
-  <ng-container *ngIf="budgetYear$ | async as budget">
-    <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateBudgetYear(formDirective)">
-      <div class="head-section form-field-error">
-        <mat-form-field>
-          <mat-label>Budgetår</mat-label>
-          <input matInput type="text" formControlName="year" [errorStateMatcher]="matcher" required />
-          <mat-error *ngIf="year?.invalid">{{ getErrorMessage(year, 'År') }}</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="row-xl" *ngIf="budget.budgetYears.length > 0">
-        <mat-checkbox formControlName="copy" (change)="onChangeCopyBudget($event)">
-          Kopiera senaste version inklusive budgetposter
-        </mat-checkbox>
-      </div>
-
-      <div [hidden]="budget.copy">
-        <app-currency-form
-          [currencies$]="currencies$"
-          [deletable]="!budget.copy"
-          formControlName="currencyForm"
-        ></app-currency-form>
-      </div>
-
-      <div class="row-xl">
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="($any(currencies$ | async).length === 0 && !budget.copy) || !year?.valid"
-        >
-          Skapa budgetår
-        </button>
-      </div>
-    </form>
-  </ng-container>
-</ng-container>
-
-<ng-template #noExistingBudget>
-  <div *ngIf="pageLoaded$ | async">
-    Det finns ingen budget upplagd som ett budgetår kan kopplas till.
-    <a href="/feature/create-budget">Skapa en ny budget</a>.
+@if((pageLoaded$ | async) && budgetState.hasBudget) {
+<!-- Wait to resolve budget -->
+@if(budgetYear$ | async; as budget) {
+<form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateBudgetYear(formDirective)">
+  <div class="head-section form-field-error">
+    <mat-form-field>
+      <mat-label>Budgetår</mat-label>
+      <input matInput type="text" formControlName="year" [errorStateMatcher]="matcher" required />
+      @if(year?.invalid) {
+      <mat-error>{{ getErrorMessage(year, 'År') }}</mat-error>
+      }
+    </mat-form-field>
   </div>
-</ng-template>
+  @if(budget.budgetYears.length > 0) {
+  <div class="row-xl">
+    <mat-checkbox formControlName="copy" (change)="onChangeCopyBudget($event)">
+      Kopiera senaste version inklusive budgetposter
+    </mat-checkbox>
+  </div>
+  }
+
+  <div [hidden]="budget.copy">
+    <app-currency-form
+      [currencies$]="currencies$"
+      [deletable]="!budget.copy"
+      formControlName="currencyForm"
+    ></app-currency-form>
+  </div>
+
+  <div class="row-xl">
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="($any(currencies$ | async).length === 0 && !budget.copy) || !year?.valid"
+    >
+      Skapa budgetår
+    </button>
+  </div>
+</form>
+}
+<!-- No budget -->
+} @else { @if(pageLoaded$ | async) {
+<div>
+  Det finns ingen budget upplagd som ett budgetår kan kopplas till.
+  <a href="/feature/create-budget">Skapa en ny budget</a>.
+</div>
+} }

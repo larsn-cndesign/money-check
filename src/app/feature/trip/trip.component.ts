@@ -1,6 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -12,6 +21,7 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { betweenDateValidator, rangeDateValidator } from './shared/trip.validators';
@@ -24,6 +34,8 @@ import { betweenDateValidator, rangeDateValidator } from './shared/trip.validato
  */
 @Component({
   selector: 'app-trip',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatDatepickerModule, MatRadioModule, MatTableModule],
   templateUrl: './trip.component.html',
   styleUrls: ['./trip.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

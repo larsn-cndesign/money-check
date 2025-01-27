@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
@@ -7,6 +7,7 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { UserCredential } from '../../models/user-credential.model';
 
 /**
@@ -14,6 +15,8 @@ import { UserCredential } from '../../models/user-credential.model';
  */
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

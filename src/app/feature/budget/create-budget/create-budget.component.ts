@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
@@ -7,9 +15,12 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { Modify } from 'src/app/shared/enums/enums';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { Budget } from '../shared/budget.model';
 import { BudgetService } from '../shared/budget.service';
 import { duplicateValidator } from '../shared/budget.validators';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /**
  * Class representing budget modification.
@@ -18,6 +29,8 @@ import { duplicateValidator } from '../shared/budget.validators';
  */
 @Component({
   selector: 'app-create-budget',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
   templateUrl: './create-budget.component.html',
   styleUrls: ['./create-budget.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

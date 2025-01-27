@@ -1,10 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 import { Subscription } from 'rxjs';
+import { SharedModule } from '../../shared.module';
 import { FilterList, FilterListModel } from './shared/filter-list.model';
 import { FilterListService } from './shared/filter-list.service';
 
 @Component({
   selector: 'app-filter-list',
+  standalone: true,
+  imports: [SharedModule, MatListModule, MatDividerModule],
   templateUrl: './filter-list.component.html',
   styleUrls: ['./filter-list.component.scss'],
 })

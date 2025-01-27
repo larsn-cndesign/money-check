@@ -1,11 +1,20 @@
+@use '../content/variables.scss' as v;
+
 table.tbl {
   width: 100%;
   border: none;
+  background-color: v.$dark3;
 }
 
 table.tbl th,
 table.tbl td {
   padding: 0 6px !important;
+}
+
+table.tbl .mat-mdc-header-row,
+table.tbl .mat-mdc-footer-row {
+  background-color: v.$dark2;
+  color: v.$table-color;
 }
 
 table.tbl tr td {
@@ -20,12 +29,12 @@ table.tbl tr td {
 }
 
 .mat-table-sticky {
-  background: v.$table-header;
+  background: v.$dark2;
   opacity: 1;
 }
 
 .selected {
-  background: v.$selected-bg;
+  background: v.$selected-bg !important;
 }
 
 // -------------------------------

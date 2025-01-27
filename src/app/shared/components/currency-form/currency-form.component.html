@@ -3,19 +3,25 @@
     <mat-form-field>
       <mat-label>Valuta (3 tecken)</mat-label>
       <input matInput type="text" formControlName="code" [errorStateMatcher]="matcher" required />
-      <mat-error *ngIf="code?.invalid">{{ getErrorMessage(code, 'Valuta') }}</mat-error>
+      @if(code?.invalid){
+      <mat-error>{{ getErrorMessage(code, 'Valuta') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Budgetkurs</mat-label>
       <input matInput type="text" formControlName="budgetRate" [errorStateMatcher]="matcher" required />
-      <mat-error *ngIf="budgetRate?.invalid">{{ getErrorMessage(budgetRate, 'Kurs') }}</mat-error>
+      @if(budgetRate?.invalid) {
+      <mat-error>{{ getErrorMessage(budgetRate, 'Kurs') }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Medlekurs</mat-label>
       <input matInput type="text" formControlName="averageRate" [errorStateMatcher]="matcher" required />
-      <mat-error *ngIf="averageRate?.invalid">{{ getErrorMessage(averageRate, 'Kurs') }}</mat-error>
+      @if(averageRate?.invalid) {
+      <mat-error>{{ getErrorMessage(averageRate, 'Kurs') }}</mat-error>
+      }
     </mat-form-field>
   </div>
 

@@ -1,4 +1,8 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
 
@@ -7,6 +11,8 @@ import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
  */
 @Component({
   selector: 'app-currency-table',
+  standalone: true,
+  imports: [CommonModule, MatTableModule, MatIconModule, MatInputModule],
   templateUrl: './currency-table.component.html',
   styleUrls: ['./currency-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

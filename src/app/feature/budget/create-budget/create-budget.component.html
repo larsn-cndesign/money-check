@@ -12,16 +12,20 @@
         type="text"
         [errorStateMatcher]="matcher"
       />
-      <mat-error *ngIf="budgetName?.invalid">{{ getErrorMessage(budgetName, 'Budget') }}</mat-error>
+      @if(budgetName?.invalid) {
+      <mat-error>{{ getErrorMessage(budgetName, 'Budget') }}</mat-error>
+      }
     </mat-form-field>
   </div>
-  <div *ngIf="form">
+  @if(form) {
+  <div>
     <button mat-flat-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
       <mat-radio-button value="add">Lägg till budget</mat-radio-button>
       <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra vald budget</mat-radio-button>
     </mat-radio-group>
   </div>
+  }
 </form>
 
 <div class="row-xl max-table-height">

@@ -22,6 +22,10 @@ body {
   background-color: v.$body-background;
 }
 
+h2 {
+  font-weight: normal;
+}
+
 // -------------------------------
 // Alignment
 // -------------------------------
@@ -96,16 +100,19 @@ body {
   min-width: 300px;
 }
 
-.form-field-error .mat-form-field {
-  margin-bottom: 0;
+.form-field-error .mat-mdc-form-field {
+  margin-bottom: 12px;
 }
 
-// .mat-form-field {
-//   margin-right: 3px;
-// }
-.mdc-form-field {
+.mat-mdc-form-field-error {
+  font-size: 11px;
+}
+
+.mat-mdc-form-field {
   margin-right: 3px;
   color: v.$color !important;
+  vertical-align: top;
+  font-size: 14px !important;
 }
 
 .mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label,
@@ -114,14 +121,16 @@ body {
 }
 
 .v-radio-group .mat-radio-button {
-  // margin: 5px 0;
-  // width: 100%;
   width: auto;
   margin: 0 8px;
 }
 
 .year-version {
   display: inline-block;
+}
+
+.form-field-no-error {
+  margin-bottom: -1.28em;
 }
 
 // -------------------------------
@@ -141,7 +150,4 @@ input:-webkit-autofill:active {
 // Computer
 // -------------------------------
 @media (min-width: 600px) {
-  .form-field-error .mat-form-field {
-    margin-bottom: 12px;
-  }
 }

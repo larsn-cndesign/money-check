@@ -1,19 +1,25 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
-import { NavigationEnd, Router } from '@angular/router';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { UserService } from 'src/app/shared/services/user.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { AppUser } from '../../models/app-user.model';
+import { MenuComponent } from '../menu/menu.component';
 
 /**
  * Class representing a responsible `toolbar` with `sidenav` for mobile devices.
  */
 @Component({
   selector: 'app-navbar',
+  standalone: true,
+  imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })

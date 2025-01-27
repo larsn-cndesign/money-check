@@ -1,42 +1,46 @@
 <mat-toolbar class="container">
-  <button
-    *ngIf="(isMobile | async)?.matches && (user$ | async)?.name !== ''"
-    mat-icon-button
-    (click)="onToggleSidenav()"
-    data-testid="toggle-sidenav"
-  >
+  @if((isMobile | async)?.matches && (user$ | async)?.name !== '') {
+  <button mat-icon-button (click)="onToggleSidenav()" data-testid="toggle-sidenav">
     <mat-icon>menu</mat-icon>
   </button>
+  }
   <div class="left">
     <span routerLink="/feature/home" style="cursor: pointer">
       <div class="valign-icon-text menu-font"><mat-icon color="primary">euro</mat-icon>MoneyCheck</div>
     </span>
   </div>
   <div class="center">
-    <ng-container *ngIf="budgetState$ | async as budgetState" style="text-align: center">
-      <mat-form-field class="menu-font budget" *ngIf="showBudget" appearance="outline" floatlLabel="never">
-        <mat-select
-          (selectionChange)="onChangeBudget($event)"
-          [value]="budgetState.budgetId"
-          placeholder="Välj budget"
-          data-testid="change-budget"
-        >
-          <mat-option *ngFor="let item of budgetState.budgets" [value]="item.id">
-            {{ item.budgetName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
+    @if(budgetState$ | async; as budgetState) {
+    <!-- Select budget -->
+    @if(showBudget) {
+    <mat-form-field class="menu-font budget form-field-no-error" floatlLabel="never" style="background-color: transparent !important;">
+      <mat-select
+        (selectionChange)="onChangeBudget($event)"
+        [value]="budgetState.budgetId"
+        placeholder="Välj budget"
+        data-testid="change-budget"
+        
+      >
+        @for (item of budgetState.budgets; track item.id) {
+        <mat-option [value]="item.id">
+          {{ item.budgetName }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    } }
   </div>
   <div class="right">
-    <ng-container *ngIf="!(isMobile | async)?.matches">
-      <app-menu></app-menu>
-    </ng-container>
+    @if(!(isMobile | async)?.matches) {
+    <app-menu></app-menu>
+    }
   </div>
 </mat-toolbar>
 
-<mat-sidenav-container class="sidenav-container" *ngIf="(isMobile | async)?.matches">
+@if((isMobile | async)?.matches) {
+<mat-sidenav-container class="sidenav-container">
   <mat-sidenav [mode]="'side'" [opened]="isSideNavOpen">
     <app-menu (navigated)="onNavigate()"></app-menu>
   </mat-sidenav>
 </mat-sidenav-container>
+}

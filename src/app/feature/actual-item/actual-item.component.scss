@@ -1,3 +1,5 @@
+@use '../../../content/variables' as v;
+
 // Override table styles
 table.tbl td:nth-child(5) {
   text-align: right;

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
-import { Sort } from '@angular/material/sort';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -11,7 +11,9 @@ import { FilterListService } from 'src/app/shared/components/filter-list/shared/
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MatTableModule } from '@angular/material/table';
 
 /**
  * Class representing budget variance.
@@ -20,6 +22,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
  */
 @Component({
   selector: 'app-budget-variance',
+  standalone: true,
+  imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
   templateUrl: './budget-variance.component.html',
   styleUrls: ['./budget-variance.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

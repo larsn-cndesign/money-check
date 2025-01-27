@@ -3,111 +3,116 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-<ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
-  <form
-    [formGroup]="form"
-    #formDirective="ngForm"
-    autocomplete="off"
-    (ngSubmit)="onSaveTrip(formDirective)"
-    data-testid="form"
-  >
-    <div class="head-section form-field-error">
-      <mat-form-field>
-        <mat-label>Från datum</mat-label>
-        <input
-          matInput
-          formControlName="fromDate"
-          [matDatepicker]="fromDatePicker"
-          [errorStateMatcher]="matcher"
-          (click)="fromDatePicker.open()"
-          (dateChange)="onFromDateChanged($event)"
-          required
-          data-testid="fromDate"
-        />
-        <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
-        <mat-datepicker #fromDatePicker></mat-datepicker>
-        <mat-error *ngIf="fromDate?.invalid"> {{ getErrorMessage(fromDate, 'Resa') }} </mat-error>
-      </mat-form-field>
+@if((pageLoaded$ | async) && budgetState.hasBudget) {
+<form
+  [formGroup]="form"
+  #formDirective="ngForm"
+  autocomplete="off"
+  (ngSubmit)="onSaveTrip(formDirective)"
+  data-testid="form"
+>
+  <div class="head-section form-field-error">
+    <mat-form-field>
+      <mat-label>Från datum</mat-label>
+      <input
+        matInput
+        formControlName="fromDate"
+        [matDatepicker]="fromDatePicker"
+        [errorStateMatcher]="matcher"
+        (click)="fromDatePicker.open()"
+        (dateChange)="onFromDateChanged($event)"
+        required
+        data-testid="fromDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromDatePicker></mat-datepicker>
+      @if(fromDate?.invalid) {
+      <mat-error> {{ getErrorMessage(fromDate, 'Resa') }} </mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Till datum</mat-label>
-        <input
-          matInput
-          formControlName="toDate"
-          [matDatepicker]="toDatePicker"
-          [errorStateMatcher]="matcher"
-          (click)="toDatePicker.open()"
-          (dateChange)="onToDateChanged($event)"
-          required
-          data-testid="toDate"
-        />
-        <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
-        <mat-datepicker #toDatePicker></mat-datepicker>
-        <mat-error *ngIf="toDate?.invalid"> {{ getErrorMessage(toDate, 'Resa') }} </mat-error>
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>Till datum</mat-label>
+      <input
+        matInput
+        formControlName="toDate"
+        [matDatepicker]="toDatePicker"
+        [errorStateMatcher]="matcher"
+        (click)="toDatePicker.open()"
+        (dateChange)="onToDateChanged($event)"
+        required
+        data-testid="toDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #toDatePicker></mat-datepicker>
+      @if(toDate?.invalid) {
+      <mat-error> {{ getErrorMessage(toDate, 'Resa') }} </mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Notering</mat-label>
-        <input matInput type="text" formControlName="note" data-testid="note" />
-      </mat-form-field>
-    </div>
-
-    <div *ngIf="form">
-      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
-      <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
-        <mat-radio-button value="add">Lägg till</mat-radio-button>
-        <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
-      </mat-radio-group>
-    </div>
-  </form>
-
-  <div class="row-xl max-table-height">
-    <table mat-table [dataSource]="$any(trips$ | async)" class="tbl">
-      <ng-container matColumnDef="fromDate">
-        <th mat-header-cell *matHeaderCellDef>Från datum</th>
-        <td mat-cell *matCellDef="let item">
-          <mat-label>{{ item.fromDate | date : 'yyyy-MM-dd' }}</mat-label>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="toDate">
-        <th mat-header-cell *matHeaderCellDef>Till datum</th>
-        <td mat-cell *matCellDef="let item">
-          <mat-label>{{ item.toDate | date : 'yyyy-MM-dd' }}</mat-label>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="note">
-        <th mat-header-cell *matHeaderCellDef>Notering</th>
-        <td mat-cell *matCellDef="let item">
-          <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
-        </td>
-      </ng-container>      
-
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let item">
-          <button mat-icon-button type="button" title="Ta bort resa" (click)="onDeleteTrip($event, item)">
-            <mat-icon>delete_forever</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr
-        mat-row
-        *matRowDef="let item; columns: displayedColumns"
-        [class.selected]="item.selected"
-        (click)="onSelectTrip(item)"
-        data-testid="select-item"
-      ></tr>
-    </table>
+    <mat-form-field>
+      <mat-label>Notering</mat-label>
+      <input matInput type="text" formControlName="note" data-testid="note" />
+    </mat-form-field>
   </div>
-</ng-container>
 
-<ng-template #noExistingBudget>
-  <div *ngIf="pageLoaded$ | async">
-    Det finns ingen budget upplagd som resor kan kopplas till.
-    <a href="/feature/create-budget">Skapa en ny budget</a>.
+  @if(form) {
+  <div>
+    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
+    <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
+      <mat-radio-button value="add">Lägg till</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
+    </mat-radio-group>
   </div>
-</ng-template>
+  }
+</form>
+
+<div class="row-xl max-table-height">
+  <table mat-table [dataSource]="$any(trips$ | async)" class="tbl">
+    <ng-container matColumnDef="fromDate">
+      <th mat-header-cell *matHeaderCellDef>Från datum</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.fromDate | date : 'yyyy-MM-dd' }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="toDate">
+      <th mat-header-cell *matHeaderCellDef>Till datum</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.toDate | date : 'yyyy-MM-dd' }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="note">
+      <th mat-header-cell *matHeaderCellDef>Notering</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-icon-button type="button" title="Ta bort resa" (click)="onDeleteTrip($event, item)">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let item; columns: displayedColumns"
+      [class.selected]="item.selected"
+      (click)="onSelectTrip(item)"
+      data-testid="select-item"
+    ></tr>
+  </table>
+</div>
+<!-- No budget -->
+} @else { @if(pageLoaded$ | async) {
+<div>
+  Det finns ingen budget upplagd som resor kan kopplas till.
+  <a href="/feature/create-budget">Skapa en ny budget</a>.
+</div>
+} }

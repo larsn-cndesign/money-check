@@ -3,55 +3,60 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-<ng-container *ngIf="(pageLoaded$ | async) && (budgetYear$ | async) as budget">
-  <ng-container *ngIf="budget.budgetYears.length !== 0; else noExistingYears">
-    <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateVersion(formDirective)">
-      <div class="head-section form-field-error">
-        <mat-form-field>
-          <mat-label>Välj år</mat-label>
-          <mat-select
-            formControlName="budgetYearId"
-            [errorStateMatcher]="matcher"
-            (selectionChange)="onChangeYear($event)"
-            required
-            data-testid="budget-year"
-          >
-            <mat-option *ngFor="let item of budget.budgetYears" [value]="item.id">
-              {{ item.year }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="budgetYearId?.invalid">{{ getErrorMessage(budgetYearId, 'År') }}</mat-error>
-        </mat-form-field>
-      </div>
+@if((pageLoaded$ | async) && (budgetYear$ | async); as budget) {
+<!-- Check if budget exist -->
+@if(budget.budgetYears.length !== 0) {
+<form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateVersion(formDirective)">
+  <div class="head-section form-field-error">
+    <mat-form-field>
+      <mat-label>Välj år</mat-label>
+      <mat-select
+        formControlName="budgetYearId"
+        [errorStateMatcher]="matcher"
+        (selectionChange)="onChangeYear($event)"
+        required
+        data-testid="budget-year"
+      >
+        @for (item of budget.budgetYears; track item.id) {
+        <mat-option [value]="item.id">
+          {{ item.year }}
+        </mat-option>
+        }
+      </mat-select>
+      @if(budgetYearId?.invalid) {
+      <mat-error>{{ getErrorMessage(budgetYearId, 'År') }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
 
-      <div class="row-xl" *ngIf="budget.budgetYears.length > 0">
-        <mat-checkbox formControlName="copy" (change)="onChangeCopyBudget($event)" data-testid="copy">
-          Kopiera föregående versions budgetposter
-        </mat-checkbox>
-      </div>
+  @if(budget.budgetYears.length > 0) {
+  <div class="row-xl">
+    <mat-checkbox formControlName="copy" (change)="onChangeCopyBudget($event)" data-testid="copy">
+      Kopiera föregående versions budgetposter
+    </mat-checkbox>
+  </div>
+  } @if(budgetYearId?.value !== -1) {
+  <div>
+    <app-currency-form
+      [currencies$]="currencies$"
+      [deletable]="!budget.copy"
+      formControlName="currencyForm"
+    ></app-currency-form>
+  </div>
+  }
 
-      <div *ngIf="budgetYearId?.value !== -1">
-        <app-currency-form
-          [currencies$]="currencies$"
-          [deletable]="!budget.copy"
-          formControlName="currencyForm"
-        ></app-currency-form>
-      </div>
-
-      <div>
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="$any(currencies$ | async).length === 0 || budgetYearId?.value === -1"
-        >
-          Skapa version
-        </button>
-      </div>
-    </form>
-  </ng-container>
-</ng-container>
-
-<ng-template #noExistingYears>
-  <div *ngIf="pageLoaded$ | async">Det finns inget budgetår att skapa en version för</div>
-</ng-template>
+  <div>
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="$any(currencies$ | async).length === 0 || budgetYearId?.value === -1"
+    >
+      Skapa version
+    </button>
+  </div>
+</form>
+<!-- No budget -->
+} @else { @if(pageLoaded$ | async) {
+<div>Det finns inget budgetår att skapa en version för</div>
+} }}

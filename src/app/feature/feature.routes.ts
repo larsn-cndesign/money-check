@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route } from '@angular/router';
 import { HomeComponent } from '../core/components/home/home.component';
+import { canActivate } from '../shared/services/auth-guard.service';
 import { ActualItemComponent } from './actual-item/actual-item.component';
 import { BudgetItemComponent } from './budget-item/budget-item.component';
 import { BudgetVarianceComponent } from './budget-variance/budget-variance.component';
@@ -13,9 +13,8 @@ import { TripComponent } from './trip/trip.component';
 import { UnitComponent } from './unit/unit.component';
 import { CreateVersionComponent } from './version/create-version/create-version.component';
 import { ModifyVersionComponent } from './version/modify-version/modify-version.component';
-import { canActivate } from '../shared/services/auth-guard.service';
 
-const routes: Routes = [
+export const FEATURE_ROUTES: Route[] = [
   {
     path: '',
     component: FeatureComponent,
@@ -33,13 +32,13 @@ const routes: Routes = [
       { path: 'actual-item', title: 'Hantera Transaktioner', component: ActualItemComponent },
       { path: 'budget-variance', title: 'Budget vs Utfall', component: BudgetVarianceComponent },
       { path: 'create-budget', title: 'Skapa Budget', component: CreateBudgetComponent },
+      // {
+      //   path: 'pricing',
+      //   component: MemberPricingComponent,
+      //   providers: [PricingService],
+      //   resolve: { model: PricingResolver },
+      // },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class FeatureRoutingModule {}

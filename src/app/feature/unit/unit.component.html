@@ -3,95 +3,95 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-<ng-container *ngIf="(pageLoaded$ | async) && budgetState.hasBudget; else noExistingBudget">
-  <form
-    [formGroup]="form"
-    #formDirective="ngForm"
-    autocomplete="off"
-    (ngSubmit)="onSaveUnit(formDirective)"
-    data-testid="form"
-  >
-    <div class="head-section form-field-error">
-      <div style="font-style: italic">
-        <mat-label>Exempel: Antal, Pris per månad, etc...</mat-label>
-      </div>
-      <mat-form-field>
-        <mat-label>Enhet</mat-label>
-        <input
-          #itemRef
-          matInput
-          placeholder="Ange enhet"
-          formControlName="unitName"
-          type="text"
-          [errorStateMatcher]="matcher"
-          data-testid="unit"
-        />
-        <mat-error *ngIf="unitName?.invalid" data-testid="unit-error">{{
-          getErrorMessage(unitName, 'Enhet')
-        }}</mat-error>
-      </mat-form-field>
-
-      <mat-checkbox formControlName="useCurrency" (change)="onChangeUseCurrency($event)" data-testid="use-currency">
-        Använd valutaberäkning för den här enheten
-      </mat-checkbox>
+@if((pageLoaded$ | async) && budgetState.hasBudget) {
+<form
+  [formGroup]="form"
+  #formDirective="ngForm"
+  autocomplete="off"
+  (ngSubmit)="onSaveUnit(formDirective)"
+  data-testid="form"
+>
+  <div class="head-section form-field-error">
+    <div style="font-style: italic">
+      <mat-label>Exempel: Antal, Pris per månad, etc...</mat-label>
     </div>
-    <div *ngIf="form">
-      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">
-        Spara
-      </button>
-      <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
-        <mat-radio-button value="add">Lägg till</mat-radio-button>
-        <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
-      </mat-radio-group>
-    </div>
-  </form>
+    <mat-form-field>
+      <mat-label>Enhet</mat-label>
+      <input
+        #itemRef
+        matInput
+        placeholder="Ange enhet"
+        formControlName="unitName"
+        type="text"
+        [errorStateMatcher]="matcher"
+        data-testid="unit"
+      />
+      @if(unitName?.invalid) {
+      <mat-error data-testid="unit-error">{{ getErrorMessage(unitName, 'Enhet') }}</mat-error>
+      }
+    </mat-form-field>
 
-  <div class="row-xl max-table-height">
-    <table mat-table [dataSource]="$any(units$ | async)" class="tbl">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Enhet</th>
-        <td mat-cell *matCellDef="let item">
-          <mat-label>{{ item.unitName }}</mat-label>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="useCurrency">
-        <th mat-header-cell *matHeaderCellDef>Valutaberäkning</th>
-        <td mat-cell *matCellDef="let item">
-          <mat-icon>{{ item.useCurrency ? 'check' : '' }}</mat-icon>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let item">
-          <button
-            mat-icon-button
-            type="button"
-            title="Ta bort enhet"
-            (click)="onDeleteUnit($event, item)"
-            data-testid="delete"
-          >
-            <mat-icon>delete_forever</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr
-        mat-row
-        *matRowDef="let item; columns: displayedColumns"
-        [class.selected]="item.selected"
-        (click)="onSelectUnit(item)"
-        data-testid="select-item"
-      ></tr>
-    </table>
+    <mat-checkbox formControlName="useCurrency" (change)="onChangeUseCurrency($event)" data-testid="use-currency">
+      Använd valutaberäkning för den här enheten
+    </mat-checkbox>
   </div>
-</ng-container>
 
-<ng-template #noExistingBudget>
-  <div *ngIf="pageLoaded$ | async">
-    Det finns ingen budget upplagd som enheter kan kopplas till.
-    <a href="/feature/create-budget">Skapa en ny budget</a>.
+  @if(form) {
+  <div>
+    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
+    <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
+      <mat-radio-button value="add">Lägg till</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
+    </mat-radio-group>
   </div>
-</ng-template>
+  }
+</form>
+
+<div class="row-xl max-table-height">
+  <table mat-table [dataSource]="$any(units$ | async)" class="tbl">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Enhet</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-label>{{ item.unitName }}</mat-label>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="useCurrency">
+      <th mat-header-cell *matHeaderCellDef>Valutaberäkning</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-icon>{{ item.useCurrency ? 'check' : '' }}</mat-icon>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let item">
+        <button
+          mat-icon-button
+          type="button"
+          title="Ta bort enhet"
+          (click)="onDeleteUnit($event, item)"
+          data-testid="delete"
+        >
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let item; columns: displayedColumns"
+      [class.selected]="item.selected"
+      (click)="onSelectUnit(item)"
+      data-testid="select-item"
+    ></tr>
+  </table>
+</div>
+<!-- No budget -->
+} @else { @if(pageLoaded$ | async) {
+<div>
+  Det finns ingen budget upplagd som enheter kan kopplas till.
+  <a href="/feature/create-budget">Skapa en ny budget</a>.
+</div>
+} }

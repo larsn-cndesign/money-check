@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -13,10 +13,13 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { BudgetItemService } from './shared/budget-item.service';
 import { uniqueValidator } from './shared/budget-item.validators';
 import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
+import { MatTableModule } from '@angular/material/table';
+import { MatRadioModule } from '@angular/material/radio';
 
 /**
  * Class representing budget transactions.
@@ -25,6 +28,8 @@ import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
  */
 @Component({
   selector: 'app-budget-item',
+  standalone: true,
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
   templateUrl: './budget-item.component.html',
   styleUrls: ['./budget-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

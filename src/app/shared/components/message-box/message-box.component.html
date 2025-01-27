@@ -1,39 +1,38 @@
-<ng-container *ngIf="message.type === 'simple'">
-  <div class="message simple">
-    <div *ngIf="isOpen" [@slideInFromLeft] class="message-wrap-simple">
-      <div class="message-main-simple horz-icon">
-        <mat-icon class="fg-prim fai-32" style="margin-bottom: 8px">check</mat-icon>
-        <span class="message-text-simple">{{ message.title }}</span>
-      </div>
+@if(message.type === 'simple') {
+<div class="message simple">
+  @if(isOpen) {
+  <div [@slideInFromLeft] class="message-wrap-simple">
+    <div class="message-main-simple horz-icon">
+      <mat-icon class="fg-prim fai-32" style="margin-bottom: 8px">check</mat-icon>
+      <span class="message-text-simple">{{ message.title }}</span>
     </div>
   </div>
-</ng-container>
-
-<ng-container *ngIf="message.type !== 'simple'">
-  <div [class]="message.colorClass">
-    <div *ngIf="isOpen" [@dropDown] class="message-wrap">
-      <div class="message-box">
-        <div class="message-main">
-          <div class="message-head">
-            <div>MoneyCheck</div>
-          </div>
-          <div class="clearfix"></div>
-
-          <!-- <div class="message-title" [innerHTML]="message.title | skipSanitizeHtml"> -->
-          <div class="message-title" [innerHTML]="message.title">
-            <span class="message-divider"></span>
-          </div>
-          <div class="message-content">
-            <!-- <div [innerHTML]="message.content | skipSanitizeHtml"></div> -->
-            <div [innerHTML]="message.content"></div>
-          </div>
+  }
+</div>
+} @else {
+<div [class]="message.colorClass">
+  @if(isOpen) {
+  <div [@dropDown] class="message-wrap">
+    <div class="message-box">
+      <div class="message-main">
+        <div class="message-head">
+          <div>MoneyCheck</div>
         </div>
-      </div>
-      <div class="message-foot">
-        <div class="message-btn">
-          <button mat-stroked-button type="button" style="margin-left: 5px" (click)="onOK()">OK</button>
+        <div class="clearfix"></div>
+        <div class="message-title" [innerHTML]="message.title">
+          <span class="message-divider"></span>
+        </div>
+        <div class="message-content">
+          <div [innerHTML]="message.content"></div>
         </div>
       </div>
     </div>
+    <div class="message-foot">
+      <div class="message-btn">
+        <button mat-stroked-button type="button" style="margin-left: 5px" (click)="onOK()">OK</button>
+      </div>
+    </div>
   </div>
-</ng-container>
+  }
+</div>
+}
