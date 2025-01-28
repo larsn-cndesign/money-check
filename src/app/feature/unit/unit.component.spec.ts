@@ -1,4 +1,5 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +15,7 @@ import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend
 import { BUDGET_STATE, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
@@ -59,22 +60,23 @@ describe('UnitComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [UnitComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
-        ConfirmDialogModule,
         MatButtonModule,
         MatIconModule,
         MatInputModule,
         MatTableModule,
         MatRadioModule,
         MatCheckboxModule,
+        ConfirmDialogComponent,
       ],
-      declarations: [UnitComponent],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
         { provide: UnitService, useValue: unitService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });

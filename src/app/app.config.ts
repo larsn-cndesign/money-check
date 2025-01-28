@@ -1,19 +1,12 @@
 import { APP_BASE_HREF, registerLocaleData } from '@angular/common';
-import {
-  HTTP_INTERCEPTORS,
-  HttpBackend,
-  HttpClient,
-  HttpClientJsonpModule,
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeSv from '@angular/common/locales/sv';
-import { APP_INITIALIZER, ApplicationConfig, LOCALE_ID, importProvidersFrom, isDevMode } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, importProvidersFrom } from '@angular/core';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatPaginatorIntl } from '@angular/material/paginator';
+// import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withPreloading } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 // import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 // import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -52,7 +45,6 @@ export const appConfig: ApplicationConfig = {
     ),
     importProvidersFrom(MatNativeDateModule),
     provideHttpClient(),
-    // importProvidersFrom(HttpClientJsonpModule),
     // importProvidersFrom(
     //   TranslateModule.forRoot({
     //     loader: {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,11 +17,11 @@ import { MenuComponent } from './components/menu/menu.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
+  exports: [NavbarComponent, MenuComponent],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -30,8 +30,11 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     MatListModule,
     MatSidenavModule,
     MatSelectModule,
+    NavbarComponent,
+    LoginComponent,
+    HomeComponent,
+    MenuComponent,
   ],
-  declarations: [NavbarComponent, LoginComponent, HomeComponent, MenuComponent],
-  exports: [NavbarComponent, MenuComponent],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class CoreModule {}

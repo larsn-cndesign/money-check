@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { MessageBoxService } from './message-box.service';
 
 describe('MessageBoxService', () => {

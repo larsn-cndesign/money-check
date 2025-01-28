@@ -1,7 +1,11 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { registerLocaleData } from '@angular/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import localeSv from '@angular/common/locales/sv';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -11,18 +15,15 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
 import { findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { BUDGET_STATE, OmitAllFromStore, TRIPS, TRIP_1 } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
-import { deepCoyp, toDate } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE, TRIPS, TRIP_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
-import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
+import { toDate } from 'src/app/shared/classes/common.fn';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { TripComponent } from './trip.component';
-import localeSv from '@angular/common/locales/sv';
-import { registerLocaleData } from '@angular/common';
-import { MatNativeDateModule } from '@angular/material/core';
 registerLocaleData(localeSv);
 
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
@@ -63,11 +64,10 @@ describe('TripComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [TripComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
-        ConfirmDialogModule,
         MatButtonModule,
         MatIconModule,
         MatInputModule,
@@ -75,11 +75,13 @@ describe('TripComponent', () => {
         MatRadioModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        ConfirmDialogComponent,
       ],
-      declarations: [TripComponent],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
         { provide: TripService, useValue: tripService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

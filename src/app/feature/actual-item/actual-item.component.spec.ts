@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeSv from '@angular/common/locales/sv';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -42,6 +42,7 @@ import { BudgetState } from '../../shared/classes/budget-state.model';
 import { ActualItemComponent } from './actual-item.component';
 import { ActualItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 registerLocaleData(localeSv);
 
 type OmitFromStore =
@@ -101,8 +102,8 @@ describe('ActualItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [ActualItemComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatButtonModule,
@@ -115,10 +116,11 @@ describe('ActualItemComponent', () => {
         MatNativeDateModule,
         MatSelectModule,
       ],
-      declarations: [ActualItemComponent],
       providers: [
         { provide: ActualItemService, useValue: actualItemService },
         { provide: BudgetStateService, useValue: budgetStateService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
   });

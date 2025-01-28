@@ -1,4 +1,5 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgZone } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,20 +9,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NavigationEnd, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Budget } from 'src/app/feature/budget/shared/budget.model';
+import { NavigationEnd, provideRouter, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { APP_ROUTES } from 'src/app/app.routes';
 import { click, findComponent, findEl } from 'src/app/mock-backend/element.spec-helper';
+import { BUDGET_STATE, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { BUDGET_STATE, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
-import { routes } from '../../../app-routing.module';
+import { UserService } from 'src/app/shared/services/user.service';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from './navbar.component';
-import { UserService } from 'src/app/shared/services/user.service';
-import { AppUser } from '../../models/app-user.model';
 
 type OmitFromBudgetState = OmitAllFromStore | 'getBudgetStateInStore' | 'setBudgetSate';
 
@@ -47,8 +45,8 @@ describe('NavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [NavbarComponent, MenuComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         MatMenuModule,
         MatToolbarModule,
@@ -56,10 +54,13 @@ describe('NavbarComponent', () => {
         MatButtonModule,
         MatSidenavModule,
         MatSelectModule,
-        RouterTestingModule.withRoutes(routes),
       ],
-      declarations: [NavbarComponent, MenuComponent],
-      providers: [{ provide: BudgetStateService, useValue: budgetStateService }],
+      providers: [
+        { provide: BudgetStateService, useValue: budgetStateService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter(APP_ROUTES),
+      ],
     }).compileComponents();
   });
 

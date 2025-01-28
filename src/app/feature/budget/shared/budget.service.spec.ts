@@ -1,7 +1,7 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { SharedModule } from 'src/app/shared/shared.module';
-
 import { BudgetService } from './budget.service';
 
 describe('BudgetService', () => {
@@ -9,7 +9,8 @@ describe('BudgetService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule],
+      imports: [SharedModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(BudgetService);
   });

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FilterListComponent } from './filter-list.component';
 
 describe('FilterListComponent', () => {
@@ -8,9 +7,8 @@ describe('FilterListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FilterListComponent ]
-    })
-    .compileComponents();
+      declarations: [FilterListComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FilterListComponent);
     component = fixture.componentInstance;

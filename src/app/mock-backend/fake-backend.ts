@@ -1,13 +1,13 @@
 import {
+  HTTP_INTERCEPTORS,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
+  HttpHeaders,
   HttpInterceptor,
   HttpParams,
   HttpRequest,
   HttpResponse,
-  HTTP_INTERCEPTORS,
-  HttpHeaders,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
@@ -20,10 +20,10 @@ import { Budget } from '../feature/budget/shared/budget.model';
 import { Category } from '../feature/category/shared/category.model';
 import { Trip } from '../feature/trip/shared/trip.model';
 import { Unit } from '../feature/unit/shared/unit.model';
+import { LS_ACCESS_TOKEN } from '../shared/classes/constants';
 import { ItemFilter } from '../shared/classes/filter';
 import { DatabaseService } from './database-service';
 import { MOCK_DATA } from './mock-database';
-import { LS_ACCESS_TOKEN } from '../shared/classes/constants';
 
 // ------------------------------------
 // CONSTANTS FOR TEST ONLY

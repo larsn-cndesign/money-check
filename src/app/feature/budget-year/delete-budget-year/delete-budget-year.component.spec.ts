@@ -1,8 +1,8 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from 'src/app/shared/shared.module';
-
 import { DeleteBudgetYearComponent } from './delete-budget-year.component';
 
 describe('DeleteBudgetYearComponent', () => {
@@ -11,10 +11,10 @@ describe('DeleteBudgetYearComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, MatDialogModule],
-      declarations: [ DeleteBudgetYearComponent ]
-    })
-    .compileComponents();
+      declarations: [DeleteBudgetYearComponent],
+      imports: [SharedModule, MatDialogModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedModule } from '../../shared.module';
-
 import { MessageBoxComponent } from './message-box.component';
 
 describe('MessageBoxComponent', () => {

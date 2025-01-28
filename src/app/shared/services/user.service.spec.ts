@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { first } from 'rxjs/operators';
 import { AppUser } from 'src/app/core/models/app-user.model';
-
 import { UserService } from './user.service';
 
 describe('UserService', () => {

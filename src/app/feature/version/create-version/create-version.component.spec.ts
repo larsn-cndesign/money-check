@@ -1,5 +1,6 @@
 import { registerLocaleData } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeSv from '@angular/common/locales/sv';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,8 +14,6 @@ import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
 import { setMatSelectValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
-import { BudgetState } from 'src/app/shared/classes/budget-state.model';
-import { deepCoyp } from 'src/app/shared/classes/common.fn';
 import {
   BUDGET_STATE,
   BUDGET_YEAR_1,
@@ -22,7 +21,9 @@ import {
   MANAGE_BUDGET_YEAR,
   OmitAllFromStore,
 } from 'src/app/mock-backend/spec-constants';
-import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
+import { BudgetState } from 'src/app/shared/classes/budget-state.model';
+import { deepCoyp } from 'src/app/shared/classes/common.fn';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/currency-form.component';
 import { CurrencyTableComponent } from 'src/app/shared/components/currency-table/currency-table.component';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
@@ -52,7 +53,7 @@ const versionService: Omit<BudgetVersionService, OmitFromStore> = {
   getCurrentVersion(budgetYearId: number): Observable<ManageBudgetYear> {
     return of(MANAGE_BUDGET_YEAR);
   },
-  addVersion(budgetYear: ManageBudgetYear): Observable<boolean>{
+  addVersion(budgetYear: ManageBudgetYear): Observable<boolean> {
     return of(true);
   },
   deleteVersion(): Observable<boolean> {
@@ -86,11 +87,10 @@ describe('CreateVersionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [CreateVersionComponent, CurrencyTableComponent, CurrencyFormComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
-        ConfirmDialogModule,
         MatButtonModule,
         MatIconModule,
         MatInputModule,
@@ -98,11 +98,13 @@ describe('CreateVersionComponent', () => {
         MatRadioModule,
         MatSelectModule,
         MatCheckboxModule,
+        ConfirmDialogComponent,
       ],
-      declarations: [CreateVersionComponent, CurrencyTableComponent, CurrencyFormComponent],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
         { provide: BudgetVersionService, useValue: versionService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

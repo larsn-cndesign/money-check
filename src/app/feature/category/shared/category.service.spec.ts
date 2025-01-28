@@ -1,5 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { first } from 'rxjs/operators';
 import { CATEGORIES, CATEGORY_1 } from 'src/app/mock-backend/spec-constants';
@@ -53,7 +53,8 @@ describe('CategoryService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule],
+      imports: [SharedModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     categoryService = TestBed.inject(CategoryService);
     httpMock = TestBed.inject(HttpTestingController);

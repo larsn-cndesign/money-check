@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ConfirmDialogModule } from '../confirm-dialog/confirm-dialog.module';
 import { CurrencyTableComponent } from '../currency-table/currency-table.component';
-
 import { CurrencyFormComponent } from './currency-form.component';
 
 describe('CurrencyFormComponent', () => {
@@ -16,17 +15,9 @@ describe('CurrencyFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        HttpClientTestingModule,
-        ConfirmDialogModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatInputModule,
-        MatRadioModule,
-      ],
       declarations: [CurrencyFormComponent, CurrencyTableComponent],
-      providers: [],
+      imports: [CommonModule, ReactiveFormsModule, NoopAnimationsModule, MatInputModule, MatRadioModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   });
 

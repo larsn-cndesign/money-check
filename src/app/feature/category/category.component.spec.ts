@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,6 @@ import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend
 import { BUDGET_STATE, CATEGORIES, CATEGORY_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
-import { ConfirmDialogModule } from 'src/app/shared/components/confirm-dialog/confirm-dialog.module';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
@@ -21,6 +20,8 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { CategoryComponent } from './category.component';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
@@ -58,21 +59,22 @@ describe('CategoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [CategoryComponent],
       imports: [
-        HttpClientTestingModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
-        ConfirmDialogModule,
         MatButtonModule,
         MatIconModule,
         MatInputModule,
         MatTableModule,
         MatRadioModule,
+        ConfirmDialogComponent,
       ],
-      declarations: [CategoryComponent],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
         { provide: CategoryService, useValue: categoryService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

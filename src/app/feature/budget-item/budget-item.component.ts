@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -18,8 +20,6 @@ import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { BudgetItemService } from './shared/budget-item.service';
 import { uniqueValidator } from './shared/budget-item.validators';
 import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
-import { MatTableModule } from '@angular/material/table';
-import { MatRadioModule } from '@angular/material/radio';
 
 /**
  * Class representing budget transactions.

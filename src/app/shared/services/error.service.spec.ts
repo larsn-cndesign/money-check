@@ -1,8 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-// import { duplicateOnAddValidator, duplicateOnEditValidator } from '../validators/key-value.validators';
 import { ErrorService } from './error.service';
 
 describe('ErrorService', () => {

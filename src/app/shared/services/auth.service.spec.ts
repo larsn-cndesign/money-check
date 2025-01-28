@@ -1,8 +1,7 @@
-import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpHeaders, HttpResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { UserCredential } from 'src/app/core/models/user-credential.model';
@@ -17,7 +16,8 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     authService = TestBed.inject(AuthService);
     errorService = TestBed.inject(ErrorService);

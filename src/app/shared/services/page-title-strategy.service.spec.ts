@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { PageTitleStrategy } from './page-title-strategy.service';
 
 describe('PageTitleStrategyService', () => {

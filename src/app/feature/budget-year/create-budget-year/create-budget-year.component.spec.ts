@@ -1,8 +1,8 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from 'src/app/shared/shared.module';
-
 import { CreateBudgetYearComponent } from './create-budget-year.component';
 
 describe('CreateBudgetYearComponent', () => {
@@ -11,8 +11,9 @@ describe('CreateBudgetYearComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedModule, HttpClientTestingModule, MatDialogModule],
       declarations: [CreateBudgetYearComponent],
+      imports: [SharedModule, MatDialogModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   });
 

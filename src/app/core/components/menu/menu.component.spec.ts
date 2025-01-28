@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgZone } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
-import { NavigationEnd, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { NavigationEnd, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { BudgetVarianceComponent } from 'src/app/feature/budget-variance/budget-variance.component';
 import { click, findEl, findEls } from 'src/app/mock-backend/element.spec-helper';
@@ -24,12 +24,13 @@ describe('MenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MatMenuModule,
-        RouterTestingModule.withRoutes([{ path: 'feature/budget-variance', component: BudgetVarianceComponent }]),
-      ],
       declarations: [MenuComponent],
+      imports: [MatMenuModule],
+      providers: [
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'feature/budget-variance', component: BudgetVarianceComponent }]),
+      ],
     }).compileComponents();
   });
 

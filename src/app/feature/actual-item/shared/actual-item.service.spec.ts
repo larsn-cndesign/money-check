@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Sort } from '@angular/material/sort';
 import { first } from 'rxjs/operators';
@@ -94,8 +94,9 @@ describe('ActualItemService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, CommonModule],
-    });
+    imports: [CommonModule],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     actualItemService = TestBed.inject(ActualItemService);
     httpMock = TestBed.inject(HttpTestingController);
     errorService = TestBed.inject(ErrorService);
