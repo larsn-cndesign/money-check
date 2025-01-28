@@ -27,12 +27,11 @@ import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-budget-item',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
-  templateUrl: './budget-item.component.html',
-  styleUrls: ['./budget-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-budget-item',
+    imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
+    templateUrl: './budget-item.component.html',
+    styleUrls: ['./budget-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetItemComponent extends CommonFormService implements OnInit {
   /**

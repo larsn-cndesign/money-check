@@ -14,11 +14,10 @@ import { UserCredential } from '../../models/user-credential.model';
  * Class representing a login page.
  */
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'app-login',
+    imports: [SharedModule, ReactiveFormsModule],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent extends CommonFormService {
   /**

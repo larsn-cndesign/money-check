@@ -28,12 +28,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-create-budget',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
-  templateUrl: './create-budget.component.html',
-  styleUrls: ['./create-budget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-create-budget',
+    imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
+    templateUrl: './create-budget.component.html',
+    styleUrls: ['./create-budget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateBudgetComponent extends CommonFormService implements OnInit {
   /**

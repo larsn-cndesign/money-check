@@ -32,12 +32,11 @@ import { duplicateValidator } from './shared/unit.validators';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-unit',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
-  templateUrl: './unit.component.html',
-  styleUrls: ['./unit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-unit',
+    imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
+    templateUrl: './unit.component.html',
+    styleUrls: ['./unit.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnitComponent extends CommonFormService implements OnInit {
   /**

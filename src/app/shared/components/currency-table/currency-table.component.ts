@@ -10,12 +10,11 @@ import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
  * Class representing a reusable table for managing currencies.
  */
 @Component({
-  selector: 'app-currency-table',
-  standalone: true,
-  imports: [CommonModule, MatTableModule, MatIconModule, MatInputModule],
-  templateUrl: './currency-table.component.html',
-  styleUrls: ['./currency-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-currency-table',
+    imports: [CommonModule, MatTableModule, MatIconModule, MatInputModule],
+    templateUrl: './currency-table.component.html',
+    styleUrls: ['./currency-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CurrencyTableComponent {
   /**

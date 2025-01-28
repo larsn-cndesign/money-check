@@ -7,11 +7,10 @@ import { FilterList, FilterListModel } from './shared/filter-list.model';
 import { FilterListService } from './shared/filter-list.service';
 
 @Component({
-  selector: 'app-filter-list',
-  standalone: true,
-  imports: [SharedModule, MatListModule, MatDividerModule],
-  templateUrl: './filter-list.component.html',
-  styleUrls: ['./filter-list.component.scss'],
+    selector: 'app-filter-list',
+    imports: [SharedModule, MatListModule, MatDividerModule],
+    templateUrl: './filter-list.component.html',
+    styleUrls: ['./filter-list.component.scss']
 })
 export class FilterListComponent implements OnInit, OnDestroy {
   /**

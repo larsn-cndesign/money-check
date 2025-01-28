@@ -7,10 +7,9 @@ import { SharedModule } from '../shared/shared.module';
  * Class representing a landing path for an authenticated user.
  */
 @Component({
-  selector: 'app-feature',
-  standalone: true,
-  imports: [SharedModule, RouterOutlet, FilterListComponent],
-  templateUrl: './feature.component.html',
-  styleUrls: ['./feature.component.scss'],
+    selector: 'app-feature',
+    imports: [SharedModule, RouterOutlet, FilterListComponent],
+    templateUrl: './feature.component.html',
+    styleUrls: ['./feature.component.scss']
 })
 export class FeatureComponent {}

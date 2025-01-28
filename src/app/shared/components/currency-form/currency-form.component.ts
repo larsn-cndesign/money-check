@@ -45,24 +45,23 @@ import { CurrencyTableComponent } from '../currency-table/currency-table.compone
  * ```
  */
 @Component({
-  selector: 'app-currency-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
-  templateUrl: './currency-form.component.html',
-  styleUrls: ['./currency-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: CurrencyFormComponent,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: CurrencyFormComponent,
-    },
-  ],
+    selector: 'app-currency-form',
+    imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
+    templateUrl: './currency-form.component.html',
+    styleUrls: ['./currency-form.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            multi: true,
+            useExisting: CurrencyFormComponent,
+        },
+        {
+            provide: NG_VALIDATORS,
+            multi: true,
+            useExisting: CurrencyFormComponent,
+        },
+    ]
 })
 export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, Validator {
   /**

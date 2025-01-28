@@ -30,12 +30,11 @@ import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/c
  * @implements OnInit
  */
 @Component({
-  selector: 'app-create-version',
-  standalone: true,
-  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, MatCheckboxModule],
-  templateUrl: './create-version.component.html',
-  styleUrls: ['./create-version.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-create-version',
+    imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, MatCheckboxModule],
+    templateUrl: './create-version.component.html',
+    styleUrls: ['./create-version.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateVersionComponent extends CommonFormService implements OnInit {
   /**

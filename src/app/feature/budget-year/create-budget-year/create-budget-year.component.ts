@@ -30,12 +30,11 @@ import { SharedModule } from 'src/app/shared/shared.module';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-create-budget-year',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule],
-  templateUrl: './create-budget-year.component.html',
-  styleUrls: ['./create-budget-year.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-create-budget-year',
+    imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule],
+    templateUrl: './create-budget-year.component.html',
+    styleUrls: ['./create-budget-year.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateBudgetYearComponent extends CommonFormService implements OnInit {
   /**

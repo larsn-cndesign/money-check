@@ -21,12 +21,11 @@ import { BudgetYearService } from '../shared/budget-year.service';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-delete-budget-year',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
-  templateUrl: './delete-budget-year.component.html',
-  styleUrls: ['./delete-budget-year.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-delete-budget-year',
+    imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
+    templateUrl: './delete-budget-year.component.html',
+    styleUrls: ['./delete-budget-year.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeleteBudgetYearComponent extends CommonFormService implements OnInit {
   /**

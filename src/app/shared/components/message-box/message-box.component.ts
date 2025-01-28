@@ -9,12 +9,11 @@ import { MessageBoxService } from './shared/message-box.service';
  * Class representing a messag box.
  */
 @Component({
-  selector: 'app-message-box',
-  standalone: true,
-  imports: [SharedModule],
-  templateUrl: './message-box.component.html',
-  styleUrls: ['./message-box.component.scss'],
-  animations: [slideInFromLeft, dropDown],
+    selector: 'app-message-box',
+    imports: [SharedModule],
+    templateUrl: './message-box.component.html',
+    styleUrls: ['./message-box.component.scss'],
+    animations: [slideInFromLeft, dropDown]
 })
 export class MessageBoxComponent implements OnInit, OnDestroy {
   /**

@@ -33,12 +33,11 @@ import { betweenDateValidator, rangeDateValidator } from './shared/trip.validato
  * @todo Add field to set name of trip
  */
 @Component({
-  selector: 'app-trip',
-  standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, MatDatepickerModule, MatRadioModule, MatTableModule],
-  templateUrl: './trip.component.html',
-  styleUrls: ['./trip.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-trip',
+    imports: [SharedModule, ReactiveFormsModule, MatDatepickerModule, MatRadioModule, MatTableModule],
+    templateUrl: './trip.component.html',
+    styleUrls: ['./trip.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TripComponent extends CommonFormService implements OnInit {
   /**

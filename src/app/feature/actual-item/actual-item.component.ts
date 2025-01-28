@@ -39,20 +39,19 @@ import { budgetYearNotExistValidator } from './shared/actual-item.validators';
  * @todo Remember sort order when filtering.
  */
 @Component({
-  selector: 'app-actual-item',
-  standalone: true,
-  imports: [
-    SharedModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatDatepickerModule,
-    MatSortModule,
-  ],
-  templateUrl: './actual-item.component.html',
-  styleUrls: ['./actual-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-actual-item',
+    imports: [
+        SharedModule,
+        ReactiveFormsModule,
+        MatTableModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatDatepickerModule,
+        MatSortModule,
+    ],
+    templateUrl: './actual-item.component.html',
+    styleUrls: ['./actual-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActualItemComponent extends CommonFormService implements OnInit {
   /**

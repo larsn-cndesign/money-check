@@ -31,12 +31,11 @@ import { duplicateValidator } from '../shared/budget-version.validators';
  * @implements OnInit
  */
 @Component({
-  selector: 'app-modify-version',
-  standalone: true,
-  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
-  templateUrl: './modify-version.component.html',
-  styleUrls: ['./modify-version.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-modify-version',
+    imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
+    templateUrl: './modify-version.component.html',
+    styleUrls: ['./modify-version.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModifyVersionComponent extends CommonFormService implements OnInit {
   /**

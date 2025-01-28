@@ -21,12 +21,11 @@ import { MatTableModule } from '@angular/material/table';
  * @todo Add filter on cost per day on a trip.
  */
 @Component({
-  selector: 'app-budget-variance',
-  standalone: true,
-  imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
-  templateUrl: './budget-variance.component.html',
-  styleUrls: ['./budget-variance.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-budget-variance',
+    imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
+    templateUrl: './budget-variance.component.html',
+    styleUrls: ['./budget-variance.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetVarianceComponent implements OnInit, OnDestroy {
   /**

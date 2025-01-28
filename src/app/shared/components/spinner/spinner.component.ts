@@ -8,11 +8,10 @@ import { SpinnerService } from './spinner.service';
  * Class repersenting a spinner.
  */
 @Component({
-  selector: 'app-spinner',
-  standalone: true,
-  imports: [SharedModule, MatProgressSpinnerModule],
-  templateUrl: './spinner.component.html',
-  styleUrls: ['./spinner.component.scss'],
+    selector: 'app-spinner',
+    imports: [SharedModule, MatProgressSpinnerModule],
+    templateUrl: './spinner.component.html',
+    styleUrls: ['./spinner.component.scss']
 })
 export class SpinnerComponent {
   /**

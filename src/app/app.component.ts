@@ -15,10 +15,9 @@ import { NavbarComponent } from './core/components/navbar/navbar.component';
  * @todo Add a pgae for displaying graphs, trends etc...
  */
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [SharedModule, RouterOutlet, MessageBoxComponent, SpinnerComponent, NavbarComponent],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    imports: [SharedModule, RouterOutlet, MessageBoxComponent, SpinnerComponent, NavbarComponent],
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {}

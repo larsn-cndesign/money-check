@@ -11,11 +11,10 @@ import { MatMenuModule } from '@angular/material/menu';
  * Class representing a reusable menu for both `toolbar` and `sidenav`.
  */
 @Component({
-  selector: 'app-menu',
-  standalone: true,
-  imports: [SharedModule, RouterLink, MatMenuModule],
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss'],
+    selector: 'app-menu',
+    imports: [SharedModule, RouterLink, MatMenuModule],
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
   /**

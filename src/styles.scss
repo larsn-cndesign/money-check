@@ -2,10 +2,10 @@
 @use './content/variables.scss' as v;
 
 
-@import './content/site.scss';
-@import './content/page.scss';
-@import './content/table.scss';
-@import './app/shared/components/message-box/message-box.component.scss';
+@use './content/site.scss';
+@use './content/page.scss';
+@use './content/table.scss';
+@use './app/shared/components/message-box/message-box.component.scss';
 
 
 

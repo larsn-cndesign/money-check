@@ -6,7 +6,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
  */
 @Pipe({
   name: 'skipSanitizeHtml',
-  standalone: true,
 })
 export class SkipSanitizeHtmlPipe implements PipeTransform {
   /**

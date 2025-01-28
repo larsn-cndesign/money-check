@@ -17,11 +17,10 @@ import { MenuComponent } from '../menu/menu.component';
  * Class representing a responsible `toolbar` with `sidenav` for mobile devices.
  */
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss'],
+    selector: 'app-navbar',
+    imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
+    templateUrl: './navbar.component.html',
+    styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
