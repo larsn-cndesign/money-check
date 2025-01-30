@@ -4,7 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -19,9 +19,6 @@ import {
 import { UserCredential } from '../../models/user-credential.model';
 import { LoginComponent } from './login.component';
 
-/**
- * Fake AuthService class
- */
 class FakeAuthService implements Partial<AuthService> {
   login(): Observable<boolean> {
     return of(true);
@@ -39,18 +36,17 @@ describe('LoginComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatIconModule,
         MatInputModule,
+        LoginComponent,
       ],
-      declarations: [LoginComponent],
+
       providers: [{ provide: AuthService, useClass: FakeAuthService }],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fakeAuthService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
     activatedRoute = TestBed.inject(ActivatedRoute);
@@ -135,11 +131,10 @@ describe('LoginComponent', () => {
     expectText(fixture, 'password-error', 'Lösenord måste vara minst 6 tecken');
   });
 
-  // TODO
-  xit('fails to login if server returns error', () => {
+  it('fails to login if server returns error', () => {
     const userCred: UserCredential = {
       email: 'test@test.com',
-      password: '12345', // <-- fake invalid password
+      password: '12345', // <-- Fake invalid password
     };
 
     spyOn(fakeAuthService, 'login').and.returnValue(of(false));
@@ -152,7 +147,7 @@ describe('LoginComponent', () => {
 
     fixture.detectChanges();
 
-    expect(findEl(fixture, 'server-error')).toBeTruthy();
+    expect(findEl(fixture, 'password-error')).toBeTruthy();
     expect(fakeAuthService.login).toHaveBeenCalledWith(userCred);
   });
 

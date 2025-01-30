@@ -20,8 +20,9 @@ describe('CurrencyTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatTableModule, MatTableModule],
-      declarations: [
+      imports: [
+        MatTableModule,
+        MatTableModule,
         CurrencyTableComponent,
         MatHeaderRow,
         MatHeaderCell,
@@ -35,13 +36,13 @@ describe('CurrencyTableComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CurrencyTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  beforeEach(() => {});
 
   it('should create', () => {
     expect(component).toBeTruthy();

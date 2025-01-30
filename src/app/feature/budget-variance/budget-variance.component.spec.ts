@@ -10,8 +10,7 @@ describe('BudgetVarianceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BudgetVarianceComponent],
-      imports: [SharedModule],
+      imports: [SharedModule, BudgetVarianceComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   });

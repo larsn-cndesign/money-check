@@ -64,7 +64,6 @@ describe('TripComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TripComponent],
       imports: [
         NoopAnimationsModule,
         ReactiveFormsModule,
@@ -76,6 +75,7 @@ describe('TripComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         ConfirmDialogComponent,
+        TripComponent,
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
@@ -132,7 +132,7 @@ describe('TripComponent', () => {
   });
 
   it('submits the form successfully', () => {
-    const trip = { id: -1, budgetId: -1, fromDate: new Date('2023-01-01'), toDate: new Date('2023-01-10') } as Trip;
+    const trip = { id: -1, budgetId: -1, fromDate: new Date('2023-01-01'), toDate: new Date('2023-01-10'), note: '' } as Trip;
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 

@@ -13,13 +13,12 @@
     @if(budgetState$ | async; as budgetState) {
     <!-- Select budget -->
     @if(showBudget) {
-    <mat-form-field class="menu-font budget form-field-no-error" floatlLabel="never" style="background-color: transparent !important;">
+    <mat-form-field class="menu-font budget form-field-no-error transparent-select" floatlLabel="never">
       <mat-select
         (selectionChange)="onChangeBudget($event)"
         [value]="budgetState.budgetId"
         placeholder="Välj budget"
         data-testid="change-budget"
-        
       >
         @for (item of budgetState.budgets; track item.id) {
         <mat-option [value]="item.id">

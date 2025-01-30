@@ -60,7 +60,6 @@ describe('UnitComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UnitComponent],
       imports: [
         NoopAnimationsModule,
         ReactiveFormsModule,
@@ -71,6 +70,7 @@ describe('UnitComponent', () => {
         MatRadioModule,
         MatCheckboxModule,
         ConfirmDialogComponent,
+        UnitComponent,
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },

@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>{{ data.title }}</h2>
-<mat-dialog-content class="mat-typography">
+<mat-dialog-content>
   <span [innerHtml]="data.message | skipSanitizeHtml"></span>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-stroked-button (click)="onCancel()">{{ data.cancelText }}</button>
-  <button mat-stroked-button color="primary" (click)="onConfirm()" cdkFocusInitial>{{ data.confirmText }}</button>
+  <button mat-stroked-button (click)="onConfirm()" cdkFocusInitial>{{ data.confirmText }}</button>
 </mat-dialog-actions>

@@ -15,13 +15,18 @@ describe('CurrencyFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CurrencyFormComponent, CurrencyTableComponent],
-      imports: [CommonModule, ReactiveFormsModule, NoopAnimationsModule, MatInputModule, MatRadioModule],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        NoopAnimationsModule,
+        MatInputModule,
+        MatRadioModule,
+        CurrencyFormComponent,
+        CurrencyTableComponent,
+      ],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CurrencyFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

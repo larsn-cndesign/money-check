@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppUser } from 'src/app/core/models/app-user.model';
 import { UserService } from './user.service';
+import { LS_ACCESS_TOKEN } from '../classes/constants';
+import { firstValueFrom } from 'rxjs';
 
 describe('UserService', () => {
   let service: UserService;
@@ -18,32 +20,23 @@ describe('UserService', () => {
   it('should store token in localstorage', () => {
     service.storeUser('sadfadsfa.123.#eee', appUser);
 
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem(LS_ACCESS_TOKEN);
 
     expect(token).toBe('sadfadsfa.123.#eee');
   });
 
-  // it('should store user in localstorage', () => {
-  //   appUser.name = 'Lars N';
-  //   appUser.isAdmin = true;
-  //   service.storeUser('', appUser);
+  it('should store user in localstorage', async () => {
+    appUser.name = 'Lars N';
+    appUser.isAdmin = true;
+    service.storeUser('', appUser);
 
-  //   service.getStoredUser();
+    service.getStoredUser();
 
-  //   service.user$.pipe(first()).subscribe((user: AppUser) => {
-  //     expect(user.name).toBe('Lars N');
-  //     expect(user.isAdmin).toBe(true);
-  //   });
-  // });
+    const user = await firstValueFrom(service.item$); // Convert Observable to Promise
 
-  // it('should not update user in store object', () => {
-  //   localStorage.removeItem('user');
-
-  //   service.getStoredUser();
-
-  // eslint-disable-next-line
-  //   expect(service['_store'].user.name).toBeFalsy();
-  // });
+    expect(user.name).toBe('Lars N');
+    expect(user.isAdmin).toBe(true);
+  });
 
   it('should remove user and token from localstorage', () => {
     service.clearStoredUser();

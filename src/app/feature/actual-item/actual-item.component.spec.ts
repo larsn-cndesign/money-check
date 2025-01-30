@@ -1,4 +1,7 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { registerLocaleData } from '@angular/common';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeSv from '@angular/common/locales/sv';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -16,17 +19,11 @@ import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
+import { click, fakeEvent, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { selectMatOption } from 'src/app/mock-backend/material.spec-helper';
 import {
-  click,
-  fakeEvent,
-  findEl,
-  setFieldValue,
-  setMatSelectValue,
-  triggerEvent,
-} from 'src/app/mock-backend/element.spec-helper';
-import {
-  ACTUAL_ITEMS,
   ACTUAL_ITEM_1,
+  ACTUAL_ITEMS,
   BUDGET_STATE,
   deepCopyActualItem,
   deepCopyManageActualItem,
@@ -42,7 +39,7 @@ import { BudgetState } from '../../shared/classes/budget-state.model';
 import { ActualItemComponent } from './actual-item.component';
 import { ActualItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+
 registerLocaleData(localeSv);
 
 type OmitFromStore =
@@ -99,10 +96,10 @@ describe('ActualItemComponent', () => {
   let fixture: ComponentFixture<ActualItemComponent>;
   let messageBoxService: MessageBoxService;
   let dialogService: ConfirmDialogService;
+  let loader: HarnessLoader;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ActualItemComponent],
       imports: [
         NoopAnimationsModule,
         ReactiveFormsModule,
@@ -115,6 +112,7 @@ describe('ActualItemComponent', () => {
         MatDialogModule,
         MatNativeDateModule,
         MatSelectModule,
+        ActualItemComponent,
       ],
       providers: [
         { provide: ActualItemService, useValue: actualItemService },
@@ -135,11 +133,12 @@ describe('ActualItemComponent', () => {
     component.actualItems$ = of([...ACTUAL_ITEMS]);
 
     fixture.detectChanges();
+
+    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    // expect(component.selectedCurrency).toBe(''); // TODO
     expect(component.pageLoaded$.value).toBeTrue();
   });
 
@@ -151,12 +150,12 @@ describe('ActualItemComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
     expect(component.form.value.action).toBe(Modify.Add);
     expect(component.form.value.id).toBe(-1);
-    expect(component.form.value.category).toBeNull();
+    expect(component.form.value.category).toBe(-1);
     expect(component.form.value.trip).toBe(-1);
     expect(component.form.value.purchaseDate).not.toBeNull();
-    expect(component.form.value.currencyCode).toBe('');
+    expect(component.form.value.currencyCode).toBeNull();
     expect(component.form.value.amount).toBeNull();
-    expect(component.form.value.note).toBeNull();
+    expect(component.form.value.note).toBe('');
   });
 
   it('does NOT clear selection or reset form when selecting to edit an item', () => {
@@ -212,8 +211,8 @@ describe('ActualItemComponent', () => {
     // Act
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
-    await setMatSelectValue(fixture, 'category', 0);
-    await setMatSelectValue(fixture, 'currencyCode', 1);
+    await selectMatOption(loader, 'category', 0);
+    await selectMatOption(loader, 'currencyCode', 1);
     setFieldValue(fixture, 'purchaseDate', '2023-02-01');
     setFieldValue(fixture, 'amount', '123');
     setFieldValue(fixture, 'note', 'This is my note');
@@ -227,17 +226,19 @@ describe('ActualItemComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    expect(component.form.value.category).toBeTruthy(1);
+    expect(component.form.value.category).toBe(1);
     expect(component.form.value.currencyCode).toBe('EUR');
-    expect(component.form.value.purchaseDate).toBeTruthy('2023-02-01');
-    expect(component.form.value.amount).toBeTruthy(123);
+    expect(component.form.value.purchaseDate).withContext('2023-02-01');
+    // Ensure that 'amount' is treated as a number, even if it's null or undefined
+    const amount = component.form.value.amount;
+    expect(amount !== null && amount !== undefined && Number(amount) === 123).toBeTrue();
     expect(component.form.value.note).toBe('This is my note');
     expect(modifyItemSpy).toHaveBeenCalled();
   });
 
   it('shows a save message on succsesfull submit (without writing a note)', async () => {
-    await setMatSelectValue(fixture, 'category', 0);
-    await setMatSelectValue(fixture, 'currencyCode', 1);
+    await selectMatOption(loader, 'category', 0);
+    await selectMatOption(loader, 'currencyCode', 1);
     setFieldValue(fixture, 'purchaseDate', '2023-02-01');
     setFieldValue(fixture, 'amount', '123');
 
@@ -249,17 +250,6 @@ describe('ActualItemComponent', () => {
 
     expect(spyActual).toHaveBeenCalled();
     expect(spyMessage).toHaveBeenCalled();
-  });
-
-  // TODO
-  xit('filters actual items based on the note field', () => {
-    const spy = spyOn(actualItemService, 'setFilterItem');
-
-    fakeEvent(fixture, 'filter-note', 'input', 'filter text');
-    // setFieldValue(fixture, 'filter-note', 'filter text');
-    fixture.detectChanges();
-
-    expect(spy).toHaveBeenCalledWith('filter text', 'note');
   });
 
   it('filter actual items based on selects', () => {

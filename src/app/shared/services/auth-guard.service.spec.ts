@@ -1,44 +1,67 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Route, UrlSegment } from '@angular/router';
+import { of } from 'rxjs';
 import { AuthService } from './auth.service';
+import { canActivate, canMatch } from './auth-guard.service';
 
 describe('AuthGuard', () => {
-  // let guard: AuthGuard;
-  let authService: AuthService;
-  const routeMock: any = { snapshot: {} };
-  const routeStateMock: any = { snapshot: {}, url: '/category' };
-  const routerMock = { navigate: jasmine.createSpy('navigate') };
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
+    authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['isLoggedIn']);
+    routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
+
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
       providers: [
-        AuthService,
-        { provide: Router, useValue: routerMock },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: Router, useValue: routerSpy },
       ],
     });
-    // guard = TestBed.inject(AuthGuard);
-    authService = TestBed.inject(AuthService);
   });
 
-  // it('should be created', () => {
-  //   expect(guard).toBeTruthy();
-  // });
+  describe('canActivate', () => {
+    it('should allow navigation if the user is logged in', () => {
+      authServiceSpy.isLoggedIn.and.returnValue(true);
 
-  // it('should redirect an unauthenticated user to the login route', () => {
-  //   spyOn(authService, 'isLoggedIn').and.returnValue(false);
+      const result = TestBed.runInInjectionContext(() =>
+        canActivate({} as ActivatedRouteSnapshot, { url: '/login' } as RouterStateSnapshot)
+      );
 
-  //   expect(guard.canActivate(routeMock, routeStateMock)).toEqual(false);
-  //   expect(routerMock.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: routeStateMock.url } });
-  // });
+      expect(result).toBeTrue();
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+    });
 
-  // it('should allow the authenticated user to access path', () => {
-  //   spyOn(authService, 'isLoggedIn').and.returnValue(true);
-  //   expect(guard.canActivate(routeMock, routeStateMock)).toEqual(true);
-  // });
+    it('should redirect to login if the user is not logged in', () => {
+      authServiceSpy.isLoggedIn.and.returnValue(false);
+      routerSpy.navigate.and.returnValue(Promise.resolve(true)); // Mock navigate returning an observable
+
+      TestBed.runInInjectionContext(() =>
+        canActivate({} as ActivatedRouteSnapshot, { url: '/feature/home' } as RouterStateSnapshot)
+      );
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/feature/home' } });
+    });
+  });
+
+  describe('canMatch', () => {
+    it('should allow matching if the user is logged in', () => {
+      authServiceSpy.isLoggedIn.and.returnValue(true);
+
+      const result = TestBed.runInInjectionContext(() => canMatch({} as Route, [{ path: 'login' }] as UrlSegment[]));
+
+      expect(result).toBeTrue();
+      expect(routerSpy.navigate).not.toHaveBeenCalled();
+    });
+
+    it('should redirect to login if the user is not logged in', () => {
+      authServiceSpy.isLoggedIn.and.returnValue(false);
+      routerSpy.navigate.and.returnValue(Promise.resolve(true));
+
+      TestBed.runInInjectionContext(() => canMatch({} as Route, [{ path: 'feature/home' }] as UrlSegment[]));
+
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { returnUrl: '/feature/home' } });
+    });
+  });
 });

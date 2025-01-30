@@ -11,8 +11,7 @@ describe('CreateBudgetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateBudgetComponent],
-      imports: [SharedModule, BrowserAnimationsModule],
+      imports: [SharedModule, BrowserAnimationsModule, CreateBudgetComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
 

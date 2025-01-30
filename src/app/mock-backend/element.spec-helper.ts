@@ -157,36 +157,6 @@ export function setFieldValue<T>(fixture: ComponentFixture<T>, testId: string, v
 }
 
 /**
- * Sets the value of a mat-select form field with the given `data-testid` attribute.
- * @param fixture Component fixture
- * @param testId Test id set by `data-testid`
- * @param optionIndex The index of the option to be clicked on.
- * @returns A promise.
- */
-export async function setMatSelectValue<T>(
-  fixture: ComponentFixture<T>,
-  testId: string,
-  optionIndex: number
-): Promise<void> {
-  // Open the select
-  const selectTrigger = fixture.debugElement.query(By.css(`[data-testid="${testId}"] .mat-select-trigger`));
-  selectTrigger.triggerEventHandler('click', {});
-  fixture.detectChanges();
-  await fixture.whenStable();
-
-  // On a page, there can only be one option open at a time.
-  const options = document.querySelectorAll('.mat-select-panel mat-option');
-  if (options.length > optionIndex) {
-    const option = options[optionIndex] as HTMLElement;
-    option.click();
-    fixture.detectChanges();
-    return fixture.whenStable();
-  }
-
-  throw new Error(`Option index was out of bounds for element ${testId}`);
-}
-
-/**
  * Trigger an event on an element with the given `data-testid` attribute.
  *
  * @param fixture Component fixture

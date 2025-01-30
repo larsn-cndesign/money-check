@@ -1,3 +1,5 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -13,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of } from 'rxjs';
-import { setMatSelectValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { triggerEvent } from 'src/app/mock-backend/element.spec-helper';
 import {
   BUDGET_STATE,
   BUDGET_YEAR_1,
@@ -30,6 +32,7 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { BudgetYear, Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
 import { CreateVersionComponent } from './create-version.component';
+import { selectMatOption } from 'src/app/mock-backend/material.spec-helper';
 registerLocaleData(localeSv);
 
 type OmitFromStore =
@@ -84,10 +87,10 @@ describe('CreateVersionComponent', () => {
   let fixture: ComponentFixture<CreateVersionComponent>;
   let manageBudgetYear: ManageBudgetYear;
   let currencies: Currency[];
+  let loader: HarnessLoader;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateVersionComponent, CurrencyTableComponent, CurrencyFormComponent],
       imports: [
         NoopAnimationsModule,
         ReactiveFormsModule,
@@ -99,6 +102,9 @@ describe('CreateVersionComponent', () => {
         MatSelectModule,
         MatCheckboxModule,
         ConfirmDialogComponent,
+        CreateVersionComponent,
+        CurrencyTableComponent,
+        CurrencyFormComponent,
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
@@ -116,6 +122,7 @@ describe('CreateVersionComponent', () => {
 
     currencies = deepCoyp(CURRENCIES) as Currency[];
     component.currencies$ = of(currencies);
+    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('creates the component', () => {
@@ -134,9 +141,8 @@ describe('CreateVersionComponent', () => {
     fixture.detectChanges();
 
     const spyYear = spyOn(versionService, 'getBudgetYearItem').and.returnValue(BUDGET_YEAR_1);
-    const spyVersion = spyOn(versionService, 'getCurrentVersion').and.returnValue(of(MANAGE_BUDGET_YEAR));
 
-    await setMatSelectValue(fixture, 'budget-year', selectOptionIndex);
+    await selectMatOption(loader, 'budget-year', selectOptionIndex);
     fixture.detectChanges();
 
     triggerEvent(fixture, 'copy', 'change', { checked: false });
@@ -148,7 +154,6 @@ describe('CreateVersionComponent', () => {
     fixture.detectChanges();
 
     expect(spyYear).toHaveBeenCalledWith(budgetYearId);
-    // expect(spyVersion).toHaveBeenCalledWith(BUDGET_YEAR_1); // TODO
     expect(component.form.value.copy).toBeTrue();
   });
 });

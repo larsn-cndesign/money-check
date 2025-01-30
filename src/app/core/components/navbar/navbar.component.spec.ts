@@ -45,7 +45,6 @@ describe('NavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NavbarComponent, MenuComponent],
       imports: [
         NoopAnimationsModule,
         MatMenuModule,
@@ -54,6 +53,8 @@ describe('NavbarComponent', () => {
         MatButtonModule,
         MatSidenavModule,
         MatSelectModule,
+        NavbarComponent,
+        MenuComponent,
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },
@@ -62,9 +63,7 @@ describe('NavbarComponent', () => {
         provideRouter(APP_ROUTES),
       ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(NavbarComponent);
     router = TestBed.inject(Router);
     ngZone = TestBed.inject(NgZone);
@@ -118,36 +117,5 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledWith(budgetId);
-  });
-
-  xit('hides the budget select when navigating to the home page', waitForAsync(() => {
-    // toggleShowBudgetOnNavigation('/feature/home', false);
-  }));
-  xit('hides the budget select when navigating to the create-budget page', waitForAsync(() => {
-    // toggleShowBudgetOnNavigation('/feature/create-budget', false);
-  }));
-  xit('hides the budget select when navigating to an invalid url', waitForAsync(() => {
-    // toggleShowBudgetOnNavigation('', false);
-  }));
-  xit('shows the budget select when navigating to any valid url that is not home or create budget page', () => {
-    // let showBudget = false;
-
-    // TODO Not stable, it sometimes returns returnUrl!
-
-    fixture.detectChanges();
-
-    router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        // showBudget = true;
-        console.log(router.url);
-      }
-    });
-
-    // router.navigate(['/feature/budget-item']);
-
-    ngZone.run(() => {
-      router.navigate(['/feature/budget-item']);
-    });
-    expect(component.showBudget).toBe(true);
   });
 });

@@ -1,11 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use './content/variables.scss' as v;
 
-
 @use './content/site.scss';
 @use './content/page.scss';
 @use './content/table.scss';
 @use './app/shared/components/message-box/message-box.component.scss';
-
-
-

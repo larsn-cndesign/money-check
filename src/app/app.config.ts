@@ -44,7 +44,7 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     importProvidersFrom(MatNativeDateModule),
-    provideHttpClient(),
+    // provideHttpClient(),
     // importProvidersFrom(
     //   TranslateModule.forRoot({
     //     loader: {

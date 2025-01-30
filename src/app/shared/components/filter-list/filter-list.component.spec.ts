@@ -7,7 +7,7 @@ describe('FilterListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterListComponent],
+      imports: [FilterListComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterListComponent);

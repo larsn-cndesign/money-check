@@ -11,13 +11,10 @@ describe('ModifyVersionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ModifyVersionComponent],
-      imports: [SharedModule, MatDialogModule],
+      imports: [SharedModule, MatDialogModule, ModifyVersionComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ModifyVersionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

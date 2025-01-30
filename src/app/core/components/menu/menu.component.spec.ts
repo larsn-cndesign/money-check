@@ -24,17 +24,14 @@ describe('MenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MenuComponent],
-      imports: [MatMenuModule],
+      imports: [MatMenuModule, MenuComponent],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([{ path: 'feature/budget-variance', component: BudgetVarianceComponent }]),
       ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(MenuComponent);
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);

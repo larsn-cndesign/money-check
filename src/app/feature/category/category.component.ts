@@ -31,11 +31,11 @@ import { duplicateValidator } from './shared/category.validators';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-category',
-    imports: [SharedModule, ReactiveFormsModule, MatRadioModule, MatTableModule],
-    templateUrl: './category.component.html',
-    styleUrls: ['./category.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-category',
+  imports: [SharedModule, ReactiveFormsModule, MatRadioModule, MatTableModule],
+  templateUrl: './category.component.html',
+  styleUrls: ['./category.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryComponent extends CommonFormService implements OnInit {
   /**

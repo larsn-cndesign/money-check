@@ -59,7 +59,6 @@ describe('CategoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CategoryComponent],
       imports: [
         NoopAnimationsModule,
         ReactiveFormsModule,
@@ -69,6 +68,7 @@ describe('CategoryComponent', () => {
         MatTableModule,
         MatRadioModule,
         ConfirmDialogComponent,
+        CategoryComponent,
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },

@@ -11,13 +11,10 @@ describe('CreateBudgetYearComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateBudgetYearComponent],
-      imports: [SharedModule, MatDialogModule],
+      imports: [SharedModule, MatDialogModule, CreateBudgetYearComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(CreateBudgetYearComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

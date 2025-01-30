@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { DialogOptions } from './shared/confirm-dialog.model';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { SkipSanitizeHtmlPipe } from '../../pipes/skip-sanitize-html';
+import { MatButtonModule } from '@angular/material/button';
 
 /**
  * Class representing a confirmation dialog
  */
 @Component({
-    selector: 'app-confirm-dialog',
-    imports: [MatDialogModule, SkipSanitizeHtmlPipe],
-    templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-confirm-dialog',
+  imports: [MatDialogModule, MatButtonModule, MatDialogActions, SkipSanitizeHtmlPipe],
+  templateUrl: './confirm-dialog.component.html',
+  styleUrls: ['./confirm-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialogComponent {
   /**

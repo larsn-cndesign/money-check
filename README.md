@@ -4,7 +4,7 @@ A simple expense budget web application managing categories, units, currencies, 
 The main purpose of the project is to develop Angular skills and to adhere to Angular best practices.
 
 ### Notes
-- Uses Angular version 14
+- Uses Angular version 19
 - Data is stored in localStorage
 - Language is currently only available in Swedish
 - Unit testing is ongoing. For a complete unit test of a feature, please see [feature/actual-item](https://github.com/larsn-cndesign/money-check/tree/main/src/app/feature/actual-item)
@@ -39,7 +39,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Built With
 
 * [Visula Studio Code](https://code.visualstudio.com/) - The IDE
-* [Angular 14](https://angular.io/) - The web framework used
+* [Angular 19](https://angular.dev/) - The web framework used
 
 ## Libraries Used
 

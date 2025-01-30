@@ -11,8 +11,7 @@ describe('BudgetItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BudgetItemComponent],
-      imports: [SharedModule, MatDialogModule],
+      imports: [SharedModule, MatDialogModule, BudgetItemComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   });

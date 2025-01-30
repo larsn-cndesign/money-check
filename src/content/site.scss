@@ -1,4 +1,5 @@
 @use '../content/variables.scss' as v;
+@use '@angular/material' as mat;
 
 *,
 *::before,
@@ -19,7 +20,8 @@ a:hover {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  background-color: v.$body-background;
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
 }
 
 h2 {
@@ -93,7 +95,7 @@ h2 {
 }
 
 // -------------------------------
-// Form fields
+// Angular material styles
 // -------------------------------
 .form-field-note {
   width: 50%;
@@ -101,7 +103,7 @@ h2 {
 }
 
 .form-field-error .mat-mdc-form-field {
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .mat-mdc-form-field-error {
