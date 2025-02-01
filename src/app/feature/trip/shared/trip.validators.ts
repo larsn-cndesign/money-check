@@ -9,7 +9,7 @@ import { TripService } from './trip.service';
  */
 export const betweenDateValidator = (tripService: TripService, action = ''): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
-    const actionControl = control.parent?.get(action)?.get('modify');
+    const actionControl = control.parent?.get(action);
 
     return tripService.betweenDates(control.value, actionControl?.value) ? { betweenDate: true } : null;
   };
