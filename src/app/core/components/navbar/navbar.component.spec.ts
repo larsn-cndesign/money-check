@@ -21,17 +21,21 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from './navbar.component';
 
-type OmitFromBudgetState = OmitAllFromStore | 'getBudgetStateInStore' | 'setBudgetSate';
+type OmitFromBudgetState =
+  | OmitAllFromStore
+  | 'getBudgetStateInStore'
+  | 'setBudgetSate'
+  | 'updateBudgetState'
+  | 'getItemValue'
+  | 'setItem';
 
 const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
   getBudgetState(): Observable<BudgetState> {
     return of(BUDGET_STATE);
   },
-  changeBudget(budgetId: number): void {
-    // this.item.budgetId = budgetId;
-    // const budget = this.item.budgets.find((x) => x.id === budgetId);
-    // this.item.budgetName = budget ? budget.budgetName : '';
-    // this.storeBudgetState();
+  changeBudget(budgetId: number): void {},
+  getItem(): Observable<BudgetState> {
+    return of(BUDGET_STATE);
   },
 };
 

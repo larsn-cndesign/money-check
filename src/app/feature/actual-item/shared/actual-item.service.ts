@@ -32,16 +32,14 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @returns Observer of `ManageActualItem` class.
    */
   getActualItems(budgetId: number): Observable<ManageActualItem> {
-    const filter = this.item.filter;
+    const filter = this.getItemValue().filter;
     filter.budgetId = budgetId;
 
     return this.httpService.postItemVar<ItemFilter, ManageActualItem>(filter, 'actualItem/get').pipe(
       tap((item) => {
         if (item) {
-          this.store.item = item;
-          this.store.items = item.actualItems;
-          this.updateStore();
-          this.updateStoreItems();
+          this.setItem(item);
+          this.setItems(item.actualItems);
         }
       })
     );
@@ -76,7 +74,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
     const asc = sort ? sort.direction === 'asc' : true;
     const columnName = sort ? sort.active : 'purchaseDate';
 
-    this.store.items = this.items.sort((a, b) => {
+    const items = this.getItemValues().sort((a, b) => {
       switch (columnName) {
         case 'purchaseDate':
           return compare(toDate(a.purchaseDate), toDate(b.purchaseDate), asc);
@@ -90,8 +88,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
           return 0;
       }
     });
-
-    this.updateStoreItems();
+    this.setItems(items);
   }
 
   /**
@@ -100,24 +97,29 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @param filterType The type of filter currently used.
    */
   setFilterItem(value: any, filterType: string): void {
+    const currentItem = this.getItemValue();
+
     switch (filterType) {
       case 'budgetYearId':
-        this.item.filter.budgetYearId = +value;
+        currentItem.filter.budgetYearId = +value;
         break;
       case 'category':
-        this.item.filter.categoryId = +value;
+        currentItem.filter.categoryId = +value;
         break;
       case 'trip':
-        this.item.filter.tripId = +value;
+        currentItem.filter.tripId = +value;
         break;
       case 'currencyCode':
-        this.item.filter.currencyCode = value as string;
+        currentItem.filter.currencyCode = value as string;
         break;
       case 'note':
-        this.item.filter.note = value as string;
+        currentItem.filter.note = value as string;
         break;
     }
-    ItemFilter.setFilter(this.item.filter);
+
+    const updatedItem = { ...currentItem };
+    this.setItem(updatedItem);
+    ItemFilter.setFilter(currentItem.filter);
   }
 
   /**
@@ -126,7 +128,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @returns True if a year does not exist in the selected budget.
    */
   budgetYearNotExist(purchaseDate: Date): boolean {
-    const yearFound = this.item.budgetYears.find((x) => x.year === new Date(toDate(purchaseDate)).getFullYear());
+    const yearFound = this.getItemValue().budgetYears.find((x) => x.year === new Date(toDate(purchaseDate)).getFullYear());
     return yearFound ? false : true;
   }
 
@@ -164,8 +166,8 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @returns True if year exists in filter or if no filter is set which represent all years.
    */
   private isYearInFilter(purchaseYear: number): boolean {
-    const budgetYearId = this.item.filter.budgetYearId;
-    const budgetYear = this.item.budgetYears.find((x) => x.id === budgetYearId);
+    const budgetYearId = this.getItemValue().filter.budgetYearId;
+    const budgetYear = this.getItemValue().budgetYears.find((x) => x.id === budgetYearId);
 
     if ((budgetYear && purchaseYear === budgetYear.year) || budgetYearId === -1) {
       return true;

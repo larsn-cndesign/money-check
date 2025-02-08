@@ -3,9 +3,9 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && budgetState.hasBudget) {
+@if(pageLoaded() && budgetState.hasBudget) {
 <!-- Wait to resolve budget -->
-@if(budgetYear$ | async; as budget) {
+@if(budgetYear(); as budget) {
 <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateBudgetYear(formDirective)">
   <div class="head-section form-field-error">
     <mat-form-field>
@@ -26,7 +26,7 @@
 
   <div [hidden]="budget.copy">
     <app-currency-form
-      [currencies$]="currencies$"
+      [currencies]="currencies"
       [deletable]="!budget.copy"
       formControlName="currencyForm"
     ></app-currency-form>
@@ -37,7 +37,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="($any(currencies$ | async).length === 0 && !budget.copy) || !year?.valid"
+      [disabled]="(currencies().length === 0 && !budget.copy) || !year?.valid"
     >
       Skapa budgetår
     </button>
@@ -45,7 +45,7 @@
 </form>
 }
 <!-- No budget -->
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>
   Det finns ingen budget upplagd som ett budgetår kan kopplas till.
   <a href="/feature/create-budget">Skapa en ny budget</a>.

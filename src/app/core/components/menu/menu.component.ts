@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -11,17 +11,17 @@ import { MatMenuModule } from '@angular/material/menu';
  * Class representing a reusable menu for both `toolbar` and `sidenav`.
  */
 @Component({
-    selector: 'app-menu',
-    imports: [SharedModule, RouterLink, MatMenuModule],
-    templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+  selector: 'app-menu',
+  imports: [SharedModule, RouterLink, MatMenuModule],
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
   /**
    * An observer of a user.
    * @public
    */
-  user$: Observable<AppUser>;
+  user: Signal<AppUser>;
 
   /**
    * An event emitter that emits when a navigation link has been cliked.
@@ -39,7 +39,7 @@ export class MenuComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.userService.getStoredUser();
     }
-    this.user$ = this.userService.item$;
+    this.user = this.userService.getItem();
   }
 
   /**

@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { NgZone } from '@angular/core';
+import { NgZone, signal } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, provideRouter, Router } from '@angular/router';
@@ -47,7 +47,7 @@ describe('MenuComponent', () => {
   it('redirect user to login pagen when logging out', () => {
     const logoutSpy = spyOn(authService, 'logout');
 
-    component.user$ = of(loggedInUser);
+    component.user = signal(loggedInUser);
     fixture.detectChanges();
 
     click(fixture, 'logout');
@@ -56,7 +56,7 @@ describe('MenuComponent', () => {
   });
 
   it('finds no logout button if user is not loged in', async () => {
-    component.user$ = of(notLoggedInUser);
+    component.user = signal(notLoggedInUser);
     fixture.detectChanges();
 
     expect(() => {
@@ -65,7 +65,7 @@ describe('MenuComponent', () => {
   });
 
   it('finds no buttons marked with testid admin if user is not an admin user', () => {
-    component.user$ = of(loggedInUser);
+    component.user = signal(loggedInUser);
     fixture.detectChanges();
 
     expect(findEls(fixture, 'admin').length).toBe(0);
@@ -74,14 +74,14 @@ describe('MenuComponent', () => {
   it('finds all buttons marked with testid admin if user is an admin user', () => {
     const expectedButtonCount = 2;
 
-    component.user$ = of(loggedInAdminUser);
+    component.user = signal(loggedInAdminUser);
     fixture.detectChanges();
 
     expect(findEls(fixture, 'admin').length).toBe(expectedButtonCount);
   });
 
   it('emits navigated events when the user clicks a navigation link in the menu', waitForAsync(() => {
-    component.user$ = of(loggedInAdminUser);
+    component.user = signal(loggedInAdminUser);
     fixture.detectChanges();
 
     component.navigated.subscribe(() => {

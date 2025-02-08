@@ -32,8 +32,7 @@ export class TripService extends StoreItems<Trip> {
   getTrips(budgetId: number): Observable<Trip[]> {
     return this.httpService.getItemsById<Trip>(budgetId, 'trip').pipe(
       tap((items) => {
-        this.store.items = items;
-        this.updateStore();
+        this.items = items;
       })
     );
   }
@@ -69,7 +68,7 @@ export class TripService extends StoreItems<Trip> {
       return false;
     }
 
-    const trips = this.getUnselectedItems(action, 'id');
+    const trips = this.getItems(action === Modify.Edit);
     return trips.findIndex((x) => this.isBetweenDates(value, x.fromDate, x.toDate)) !== -1;
   }
 

@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
@@ -10,7 +9,6 @@ import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/s
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
@@ -21,11 +19,11 @@ import { BudgetYearService } from '../shared/budget-year.service';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-delete-budget-year',
-    imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
-    templateUrl: './delete-budget-year.component.html',
-    styleUrls: ['./delete-budget-year.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-delete-budget-year',
+  imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
+  templateUrl: './delete-budget-year.component.html',
+  styleUrls: ['./delete-budget-year.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteBudgetYearComponent extends CommonFormService implements OnInit {
   /**
@@ -37,10 +35,10 @@ export class DeleteBudgetYearComponent extends CommonFormService implements OnIn
   }>;
 
   /**
-   * An observer of `ManageBudgetYear` class.
+   * Signal representing the current state of `ManageBudgetYear`.
    * @public
    */
-  budgetYear$: Observable<ManageBudgetYear>;
+  budgetYear: Signal<ManageBudgetYear>;
 
   /**
    * Getter property for the budgetYearId form control
@@ -54,42 +52,36 @@ export class DeleteBudgetYearComponent extends CommonFormService implements OnIn
    * Initializes form controls with validation, observables and services.
    * @param budgetYearService Manage budget year.
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
     private budgetYearService: BudgetYearService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup({
       budgetYearId: new FormControl(-1, { validators: [Validators.required], nonNullable: true }),
     });
 
-    this.budgetYear$ = this.budgetYearService.item$;
+    this.budgetYear = this.budgetYearService.getItem();
   }
 
   /**
    * @description Set title of HTML document and get all availables budget years.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.item$, this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.budgetYearService.getBudgetYear(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.pageLoaded$.next(true);
-      });
+      .subscribe(() => this.pageLoaded.set(true));
   }
 
   /**

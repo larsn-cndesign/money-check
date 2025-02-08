@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && (budgetYear$ | async); as budget) {
+@if(pageLoaded() && budgetYear(); as budget) {
 <!-- Check if budget exist -->
 @if(budget.budgetYears.length !== 0) {
 <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateVersion(formDirective)">
@@ -38,7 +38,7 @@
   } @if(budgetYearId?.value !== -1) {
   <div>
     <app-currency-form
-      [currencies$]="currencies$"
+      [currencies]="currencies"
       [deletable]="!budget.copy"
       formControlName="currencyForm"
     ></app-currency-form>
@@ -50,13 +50,13 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="$any(currencies$ | async).length === 0 || budgetYearId?.value === -1"
+      [disabled]="currencies().length === 0 || budgetYearId?.value === -1"
     >
       Skapa version
     </button>
   </div>
 </form>
 <!-- No budget -->
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>Det finns inget budgetår att skapa en version för</div>
 } }}

@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && (manageActualItem$ | async); as actual) {
+@if(pageLoaded() && manageActualItem(); as actual) {
 <!-- Check for existing budget -->
 @if(actual.budgetYears.length !== 0) {
 <!-- Check for existing categories -->
@@ -207,7 +207,7 @@
 <div class="max-table-height" #tableWrapper>
   <table
     mat-table
-    [dataSource]="$any(actualItems$ | async)"
+    [dataSource]="actualItems()"
     matSort
     matSortDisableClear
     (matSortChange)="onSortData($event)"
@@ -313,10 +313,10 @@
     <tr mat-footer-row *matFooterRowDef="['sum-currency', 'sum-amount', 'sum-fill']; sticky: true"></tr>
   </table>
 </div>
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <!-- No categories -->
 <div>Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.</div>
-} } } @else { @if(pageLoaded$ | async) {
+} } } @else { @if(pageLoaded()) {
 <!-- No years -->
 <div>Det finns ingen budget eller budgetår.</div>
 } } }

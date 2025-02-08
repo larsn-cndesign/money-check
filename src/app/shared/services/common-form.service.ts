@@ -1,9 +1,7 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { BudgetState } from '../classes/budget-state.model';
-import { ConfirmDialogService } from '../components/confirm-dialog/shared/confirm-dialog.service';
-import { MessageBoxService } from '../components/message-box/shared/message-box.service';
 import { ImmediateErrorMatcher } from '../models/immediate-error-state';
 import { ErrorService } from './error.service';
 
@@ -14,6 +12,11 @@ import { ErrorService } from './error.service';
   providedIn: 'root',
 })
 export class CommonFormService implements OnDestroy {
+  /**
+   * Injects the error service
+   */
+  private errorService = inject(ErrorService);
+
   /**
    * A Subject that emits values to subscribers.
    * @protected
@@ -38,7 +41,7 @@ export class CommonFormService implements OnDestroy {
    * @public
    * @default false
    */
-  pageLoaded$ = new BehaviorSubject<boolean>(false);
+  pageLoaded = signal<boolean>(false);
 
   /**
    * Get error messages for an invalid form control.
@@ -49,18 +52,6 @@ export class CommonFormService implements OnDestroy {
   getErrorMessage(control: AbstractControl | null, title?: string): string {
     return this.errorService.getFormErrorMessage(control, title);
   }
-
-  /**
-   * Initializes services, observables and sets the document title.
-   * @param errorService Application error service.
-   * @param dialogService Confirmation dialog service.
-   * @param messageBoxService Service to handle user messages.
-   */
-  constructor(
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
-  ) {}
 
   /**
    * @description Unsubscribe from all observables and complete the sub$ subject.

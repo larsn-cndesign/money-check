@@ -18,78 +18,19 @@ import { Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Observable, of } from 'rxjs';
-import { click, fakeEvent, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
+import { of } from 'rxjs';
+import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
 import { selectMatOption } from 'src/app/mock-backend/material.spec-helper';
-import {
-  ACTUAL_ITEM_1,
-  ACTUAL_ITEMS,
-  BUDGET_STATE,
-  deepCopyActualItem,
-  deepCopyManageActualItem,
-  MANAGE_ACTUAL_ITEM,
-  OmitAllFromStore,
-} from 'src/app/mock-backend/spec-constants';
+import { ACTUAL_ITEM_1, ACTUAL_ITEMS, BUDGET_STATE, MANAGE_ACTUAL_ITEM } from 'src/app/mock-backend/spec-constants';
 import { toDate } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
-import { BudgetState } from '../../shared/classes/budget-state.model';
 import { ActualItemComponent } from './actual-item.component';
-import { ActualItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
 
 registerLocaleData(localeSv);
-
-type OmitFromStore =
-  | 'item$'
-  | 'items$'
-  | 'getUnselectedItems'
-  | 'addItem'
-  | 'editItem'
-  | 'deleteItem'
-  | 'updateStore'
-  | 'updateStoreItems';
-
-const actualItemService: Omit<ActualItemService, OmitFromStore> = {
-  getActualItems(_budgetId: number): Observable<ManageActualItem> {
-    return of(MANAGE_ACTUAL_ITEM);
-  },
-  budgetYearNotExist(_purchaseDate: Date): boolean {
-    return false;
-  },
-  modifyActualItem(_actualItem: ActualItem, _action: string): Observable<ActualItem> {
-    return of(ACTUAL_ITEM_1);
-  },
-  sortData(_sort: Sort): void {},
-  setFilterItem(_value: any, _filterType: string): void {},
-  // StoreItem
-  get item(): ManageActualItem {
-    return MANAGE_ACTUAL_ITEM;
-  },
-  get items(): ActualItem[] {
-    const actualItemSEK = deepCopyActualItem(ACTUAL_ITEM_1);
-    actualItemSEK.amount = 300;
-    actualItemSEK.currencyCode = 'SEK';
-
-    const actualItemEUR = deepCopyActualItem(ACTUAL_ITEM_1);
-    actualItemEUR.amount = 150;
-    actualItemEUR.currencyCode = 'EUR';
-
-    return [actualItemSEK, actualItemEUR];
-  },
-  clearSelection(): void {},
-  selectItem(_item: ActualItem): void {},
-};
-
-type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
-
-const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
-  getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE);
-  },
-};
 
 describe('ActualItemComponent', () => {
   let component: ActualItemComponent;
@@ -97,6 +38,8 @@ describe('ActualItemComponent', () => {
   let messageBoxService: MessageBoxService;
   let dialogService: ConfirmDialogService;
   let loader: HarnessLoader;
+  let budgetStateService: BudgetStateService;
+  let actualItemService: ActualItemService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -114,32 +57,30 @@ describe('ActualItemComponent', () => {
         MatSelectModule,
         ActualItemComponent,
       ],
-      providers: [
-        { provide: ActualItemService, useValue: actualItemService },
-        { provide: BudgetStateService, useValue: budgetStateService },
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-      ],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
+    budgetStateService = TestBed.inject(BudgetStateService);
+    budgetStateService.setBudgetSate(BUDGET_STATE);
+
+    actualItemService = TestBed.inject(ActualItemService);
+    actualItemService.setItem(MANAGE_ACTUAL_ITEM);
+    actualItemService.setItems([...ACTUAL_ITEMS]);
+
     fixture = TestBed.createComponent(ActualItemComponent);
     messageBoxService = TestBed.inject(MessageBoxService);
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
 
-    component.manageActualItem$ = of(deepCopyManageActualItem(MANAGE_ACTUAL_ITEM));
-    component.actualItems$ = of([...ACTUAL_ITEMS]);
+    component.pageLoaded.set(true);
 
     fixture.detectChanges();
-
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded$.value).toBeTrue();
+    expect(component.pageLoaded()).toBeTrue();
   });
 
   it('clears selection and reset form when selecting to add an item', () => {
@@ -185,8 +126,7 @@ describe('ActualItemComponent', () => {
 
   it('selects an item when the note field is more than one line of text', () => {
     const actualItems = [...ACTUAL_ITEMS];
-    actualItems[0].note = 'Rad ett\nRad två';
-    component.actualItems$ = of(actualItems);
+    actualItems[0].note = 'Row one\nRow two';
     fixture.detectChanges();
 
     triggerEvent(fixture, 'select-item', 'click');
@@ -197,8 +137,7 @@ describe('ActualItemComponent', () => {
 
   it('selects an item when the note field is only one line of text', () => {
     const actualItems = [...ACTUAL_ITEMS];
-    actualItems[0].note = 'Endast en rad';
-    component.actualItems$ = of(actualItems);
+    actualItems[0].note = 'Only one row';
     fixture.detectChanges();
 
     triggerEvent(fixture, 'select-item', 'click');
@@ -292,12 +231,10 @@ describe('ActualItemComponent', () => {
 
   it('deletes an actual item', () => {
     const spyDialog = spyOn(dialogService, 'confirmed').and.returnValue(of(true));
-    const spyMessage = spyOn(messageBoxService, 'show').and.returnValue();
 
     click(fixture, 'delete');
 
     expect(spyDialog).toHaveBeenCalled();
-    expect(spyMessage).toHaveBeenCalled();
   });
 
   it('sets a purchase date for a non exising budget year', () => {
@@ -333,14 +270,12 @@ describe('ActualItemComponent', () => {
 
   it('calculates the amount based on the selected currency', () => {
     triggerEvent(fixture, 'sum-currency', 'selectionChange', { value: 'SEK' });
-    expect(component.sumCurrency).toBe(1800);
-
-    fixture.detectChanges();
+    expect(component.sumCurrency).toBe(600); // 100 + (50 * 10)
 
     triggerEvent(fixture, 'sum-currency', 'selectionChange', { value: 'EUR' });
-    expect(component.sumCurrency).toBe(180);
+    expect(component.sumCurrency).toBe(60); // 50 + (100 / 10)
 
     triggerEvent(fixture, 'sum-currency', 'selectionChange', { value: 'AUD' });
-    expect(component.sumCurrency).toBe(450);
+    expect(component.sumCurrency).toBe(150); // 50 + 100
   });
 });

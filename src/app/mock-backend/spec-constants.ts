@@ -204,7 +204,7 @@ BUDGET_STATE.budgets = [deepCoyp(BUDGET)];
 
 export type OmitAllFromStore =
   | 'item$'
-  | 'items$'
+  | 'items'
   | 'item'
   | 'items'
   | 'getUnselectedItems'

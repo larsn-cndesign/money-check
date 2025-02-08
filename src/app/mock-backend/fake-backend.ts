@@ -32,7 +32,7 @@ export const MOCK_DATA_STORAGE = 'db';
 const FAKE_EMAIL = 'test@test.com';
 const FAKE_USER_PASSWORD = '123456';
 /** Simulate a delay of a http request in milliseconds */
-const SIMULATED_HTTPREQUEST_DEALY = 600;
+const SIMULATED_HTTPREQUEST_DEALY = 0; // Change to test simulate slow response time
 /** Fake user credentials */
 const users = [{ email: FAKE_EMAIL, password: FAKE_USER_PASSWORD }] as any;
 
@@ -256,7 +256,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function deleteBudgetYear(): Observable<HttpEvent<any>> {
       const budgetYear = JSON.parse(body) as BudgetYear;
       DatabaseService.deleteBudgetYear(budgetYear);
-      // return of(new HttpResponse({ status: 200, body: DatabaseService.getBudgetYear(budgetYear.budgetId) }));
       return of(new HttpResponse({ status: 200, body: true }));
     }
 

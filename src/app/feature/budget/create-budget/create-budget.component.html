@@ -29,7 +29,7 @@
 </form>
 
 <div class="row-xl max-table-height">
-  <table mat-table [dataSource]="$any(budgets$ | async)" class="tbl">
+  <table mat-table [dataSource]="budgets()" class="tbl">
     <ng-container matColumnDef="budgetName">
       <th mat-header-cell *matHeaderCellDef>Namn på budget</th>
       <td mat-cell *matCellDef="let item">

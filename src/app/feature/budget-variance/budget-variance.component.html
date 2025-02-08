@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && (budgetVariance$ | async); as variance) {
+@if(pageLoaded() && budgetVariance(); as variance) {
 <!-- Check for existing budget -->
 @if(variance.budgetYears.length !== 0) {
 <div>
@@ -59,7 +59,7 @@
 <div class="max-table-height">
   <table
     mat-table
-    [dataSource]="$any(varianceItems$ | async)"
+    [dataSource]="varianceItems()"
     matSort
     matSortDisableClear
     (matSortChange)="onSortData($event)"
@@ -137,6 +137,6 @@
     ></tr>
   </table>
 </div>
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>Det finns ingen budget eller budgetår.</div>
 } } }

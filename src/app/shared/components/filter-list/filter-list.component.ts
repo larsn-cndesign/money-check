@@ -1,74 +1,62 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SharedModule } from '../../shared.module';
 import { FilterList, FilterListModel } from './shared/filter-list.model';
 import { FilterListService } from './shared/filter-list.service';
 
 @Component({
-    selector: 'app-filter-list',
-    imports: [SharedModule, MatListModule, MatDividerModule],
-    templateUrl: './filter-list.component.html',
-    styleUrls: ['./filter-list.component.scss']
+  selector: 'app-filter-list',
+  imports: [SharedModule, MatListModule, MatDividerModule],
+  templateUrl: './filter-list.component.html',
+  styleUrls: ['./filter-list.component.scss'],
 })
-export class FilterListComponent implements OnInit, OnDestroy {
-  /**
-   * A `FilterListModel` objects representing the model of a filter list.
-   * @public
-   */
-  filterListModel = new FilterListModel();
+export class FilterListComponent implements OnDestroy {
+  /** Observable holding the filter list model. */
+  filterListModel$: Observable<FilterListModel>;
 
-  /**
-   * The subscrition object subscribing to a `FilterList` observable.
-   * @private
-   */
-  private subscription!: Subscription;
+  /** Subject for managing unsubscriptions. */
+  protected sub$ = new Subject<void>();
 
-  constructor(private filterListService: FilterListService) {}
+  /** Initializes the component with filter list data. */
+  constructor(private filterListService: FilterListService) {
+    this.filterListModel$ = this.filterListService.getItem();
+  }
 
-  /**
-   * @description Unsubscribe from the filter list subscription.
-   */
+  /** Cleans up subscriptions on component destruction. */
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.sub$.next();
+    this.sub$.complete();
   }
 
-  /**
-   * @description Subscribes to a `FilterList` object. When notified it shows the filter list.
-   */
-  ngOnInit(): void {
-    this.subscription = this.filterListService.item$.subscribe((filterListModel: FilterListModel) => {
-      this.filterListModel = filterListModel;
-    });
-  }
-
-  /**
-   * Close filter list window and emits the filter selection.
-   */
+  /** Confirms selection and closes the filter list. */
   onOK(): void {
     this.filterListService.confirm();
   }
 
-  /**
-   * Close filter list window.
-   */
+  /** Cancels selection and closes the filter list. */
   onCancel(): void {
     this.filterListService.hide();
   }
 
   /**
-   * Event listener on list change event.
-   * @param item The item that changed.
+   * Toggles selection of a filter item.
+   * @param item - The clicked filter list item.
    */
   onClickListOption(item: FilterList): void {
-    item.selected = !item.selected;
+    const model = this.filterListService.getItemValue();
+    const newList = model.list.map((listItem) =>
+      listItem === item ? { ...listItem, selected: !listItem.selected } : listItem
+    );
+    this.filterListService.setItem({ ...model, list: newList });
   }
 
+  /** Toggles "select all" and updates the filter state. */
   onSelectAll(): void {
-    this.filterListModel.selectAll = !this.filterListModel.selectAll;
-    this.filterListService.select(this.filterListModel.selectAll);
+    const currentItem = this.filterListService.getItemValue();
+    const updatedItem = { ...currentItem, selectAll: !currentItem.selectAll };
+    this.filterListService.setItem(updatedItem);
+    this.filterListService.select(updatedItem.selectAll);
   }
 }

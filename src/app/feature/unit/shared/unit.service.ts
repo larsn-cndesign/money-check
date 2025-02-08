@@ -31,8 +31,7 @@ export class UnitService extends StoreItems<Unit> {
   getUnits(budgetId: number): Observable<Unit[]> {
     return this.httpService.getItemsById<Unit>(budgetId, 'unit').pipe(
       tap((items) => {
-        this.store.items = items;
-        this.updateStore();
+        this.items = items;
       })
     );
   }
@@ -67,7 +66,7 @@ export class UnitService extends StoreItems<Unit> {
       return false;
     }
 
-    const items = this.getUnselectedItems(action, 'id');
+    const items = this.getItems(action === Modify.Edit);
     return items.findIndex((x) => x.unitName.toLowerCase() === value.toLowerCase()) !== -1;
   }
 }

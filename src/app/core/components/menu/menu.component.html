@@ -1,4 +1,4 @@
-@if (user$ | async; as user) {
+@if (user(); as user) {
 <!-- Menu level 1 -->
 @if(user.name) {
 <button mat-button routerLink="/feature/budget-variance" data-testid="budget-variance">Utfall</button>

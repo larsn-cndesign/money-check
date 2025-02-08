@@ -22,7 +22,7 @@ describe('CategoryService', () => {
   function modifyItem(action: string, itemCount: number): void {
     let category: Category | undefined;
     const expectedUrl = '/api/category';
-    categoryService.items.push(CATEGORY_1); // At least one item
+    categoryService.addItem(CATEGORY_1); // At least one item
 
     categoryService
       .modifyCategory(CATEGORY_1, action)
@@ -48,7 +48,7 @@ describe('CategoryService', () => {
     }
 
     expect(category).toEqual(CATEGORY_1);
-    expect(categoryService.items.length).toBe(itemCount);
+    expect(categoryService.items().length).toBe(itemCount);
   }
 
   beforeEach(() => {
@@ -95,11 +95,11 @@ describe('CategoryService', () => {
     categoryService
       .getCategories(budgetId)
       .pipe(first())
-      .subscribe(
-        () => fail('next handler must not be called'),
-        (error) => (actualError = error),
-        () => fail('complete handler must not be called')
-      );
+      .subscribe({
+        next: () => fail('next handler must not be called'),
+        error: (error) => (actualError = error),
+        complete: () => fail('complete handler must not be called'),
+      });
 
     const req = httpMock.expectOne(expectedUrl);
     req.flush({ error: 'Something went wrong' }, { status: 500, statusText: 'Server Error' });
@@ -137,7 +137,7 @@ describe('CategoryService', () => {
     duplicate = categoryService.duplicate(invalidName, Modify.Add);
     expect(duplicate).toBeTrue();
 
-    categoryService.items[0].selected = true;
+    categoryService.items()[0].selected = true;
 
     duplicate = categoryService.duplicate(invalidName, Modify.Edit);
     expect(duplicate).toBeFalse();

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StoreItem } from 'src/app/shared/classes/store';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
@@ -31,11 +31,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
     return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
-          this.store.item = budgetYear;
-          this.updateStore();
-
+          this.setItem(budgetYear);
           this.currencyTableService.items = budgetYear.currencies;
-          this.currencyTableService.updateStore();
         }
       })
     );
@@ -50,11 +47,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
     return this.httpService.getItemById<ManageBudgetYear>(budgetYearId, 'budgetVersion').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
-          this.store.item = budgetYear;
-          this.updateStore();
-
+          this.setItem(budgetYear);
           this.currencyTableService.items = budgetYear.currencies;
-          this.currencyTableService.updateStore();
         }
       })
     );
@@ -69,7 +63,6 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
     return this.httpService.postItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
-        this.currencyTableService.updateStore();
       })
     );
   }
@@ -80,12 +73,11 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @returns Observer of a `boolean` object.
    */
   deleteVersion(): Observable<boolean> {
-    const budgetYear = this.store.item.budgetYear;
+    const budgetYear = this.getItemValue().budgetYear;
 
     return this.httpService.deleteItemVar<BudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
-        this.currencyTableService.updateStore();
       })
     );
   }
@@ -97,14 +89,17 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @returns
    */
   updateVersion(versionName: string): Observable<boolean> {
-    this.item.version.versionName = versionName;
-    this.item.currencies = this.currencyTableService.items;
-    const budgetYear = this.item;
+    const currentItem = this.getItemValue();
+
+    const budgetYear = {
+      ...currentItem,
+      version: { ...currentItem.version, versionName: versionName },
+      currencies: this.currencyTableService.items(),
+    };
 
     return this.httpService.putItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
-        this.currencyTableService.updateStore();
       })
     );
   }
@@ -119,8 +114,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
       return false;
     }
 
-    let array = [...this.store.item.versions];
-    array = array.filter((x) => x.versionName !== this.store.item.version.versionName);
+    let array = [...this.getItemValue().versions];
+    array = array.filter((x) => x.versionName !== this.getItemValue().version.versionName);
 
     return array.findIndex((x) => x.versionName.toLowerCase() === value.toLowerCase()) !== -1;
   }
@@ -130,8 +125,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @param copyVersion A flag that indicates if previous version including budget items should be copied.
    */
   changeCopyBudget(copyVersion: boolean): void {
-    this.item.copy = copyVersion;
-    this.updateStore();
+    const updatedItem = { ...this.getItemValue(), copy: copyVersion };
+    this.setItem(updatedItem);
   }
 
   /**
@@ -139,6 +134,6 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @param budgetYearId A unique identifier of a year.
    */
   getBudgetYearItem(budgetYearId: number): BudgetYear | undefined {
-    return this.item.budgetYears.find((x) => x.id === budgetYearId);
+    return this.getItemValue().budgetYears.find((x) => x.id === budgetYearId);
   }
 }

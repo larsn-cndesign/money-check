@@ -33,8 +33,12 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    * @returns Observer of `BudgetVariance` object.
    */
   loadVariancePage(budgetId: number): Observable<BudgetVariance> {
-    this.item.filter = new ItemFilter();
-    this.item.filter.budgetId = budgetId;
+    const filter = new ItemFilter();
+    filter.budgetId = budgetId;
+
+    const currentItem = this.getItemValue();
+    const updatedItem = { ...currentItem, filter: filter };
+    this.setItem(updatedItem);
 
     return this.getVarianceItems();
   }
@@ -44,15 +48,13 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    * @returns Observer of `BudgetVariance` class
    */
   getVarianceItems(): Observable<BudgetVariance> {
-    const filter = this.item.filter;
+    const filter = this.getItemValue().filter;
 
     return this.httpService.postItemVar<ItemFilter, BudgetVariance>(filter, 'varianceItem/get').pipe(
       tap((item) => {
         if (item) {
-          this.store.item = item;
-          this.store.items = item.varianceItems;
-          this.updateStore();
-          this.updateStoreItems(false);
+          this.setItem(item);
+          this.setItems(item.varianceItems);
         }
       })
     );
@@ -64,42 +66,54 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    * @param filterType The type of filter currently used.
    */
   setFilterItem(value: any, filterType: string): void {
+    const currentItem = this.getItemValue();
+
     switch (filterType) {
       case 'budgetYearId':
-        this.item.filter.budgetYearId = +value;
-        this.item.filter.versionId = -1;
-        this.item.filter.currencyCode = '';
-        this.item.filter.month = -1;
+        currentItem.filter.budgetYearId = +value;
+        currentItem.filter.versionId = -1;
+        currentItem.filter.currencyCode = '';
+        currentItem.filter.month = -1;
         break;
       case 'version':
-        this.item.filter.versionId = +value;
-        this.item.filter.currencyCode = '';
-        this.item.filter.month = -1;
+        currentItem.filter.versionId = +value;
+        currentItem.filter.currencyCode = '';
+        currentItem.filter.month = -1;
         break;
       case 'currencyCode':
-        this.item.filter.currencyCode = value;
-        this.item.filter.month = -1;
+        currentItem.filter.currencyCode = value;
+        currentItem.filter.month = -1;
         break;
       case 'month':
-        this.item.filter.month = value;
+        currentItem.filter.month = value;
         break;
       case 'day':
-        this.item.filter.travelDay = value;
+        currentItem.filter.travelDay = value;
         break;
     }
-    ItemFilter.setFilter(this.item.filter);
+
+    const updatedItem = { ...currentItem };
+    this.setItem(updatedItem);
+    ItemFilter.setFilter(currentItem.filter);
   }
 
   /**
    * Get filtered list or initialize it if neccessary.
    */
   getFilterList(): FilterList[] {
-    const filterList = this.item.filter.list;
+    const currentItem = this.getItemValue();
+
+    let filterList = currentItem.filter.list;
 
     if (filterList.length === 0) {
-      this.item.categories.forEach((item) => {
-        filterList.push({ id: item.id, name: item.categoryName, selected: true });
-      });
+      filterList = currentItem.categories.map((category) => ({
+        id: category.id,
+        name: category.categoryName,
+        selected: true,
+      }));
+
+      const updatedItem = { ...currentItem, filter: { ...currentItem.filter, list: filterList } } as BudgetVariance;
+      this.setItem(updatedItem);
     }
 
     return filterList;
@@ -113,7 +127,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
     const asc = sort ? sort.direction === 'desc' : true;
     const columnName = sort ? sort.active : 'category';
 
-    this.store.items = this.items.sort((a, b) => {
+    const items = this.getItemValues().sort((a, b) => {
       switch (columnName) {
         case 'category':
         case 'budget':
@@ -124,8 +138,7 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
           return 0;
       }
     });
-
-    this.updateStoreItems();
+    this.setItems(items);
   }
 
   /**
@@ -135,10 +148,12 @@ export class BudgetVarianceService extends StoreItem<BudgetVariance, VarianceIte
    */
   gotoDetails(item: VarianceItem, type: string): void {
     const filter = new ItemFilter();
-    filter.budgetYearId = this.item.filter.budgetYearId;
-    const catgegory = this.item.categories.find((x) => x.categoryName === item.category);
+    const currentItem = this.getItemValue();
+
+    filter.budgetYearId = currentItem.filter.budgetYearId;
+    const catgegory = currentItem.categories.find((x) => x.categoryName === item.category);
     filter.categoryId = catgegory ? catgegory.id : -1;
-    filter.currencyCode = this.item.filter.currencyCode;
+    filter.currencyCode = currentItem.filter.currencyCode;
 
     ItemFilter.setFilter(filter);
 

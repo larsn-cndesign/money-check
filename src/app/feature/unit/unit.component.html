@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && budgetState.hasBudget) {
+@if(pageLoaded() && budgetState.hasBudget) {
 <form
   [formGroup]="form"
   #formDirective="ngForm"
@@ -48,7 +48,7 @@
 </form>
 
 <div class="row-xl max-table-height">
-  <table mat-table [dataSource]="$any(units$ | async)" class="tbl">
+  <table mat-table [dataSource]="units()" class="tbl">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Enhet</th>
       <td mat-cell *matCellDef="let item">
@@ -89,7 +89,7 @@
   </table>
 </div>
 <!-- No budget -->
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>
   Det finns ingen budget upplagd som enheter kan kopplas till.
   <a href="/feature/create-budget">Skapa en ny budget</a>.

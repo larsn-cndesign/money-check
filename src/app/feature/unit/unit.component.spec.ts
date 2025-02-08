@@ -1,5 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Signal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +25,7 @@ import { Unit } from './shared/unit.model';
 import { UnitService } from './shared/unit.service';
 import { UnitComponent } from './unit.component';
 
-type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
+type OmitFromStore = 'items' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const unitService: Omit<UnitService, OmitFromStore> = {
   getUnits(budgetId: number): Observable<Unit[]> {
@@ -36,19 +37,11 @@ const unitService: Omit<UnitService, OmitFromStore> = {
   duplicate(_value: string, _action: string): boolean {
     return false;
   },
-  // StoreItem
-  get items(): Unit[] {
-    return UNITS;
-  },
+  // StoreItems
   clearSelection(): void {},
-  selectItem(_item: Unit): void {},
-};
-
-type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
-
-const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
-  getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE);
+  getItem(_item: Unit): void {},
+  getItems(skipSelected: boolean): Unit[] {
+    return UNITS;
   },
 };
 
@@ -57,6 +50,7 @@ describe('UnitComponent', () => {
   let fixture: ComponentFixture<UnitComponent>;
   let messageBoxService: MessageBoxService;
   let dialogService: ConfirmDialogService;
+  let budgetStateService: BudgetStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -73,28 +67,28 @@ describe('UnitComponent', () => {
         UnitComponent,
       ],
       providers: [
-        { provide: BudgetStateService, useValue: budgetStateService },
         { provide: UnitService, useValue: unitService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
+    budgetStateService = TestBed.inject(BudgetStateService);
+    budgetStateService.setBudgetSate(BUDGET_STATE);
+
     fixture = TestBed.createComponent(UnitComponent);
     messageBoxService = TestBed.inject(MessageBoxService);
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
 
-    component.units$ = of([...UNITS]);
+    component.units = signal([...UNITS]);
 
     fixture.detectChanges();
   });
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded$.value).toBeTrue();
+    expect(component.pageLoaded()).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
@@ -117,7 +111,7 @@ describe('UnitComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const spy = spyOn(unitService, 'selectItem').and.callFake((item) => {
+    const spy = spyOn(unitService, 'getItem').and.callFake((item) => {
       item.selected = true;
     });
 
@@ -131,7 +125,7 @@ describe('UnitComponent', () => {
   });
 
   it('submits the form successfully', () => {
-    const unit = { id: -1, budgetId: -1, unitName: 'Unit 4', useCurrency: false } as Unit;
+    const unit = { id: -1, budgetId: 1, unitName: 'Unit 4', useCurrency: false } as Unit;
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -140,13 +134,13 @@ describe('UnitComponent', () => {
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
 
-    const modifyCategorySpy = spyOn(unitService, 'modifyUnit').and.returnValue(of(unit));
+    const modifyUnitSpy = spyOn(unitService, 'modifyUnit').and.returnValue(of(unit));
 
     findEl(fixture, 'form').triggerEventHandler('submit');
     fixture.detectChanges();
 
     expect(component.form.value.unitName).toBeNull(); // Form has been reset
-    expect(modifyCategorySpy).toHaveBeenCalledWith(unit, Modify.Add);
+    expect(modifyUnitSpy).toHaveBeenCalledWith(unit, Modify.Add);
   });
 
   it('toggles the state of a unit should use currency calculation or not', () => {

@@ -1,19 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Signal, signal } from '@angular/core';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { MatTableModule } from '@angular/material/table';
+import { Subject, switchMap, tap } from 'rxjs';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { MONTHS } from 'src/app/shared/classes/constants';
 import { ListPos } from 'src/app/shared/components/filter-list/shared/filter-list.model';
 import { FilterListService } from 'src/app/shared/components/filter-list/shared/filter-list.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { MatTableModule } from '@angular/material/table';
 
 /**
  * Class representing budget variance.
@@ -21,24 +20,24 @@ import { MatTableModule } from '@angular/material/table';
  * @todo Add filter on cost per day on a trip.
  */
 @Component({
-    selector: 'app-budget-variance',
-    imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
-    templateUrl: './budget-variance.component.html',
-    styleUrls: ['./budget-variance.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-budget-variance',
+  imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
+  templateUrl: './budget-variance.component.html',
+  styleUrls: ['./budget-variance.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BudgetVarianceComponent implements OnInit, OnDestroy {
   /**
-   * An observer of a `BudgetVariance` objects.
+   * Signal representing the current state of `BudgetVariance`.
    * @public
    */
-  budgetVariance$: Observable<BudgetVariance>;
+  budgetVariance: Signal<BudgetVariance>;
 
   /**
-   * An observer of an array of `VarianceItem` objects.
+   * Signal representing the current state of `VarianceItem` objects.
    * @public
    */
-  varianceItems$: Observable<VarianceItem[]>;
+  varianceItems: Signal<VarianceItem[]>;
 
   /**
    * A Subject that emits values to subscribers.
@@ -58,7 +57,7 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @public
    * @default false
    */
-  pageLoaded$ = new BehaviorSubject<boolean>(false);
+  pageLoaded = signal(false);
 
   /**
    * A property that holds all columns to be displayed in a table.
@@ -83,30 +82,28 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
     private budgetStateService: BudgetStateService,
     private filterListService: FilterListService
   ) {
-    this.budgetVariance$ = this.budgetVarianceService.item$;
-    this.varianceItems$ = this.budgetVarianceService.items$;
+    this.budgetVariance = this.budgetVarianceService.getItem();
+    this.varianceItems = this.budgetVarianceService.getItems();
   }
 
   /**
    * @description Set title of HTML document and get budget variance items from server
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.item$, this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.budgetVarianceService.loadVariancePage(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.pageLoaded$.next(true);
-      });
+      .subscribe(() => this.pageLoaded.set(true));
 
-    pipeTakeUntil(this.filterListService.item$, this.sub$).subscribe((item) => {
+    pipeTakeUntil(this.filterListService.getItem(), this.sub$).subscribe((item) => {
       if (item && item.confirmed) {
-        this.budgetVarianceService.item.filter.list = item.list;
+        const currentItem = this.budgetVarianceService.getItemValue();
+        const updatedItem = { ...currentItem, filter: { ...currentItem.filter, list: item.list } };
+        this.budgetVarianceService.setItem(updatedItem);
         this.getFilteredItems();
       }
     });

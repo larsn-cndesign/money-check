@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppUser } from 'src/app/core/models/app-user.model';
-import { StoreItem } from '../classes/store';
 import { LS_ACCESS_TOKEN } from '../classes/constants';
+import { StoreItem } from '../classes/store';
 
 /**
  * Class representing a service for managing a user.
@@ -23,7 +23,7 @@ export class UserService extends StoreItem<AppUser> {
    */
   clearStoredUser(): void {
     localStorage.removeItem('user');
-    this.item = new AppUser();
+    this.setItem(new AppUser());
   }
 
   /**
@@ -34,8 +34,7 @@ export class UserService extends StoreItem<AppUser> {
   storeUser(token: string, user: AppUser): void {
     localStorage.setItem(LS_ACCESS_TOKEN, token);
     localStorage.setItem('user', JSON.stringify(user));
-    this.store.item = user;
-    this.updateStore();
+    this.setItem(user);
   }
 
   /**
@@ -44,8 +43,7 @@ export class UserService extends StoreItem<AppUser> {
   getStoredUser(): void {
     const user = localStorage.getItem('user');
     if (user) {
-      this.store.item = JSON.parse(user) as AppUser;
-      this.updateStore();
+      this.setItem(JSON.parse(user) as AppUser);
     }
   }
 }

@@ -32,11 +32,21 @@ describe('ActualItemService', () => {
   function modifyItem(yearId: number, action: string, itemCount: number): void {
     let actualItem: ActualItem | undefined;
     const expectedUrl = '/api/actualItem';
-    actualItemService.item.filter = FILTER;
-    actualItemService.item.filter.budgetYearId = yearId;
-    actualItemService.item.budgetYears = BUDGET_YEARS;
-    actualItemService.items.splice(0, actualItemService.items.length);
-    actualItemService.items.push(ACTUAL_ITEM_1);
+
+    // Mock item
+    const currentItem = actualItemService.getItemValue();
+    const updatedItem = {
+      ...currentItem,
+      filter: { ...currentItem.filter, ...FILTER, budgetYearId: yearId },
+      budgetYears: BUDGET_YEARS,
+    };
+    actualItemService.setItem(updatedItem);
+
+    // Mock items
+    const items = actualItemService.getItemValues();
+    items.splice(0, items.length);
+    items.push(ACTUAL_ITEM_1);
+    actualItemService.setItems(items);
 
     actualItemService
       .modifyActualItem(ACTUAL_ITEM_1, action)
@@ -62,7 +72,7 @@ describe('ActualItemService', () => {
     }
 
     expect(actualItem).toEqual(ACTUAL_ITEM_1);
-    expect(actualItemService.items.length).toBe(itemCount);
+    expect(actualItemService.getItemValues().length).toBe(itemCount);
   }
 
   /**
@@ -77,8 +87,27 @@ describe('ActualItemService', () => {
 
     actualItemService.sortData(sort);
 
-    expect(actualItemService.items[0].id).toBe(direction === 'asc' ? 1 : 2);
-    expect(actualItemService.items[1].id).toBe(direction === 'asc' ? 2 : 1);
+    if (validColumnName(active)) {
+      expect(actualItemService.getItemValues()[0].id).toBe(direction === 'asc' ? 1 : 2);
+      expect(actualItemService.getItemValues()[1].id).toBe(direction === 'asc' ? 2 : 1);
+    } else {
+      expect(actualItemService.getItemValues()[0].id).toBe(1);
+      expect(actualItemService.getItemValues()[1].id).toBe(2);
+    }
+  }
+
+  function validColumnName(name: string): boolean {
+    switch (name) {
+      case 'purchaseDate':
+      case 'categoryName':
+      case 'tripName':
+      case 'currencyCode':
+      case 'amount':
+      case 'note':
+        return true;
+      default:
+        return false;
+    }
   }
 
   /**
@@ -87,16 +116,17 @@ describe('ActualItemService', () => {
   function setAcutalItemsArray(): void {
     const item1 = deepCopyActualItem(ACTUAL_ITEM_1);
     const item2 = deepCopyActualItem(ACTUAL_ITEM_2);
-    actualItemService.items.splice(0, actualItemService.items.length);
-    actualItemService.items.push(item1);
-    actualItemService.items.push(item2);
+
+    actualItemService.setItems([]);
+    actualItemService.addItem(item1);
+    actualItemService.addItem(item2);
   }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [CommonModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [CommonModule],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    });
     actualItemService = TestBed.inject(ActualItemService);
     httpMock = TestBed.inject(HttpTestingController);
     errorService = TestBed.inject(ErrorService);
@@ -110,7 +140,10 @@ describe('ActualItemService', () => {
     let manageActualItem: ManageActualItem | undefined;
     const budgetId = 1;
     const expectedUrl = '/api/actualItem/get';
-    actualItemService.item.filter = FILTER;
+
+    const currentItem = actualItemService.getItemValue();
+    const updatedItem = { ...currentItem, filter: FILTER };
+    actualItemService.setItem(updatedItem);
 
     actualItemService
       .getActualItems(budgetId)
@@ -131,18 +164,21 @@ describe('ActualItemService', () => {
     let actualError: HttpErrorResponse | undefined;
     const budgetId = 1;
     const expectedUrl = '/api/actualItem/get';
-    actualItemService.item.filter = FILTER;
+
+    const currentItem = actualItemService.getItemValue();
+    const updatedItem = { ...currentItem, filter: FILTER };
+    actualItemService.setItem(updatedItem);
 
     const spy = spyOn(errorService, 'handleHttpError').and.callThrough();
 
     actualItemService
       .getActualItems(budgetId)
       .pipe(first())
-      .subscribe(
-        () => fail('next handler must not be called'),
-        (error) => (actualError = error),
-        () => fail('complete handler must not be called')
-      );
+      .subscribe({
+        next: () => fail('next handler must not be called'),
+        error: (error) => (actualError = error),
+        complete: () => fail('complete handler must not be called'),
+      });
 
     const req = httpMock.expectOne(expectedUrl);
     req.flush({ error: 'Something went wrong' }, { status: 500, statusText: 'Server Error' });
@@ -181,7 +217,9 @@ describe('ActualItemService', () => {
   });
 
   it('validates that a year exists in a budget or not', () => {
-    actualItemService.item.budgetYears = BUDGET_YEARS; // 2022, 2023.
+    const currentItem = actualItemService.getItemValue();
+    const updatedItem = { ...currentItem, budgetYears: BUDGET_YEARS }; // 2022, 2023.
+    actualItemService.setItem(updatedItem);
 
     const validDate = new Date('2022-01-01');
     const invalidDate = new Date('2021-01-01');
@@ -231,7 +269,7 @@ describe('ActualItemService', () => {
 
     actualItemService.sortData();
 
-    expect(actualItemService.items[0].id).toBe(1);
-    expect(actualItemService.items[1].id).toBe(2);
+    expect(actualItemService.getItemValues()[0].id).toBe(1);
+    expect(actualItemService.getItemValues()[1].id).toBe(2);
   });
 });

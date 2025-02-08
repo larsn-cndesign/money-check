@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && (budgetYear$ | async); as budget) {
+@if(pageLoaded() && budgetYear(); as budget) {
 <!-- Check if budget exist -->
 @if(budget.budgetYears.length !== 0) {
 <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
@@ -39,34 +39,25 @@
   <button
     mat-flat-button
     type="button"
-    [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
+    [disabled]="currencies().length === 0 || year?.value === -1"
     (click)="onDeleteVersion($event)"
   >
     Ta bort aktuell version
   </button>
   } @if(year?.value && year?.value !== -1) {
   <div>
-    <app-currency-form
-      [currencies$]="currencies$"
-      [deletable]="false"
-      formControlName="currencyForm"
-    ></app-currency-form>
+    <app-currency-form [currencies]="currencies" [deletable]="false" formControlName="currencyForm"></app-currency-form>
   </div>
   }
 
   <div>
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [disabled]="$any(currencies$ | async).length === 0 || year?.value === -1"
-    >
+    <button mat-flat-button color="primary" type="submit" [disabled]="currencies().length === 0 || year?.value === -1">
       Uppdatera version
     </button>
   </div>
 </form>
 <!-- No budget -->
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
 } }}
 

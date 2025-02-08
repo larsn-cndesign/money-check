@@ -1,6 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Modify } from '../enums/enums';
 import { Selectable } from '../interfaces/selectable';
+import { Signal, signal, WritableSignal } from '@angular/core';
 
 /**
  * StoreItem is a generic class that can be used with any type.
@@ -28,167 +29,154 @@ import { Selectable } from '../interfaces/selectable';
  */
 export class StoreItem<T, U extends Selectable = any> {
   /**
-   * A BehaviorSubject that emits the current value of T to its subscribers.
+   * Public read-only signal holding a single store item of type T.
+   */
+  private item: WritableSignal<Readonly<T>>;
+
+  /**
+   * A Signal that holds an array of items of type U.
+   */
+  private items = signal<U[]>([]);
+
+  constructor(defaultItem: T) {
+    this.item = signal<T>(defaultItem);
+  }
+
+  /**
+   * Retrieves the current store item as a read-only object.
+   *
+   * @returns A read-only copy of the current item of type T.
+   */
+  getItemValue(): Readonly<T> {
+    return this.item();
+  }
+
+  /**
+   * Provides access to the writable signal for the store item.
+   * This allows subscribing to changes or integrating with reactive APIs.
+   *
+   * @returns The writable signal containing a read-only item of type T.
+   */
+  getItem(): WritableSignal<Readonly<T>> {
+    return this.item;
+  }
+
+  /**
+   * Updates the store with a new item.
+   * This method ensures immutability by replacing the store item with a new object.
+   * @param item The new item of type T to be stored.
+   */
+  setItem(item: T): void {
+    this.item.set(item);
+  }
+
+  // ----------- Array of U Items -----------
+
+  /**
+   * Retrieves an array of unselected items, optionally filtering out selected ones.
+   * @param skipSelected True to exclude selected items.
+   */
+  getItemValues(skipSelected = false): U[] {
+    return skipSelected ? this.items().filter((x) => !x.selected) : this.items();
+  }
+
+  /**
+   * Retrieves the writable signal holding an array of store items.
+   * Use this method for subscribing to changes or performing reactive operations.
+   *
+   * @returns The writable signal containing an array of U items.
+   */
+  getItems(): WritableSignal<U[]> {
+    return this.items;
+  }
+
+  /**
+   * Replaces the current array of store items with a new array.
+   * @param items An array of type U that will replace the current store items.
+   */
+  setItems(items: U[]) {
+    this.items.set([...items]);
+  }
+
+  /**
+   * Selects an item and deselects all others.
+   * @param item The item to be selected.
+   */
+  selectItem(item: U): void {
+    this.items.update((items) => items.map((i) => ({ ...i, selected: i === item })));
+  }
+
+  /**
+   * Unselects all items in the array.
+   */
+  clearSelection(): void {
+    this.items.update((items) => items.map((item) => ({ ...item, selected: false })));
+  }
+
+  /**
+   * Adds an item to the end of the array.
+   * @param item The item to add.
+   */
+  addItem(item: U): void {
+    this.items.update((items) => [...items, item]);
+  }
+
+  /**
+   * Edits an existing item in the array.
+   * @param item The updated item.
+   * @param id The key used to identify the item.
+   */
+  editItem(item: U, id: keyof U): void {
+    this.items.update((items) => items.map((i) => (i[id] === item[id] ? item : i)));
+  }
+
+  /**
+   * Removes an item from the array.
+   * @param item The item to remove.
+   * @param id The key used to identify the item.
+   */
+  deleteItem(item: U, id: keyof U): void {
+    this.items.update((items) => items.filter((x) => x[id] !== item[id]));
+  }
+}
+
+export class StoreItemAsync<T> {
+  /**
+   * Holds the current value of T and notifies subscribers on changes.
    * @private
    */
   private _item$: BehaviorSubject<T>;
 
   /**
-   * A BehaviorSubject that emits the current value of U[] to its subscribers.
-   * @private
+   * Initializes the store with a default value.
+   * @param instance The initial value of type T.
    */
-  private _items$: BehaviorSubject<U[]>;
+  constructor(instance: T) {
+    this._item$ = new BehaviorSubject<T>(instance);
+  }
 
   /**
-   * A property that holds the current value of T and U[].
-   * @protected
+   * Returns an observable of the stored item for reactive updates.
+   * @returns An observable emitting the latest value of type T.
    */
-  protected store: { item: T; items: U[] };
-
-  /**
-   * Get an observable of the T type.
-   * @returns An observable of T.
-   */
-  get item$(): Observable<T> {
+  getItem(): Observable<T> {
     return this._item$.asObservable();
   }
 
   /**
-   * Get an observable of the U[] type.
-   * @returns An observable of U[].
+   * Retrieves the current value of the stored item.
+   * @returns The latest value of type T.
    */
-  get items$(): Observable<U[]> {
-    return this._items$.asObservable();
+  getItemValue(): Readonly<T> {
+    return this._item$.getValue();
   }
 
   /**
-   * Get the item object from store.
-   * @returns An object of type T.
+   * Updates the stored item and notifies subscribers.
+   * @param value The new value of type T to be stored.
    */
-  get item(): T {
-    return this.store.item;
-  }
-
-  /**
-   * Set the item object in store and emit the new value to any subscribers.
-   * @param value The value to set the item object to.
-   */
-  set item(value: T) {
-    this.store.item = value;
-    this.updateStore();
-  }
-
-  /**
-   * Get the items array object from store.
-   * @returns An object of type U[].
-   */
-  get items(): U[] {
-    return this.store.items;
-  }
-
-  /**
-   * Create a new store.
-   * @param instance The item to store in T.
-   * @param listItems Items to store in U[] (optional). When omitted it is set to an emty array.
-   */
-  constructor(instance: T, listItems?: U[]) {
-    this._item$ = new BehaviorSubject<T>(instance);
-    this._items$ = new BehaviorSubject<U[]>([]);
-    this.store = { item: instance, items: listItems ? listItems : [] };
-  }
-
-  /**
-   * Unselect all items in the array of U.
-   * @param updateStore True to emit the change to subscribers.
-   */
-  clearSelection(updateStore = true): void {
-    this.store.items.forEach((item) => (item.selected = false));
-
-    if (updateStore) {
-      this.updateStore();
-    }
-  }
-
-  /**
-   * Select an item in the array of U. Emit changes to subscribers.
-   * @param item The item to be selected.
-   */
-  selectItem(item: U): void {
-    this.clearSelection(false);
-    item.selected = true;
-    this.updateStore();
-  }
-
-  /**
-   * Get all unselected items in the array of U if editing an item. Othervise get all items.
-   * @param action Holds the action to perform (add or edit).
-   * @param id The name of the identity property of the item.
-   * @returns An array of type U[].
-   */
-  getUnselectedItems(action: string, id: keyof U): U[] {
-    let array = [...this.store.items] as U[];
-
-    if (action === Modify.Edit) {
-      const item = array.find((x) => x.selected);
-      if (item) {
-        array = array.filter((x) => x[id] !== item[id]);
-      }
-    }
-    return array;
-  }
-
-  /**
-   * Add an item to the array of U. Emit changes to subscribers.
-   * @param item The item to add.
-   */
-  addItem(item: U): void {
-    this.store.items = [item, ...this.store.items];
-    this.updateStoreItems(false);
-  }
-
-  /**
-   * Edit an existing item in the array of U. Emit changes to subscribers.
-   * @param item The item to change.
-   * @param id The name of the identity property of the item.
-   */
-  editItem(item: U, id: keyof U): void {
-    const index = this.store.items.findIndex((x) => x[id] === item[id]);
-    if (index !== -1) {
-      this.store.items[index] = item;
-      this.updateStoreItems();
-    }
-  }
-
-  /**
-   * Remove item from the array of U.
-   * @param item The item to remove.
-   * @param id The name of the identity property of the item.
-   */
-  deleteItem(item: U, id: keyof U): void {
-    const index = this.store.items.findIndex((x) => x[id] === item[id]);
-    if (index !== -1) {
-      this.store.items.splice(index, 1);
-    }
-
-    this.updateStoreItems();
-  }
-
-  /**
-   * Emit current value of type T to subscribers.
-   */
-  updateStore(): void {
-    this._item$.next(Object.assign({}, this.store).item);
-  }
-
-  /**
-   * Emit current value of an array of type U to subscribers.
-   * @param runChangeDetection True to force change detection so that the latest value is emitted to subscribers (@default true).
-   */
-  updateStoreItems(runChangeDetection = true): void {
-    if (runChangeDetection) {
-      this.store.items = [...this.store.items];
-    }
-    this._items$.next(Object.assign({}, this.store).items);
+  setItem(value: T): void {
+    this._item$.next(value);
   }
 }
 
@@ -217,133 +205,75 @@ export class StoreItem<T, U extends Selectable = any> {
  */
 export class StoreItems<T extends Selectable> {
   /**
-   * A BehaviorSubject that emits the current value of T[] to its subscribers.
-   * @private
+   * A signal that holds the current array of items.
    */
-  private _items$ = new BehaviorSubject<T[]>([]);
+  private _items = signal<T[]>([]);
 
   /**
-   * A property that holds the current value of T[].
-   * @protected
+   * Exposes items as a read-only signal.
    */
-  protected store: { items: T[] };
-
-  /**
-   * Get an observable of the T[] type.
-   * @returns An observable of T[].
-   */
-  get items$(): Observable<T[]> {
-    return this._items$.asObservable();
+  get items(): Signal<T[]> {
+    return this._items;
   }
 
   /**
-   * Get items object from store.
-   * @returns An object of type T[].
-   */
-  get items(): T[] {
-    return this.store.items;
-  }
-
-  /**
-   * Set the items object in store and emit the new value to any subscribers.
-   * @param value The value to set the items object to.
+   * Set a new list of items.
    */
   set items(value: T[]) {
-    this.store.items = value;
-    this.updateStore();
+    this._items.set(value);
   }
 
   /**
-   * Create a new store.
+   * Unselect all items.
    */
-  constructor() {
-    this.store = { items: [] };
+  clearSelection(): void {
+    this._items.update((items) => items.map((item) => ({ ...item, selected: false })));
   }
 
   /**
-   * Unselect all items in the array of T.
-   * @param updateStore True to emit the change to subscribers.
-   */
-  clearSelection(updateStore = true): void {
-    this.store.items.forEach((item) => (item.selected = false));
-
-    if (updateStore) {
-      this.updateStore();
-    }
-  }
-
-  /**
-   * Select an item in the array of T. Emit changes to subscribers.
+   * Select an item and unselect others.
    * @param item The item to be selected.
    */
-  selectItem(item: T): void {
-    this.clearSelection(false);
-    item.selected = true;
-    this.updateStore();
+  getItem(item: T): void {
+    this._items.update((items) =>
+      items.map((i) => ({
+        ...i,
+        selected: i === item,
+      }))
+    );
   }
 
   /**
-   * Get all unselected items in the array of T if editing an item. Othervise get all items.
-   * @param action Holds the action to perform (add or edit).
-   * @param id The name of the identity property of the item.
-   * @returns An array of type T[].
+   * Get all unselected items, optionally filtering out the selected one when editing.
+   * @param skipSelected True to exclude any selected items.
    */
-  getUnselectedItems(action: string, id: keyof T): T[] {
-    let array = [...this.items] as T[];
-
-    if (action === Modify.Edit) {
-      const item = array.find((x) => x.selected);
-      if (item) {
-        array = array.filter((x) => x[id] !== item[id]);
-      }
-    }
-    return array;
+  getItems(skipSelected = false): T[] {
+    return skipSelected ? this.items().filter((x) => !x.selected) : this.items();
   }
 
   /**
-   * Add an item to the array of T. Emit changes to subscribers.
+   * Add an item.
    * @param item The item to add.
    */
   addItem(item: T): void {
-    this.store.items = [...this.store.items, item];
-    this.updateStore();
+    this._items.update((items) => [...items, item]);
   }
 
   /**
-   * Edit an existing item in the array of T. Emit changes to subscribers.
+   * Edit an existing item.
    * @param item The item to change.
-   * @param id The name of the identity property of the item.
+   * @param id The identity property of the item.
    */
   editItem(item: T, id: keyof T): void {
-    const index = this.store.items.findIndex((x) => x[id] === item[id]);
-    if (index !== -1) {
-      this.store.items[index] = item;
-      this.updateStore();
-    }
+    this._items.update((items) => items.map((i) => (i[id] === item[id] ? item : i)));
   }
 
   /**
-   * Remove item from the array of T.
+   * Remove an item.
    * @param item The item to remove.
-   * @param id The name of the identity property of the item.
+   * @param id The identity property of the item.
    */
   deleteItem(item: T, id: keyof T): void {
-    const index = this.store.items.findIndex((x) => x[id] === item[id]);
-    if (index !== -1) {
-      this.store.items.splice(index, 1);
-    }
-
-    this.updateStore();
-  }
-
-  /**
-   * Emit current value of an array of type T to subscribers.
-   * @param runChangeDetection True to force change detection so that the latest value is emitted to subscribers.
-   */
-  updateStore(runChangeDetection = true): void {
-    if (runChangeDetection) {
-      this.store.items = [...this.store.items];
-    }
-    this._items$.next(Object.assign({}, this.store).items);
+    this._items.update((items) => items.filter((i) => i[id] !== item[id]));
   }
 }

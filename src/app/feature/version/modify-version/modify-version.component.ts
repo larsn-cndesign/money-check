@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
@@ -19,7 +19,6 @@ import { CurrencyTableService } from 'src/app/shared/components/currency-table/s
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
@@ -31,11 +30,11 @@ import { duplicateValidator } from '../shared/budget-version.validators';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-modify-version',
-    imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
-    templateUrl: './modify-version.component.html',
-    styleUrls: ['./modify-version.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-modify-version',
+  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
+  templateUrl: './modify-version.component.html',
+  styleUrls: ['./modify-version.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModifyVersionComponent extends CommonFormService implements OnInit {
   /**
@@ -49,16 +48,16 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
   }>;
 
   /**
-   * An observer of an array of `ManageBudgetYear` objects.
+   * Signal representing the current state of `ManageBudgetYear`.
    * @public
    */
-  budgetYear$: Observable<ManageBudgetYear>;
+  budgetYear: Signal<ManageBudgetYear>;
 
   /**
-   * An observer of an array of `Currency` objects.
+   * Signal representing the current state of `Currency` objects.
    * @public
    */
-  currencies$: Observable<Currency[]>;
+  currencies: Signal<Currency[]>;
 
   /**
    * Getter property for the year form control
@@ -81,7 +80,6 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
    * @param versionService Manage versions.
    * @param currencyTableService Manage currencies.
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
    * @param messageBoxService Service to handle user messages.
    */
@@ -89,11 +87,10 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
     private versionService: BudgetVersionService,
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup({
       year: new FormControl(-1, Validators.required),
@@ -105,26 +102,22 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
       currencyForm: new FormControl(),
     });
 
-    this.budgetYear$ = this.versionService.item$;
-    this.currencies$ = this.currencyTableService.items$;
+    this.budgetYear = this.versionService.getItem();
+    this.currencies = this.currencyTableService.items;
   }
 
   /**
    * @description Set title of HTML document and get all availables budget years.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.item$, this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.versionService.getBudgetYear(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.pageLoaded$.next(true);
-      });
+      .subscribe(() => this.pageLoaded.set(true));
   }
 
   /**

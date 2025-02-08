@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, signal, Signal } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -10,21 +11,19 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
 import { toNumber } from '../../classes/common.fn';
 import { Modify } from '../../enums/enums';
 import { ImmediateErrorMatcher } from '../../models/immediate-error-state';
 import { ErrorService } from '../../services/error.service';
-import { SharedModule } from '../../shared.module';
 import { isNumberValidator } from '../../validators/common.validators';
+import { CurrencyTableComponent } from '../currency-table/currency-table.component';
 import { CurrencyTableService } from '../currency-table/shared/currency-table.service';
 import { duplicateValidator } from '../currency-table/shared/currency-table.validators';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { CurrencyTableComponent } from '../currency-table/currency-table.component';
 
 /**
  * Class representing a custom form control for managing currencies.
@@ -45,30 +44,30 @@ import { CurrencyTableComponent } from '../currency-table/currency-table.compone
  * ```
  */
 @Component({
-    selector: 'app-currency-form',
-    imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
-    templateUrl: './currency-form.component.html',
-    styleUrls: ['./currency-form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            multi: true,
-            useExisting: CurrencyFormComponent,
-        },
-        {
-            provide: NG_VALIDATORS,
-            multi: true,
-            useExisting: CurrencyFormComponent,
-        },
-    ]
+  selector: 'app-currency-form',
+  imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
+  templateUrl: './currency-form.component.html',
+  styleUrls: ['./currency-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: CurrencyFormComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: CurrencyFormComponent,
+    },
+  ],
 })
 export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, Validator {
   /**
    * An observer of an array of `Currency` objects.
    * @public
    */
-  @Input() currencies$!: Observable<Currency[]>;
+  @Input() currencies: Signal<Currency[]> = signal([]);
 
   /**
    * A boolean flag indicating if a currency can be deleted from a table.
@@ -168,10 +167,13 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
   onSaveCurrency(e: Event): void {
     e.preventDefault();
 
+    const items = this.currencyTableService.items()?.[0];
+
     const val = this.form.value;
     const currency = {
-      code: val.code,
       id: val.id,
+      code: val.code,
+      versionId: items ? items.versionId : -1,
       budgetRate: toNumber(val.budgetRate),
       averageRate: toNumber(val.averageRate),
       selected: false,
@@ -270,7 +272,7 @@ export class CurrencyFormComponent implements OnDestroy, ControlValueAccessor, V
    * @param item The selected currency object.
    */
   private selectCurrency(item: Currency): void {
-    this.currencyTableService.selectItem(item);
+    this.currencyTableService.getItem(item);
     this.form.patchValue({
       action: Modify.Edit,
       id: item.id,

@@ -33,8 +33,7 @@ export class BudgetService extends StoreItems<Budget> {
   getBudgets(): Observable<Budget[]> {
     return this.httpService.getAllItems<Budget>('budget').pipe(
       tap((items) => {
-        this.store.items = items;
-        this.updateStore();
+        this.items = items;
       })
     );
   }
@@ -54,8 +53,6 @@ export class BudgetService extends StoreItems<Budget> {
         return this.httpService.putItem<Budget>(budget, 'budget').pipe(tap((item) => this.editItem(item, 'id')));
     }
 
-    // this.updateBudgetState();
-
     throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
   }
 
@@ -70,7 +67,7 @@ export class BudgetService extends StoreItems<Budget> {
       return false;
     }
 
-    const items = this.getUnselectedItems(action, 'id');
+    const items = this.getItems(action === Modify.Edit);
     return items.findIndex((x) => x.budgetName.toLowerCase() === value.toLowerCase()) !== -1;
   }
 
@@ -80,7 +77,7 @@ export class BudgetService extends StoreItems<Budget> {
    */
   updateBudgetState(): void {
     const budgetState = BudgetState.getLocalStorage();
-    budgetState.budgets = this.items;
+    budgetState.budgets = this.items();
     budgetState.hasBudget = true;
     this.budgetStateService.setBudgetSate(budgetState);
   }

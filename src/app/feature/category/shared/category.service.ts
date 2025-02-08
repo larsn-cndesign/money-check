@@ -31,8 +31,7 @@ export class CategoryService extends StoreItems<Category> {
   getCategories(budgetId: number): Observable<Category[]> {
     return this.httpService.getItemsById<Category>(budgetId, 'category').pipe(
       tap((items) => {
-        this.store.items = items;
-        this.updateStore();
+        this.items = items;
       })
     );
   }
@@ -69,7 +68,7 @@ export class CategoryService extends StoreItems<Category> {
       return false;
     }
 
-    const items = this.getUnselectedItems(action, 'id');
+    const items = this.getItems(action === Modify.Edit);
     return items.findIndex((x) => x.categoryName.toLowerCase() === value.toLowerCase()) !== -1;
   }
 }

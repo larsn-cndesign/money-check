@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -7,20 +7,17 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
-import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Budget } from '../shared/budget.model';
 import { BudgetService } from '../shared/budget.service';
 import { duplicateValidator } from '../shared/budget.validators';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /**
  * Class representing budget modification.
@@ -28,11 +25,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-create-budget',
-    imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
-    templateUrl: './create-budget.component.html',
-    styleUrls: ['./create-budget.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-create-budget',
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
+  templateUrl: './create-budget.component.html',
+  styleUrls: ['./create-budget.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateBudgetComponent extends CommonFormService implements OnInit {
   /**
@@ -46,10 +43,10 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
   }>;
 
   /**
-   * An observer of an array of `Budget` objects.
+   * Signal representing the current state of `Budget` objects.
    * @public
    */
-  budgets$: Observable<Budget[]>;
+  budgets: Signal<Budget[]>;
 
   /**
    * A property that holds all columns to be displayed in a table.
@@ -76,17 +73,10 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
   /**
    * Initializes form controls with validation, observables and services
    * @param budgetService Manage category items
-   * @param errorService Application error service
-   * @param dialogService Confirmation dialog service
    * @param messageBoxService Service to handle user messages
    */
-  constructor(
-    private budgetService: BudgetService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
-  ) {
-    super(errorService, dialogService, messageBoxService);
+  constructor(private budgetService: BudgetService, private messageBoxService: MessageBoxService) {
+    super();
 
     this.form = new FormGroup(
       {
@@ -97,7 +87,7 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
       { validators: [duplicateValidator(budgetService, 'budgetName', 'action')] }
     );
 
-    this.budgets$ = this.budgetService.items$;
+    this.budgets = this.budgetService.items;
   }
 
   /**
@@ -123,7 +113,7 @@ export class CreateBudgetComponent extends CommonFormService implements OnInit {
    * @param item The selected budget.
    */
   onSelectBudget(item: Budget): void {
-    this.budgetService.selectItem(item);
+    this.budgetService.getItem(item);
 
     this.form.patchValue({
       action: Modify.Edit,

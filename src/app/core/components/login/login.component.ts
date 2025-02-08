@@ -14,10 +14,10 @@ import { UserCredential } from '../../models/user-credential.model';
  * Class representing a login page.
  */
 @Component({
-    selector: 'app-login',
-    imports: [SharedModule, ReactiveFormsModule],
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+  selector: 'app-login',
+  imports: [SharedModule, ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent extends CommonFormService {
   /**
@@ -64,19 +64,9 @@ export class LoginComponent extends CommonFormService {
    * @param authService Manage user authenticaton
    * @param router Navigation service
    * @param route Handle url parameters
-   * @param errorService Application error service.
-   * @param dialogService Confirmation dialog service.
-   * @param messageBoxService Service to handle user messages.
    */
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
-  ) {
-    super(errorService, dialogService, messageBoxService);
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+    super();
 
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),

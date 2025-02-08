@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { BudgetState } from '../classes/budget-state.model';
-import { StoreItem } from '../classes/store';
+import { StoreItemAsync } from '../classes/store';
 import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BudgetStateService extends StoreItem<BudgetState> {
+export class BudgetStateService extends StoreItemAsync<BudgetState> {
   constructor(private httpService: HttpService) {
     super(new BudgetState());
   }
@@ -16,28 +16,20 @@ export class BudgetStateService extends StoreItem<BudgetState> {
   /**
    * Get budget state from `localStorage`. If `localStorage` is not found,
    * load it from server and make sure to save it in `localStorage`.
-   * @returns Observer of a `BudgetState` object.
    */
   getBudgetState(): Observable<BudgetState> {
     const budgetState = BudgetState.getLocalStorage();
 
     if (budgetState.budgets.length !== 0) {
-      this.store.item = budgetState;
-      this.updateStore();
+      this.updateBudgetState(budgetState);
       return of(budgetState);
     }
 
     return this.httpService.getItem<BudgetState>('budget/state').pipe(
-      tap((item) => {
-        this.store.item = item;
-        this.updateStore();
-        BudgetState.setLocalStorage(this.store.item);
+      tap((budgetState) => {
+        this.updateBudgetState(budgetState);
       })
     );
-  }
-
-  getBudgetStateInStore(): Observable<BudgetState> {
-    return this.item$;
   }
 
   /**
@@ -45,14 +37,13 @@ export class BudgetStateService extends StoreItem<BudgetState> {
    * @description If `budgetId` is -1, set it to the first budget's the identity number.
    * @param state The budget to store.
    */
-  setBudgetSate(state: BudgetState): void {
-    if (state.budgetId === -1 && state.budgets.length > 0) {
-      state.budgetId = state.budgets[0].id;
-      state.budgetName = state.budgets[0].budgetName;
+  setBudgetSate(budgetState: BudgetState): void {
+    if (budgetState.budgetId === -1 && budgetState.budgets.length > 0) {
+      budgetState.budgetId = budgetState.budgets[0].id;
+      budgetState.budgetName = budgetState.budgets[0].budgetName;
     }
 
-    this.item = state;
-    this.storeBudgetState();
+    this.updateBudgetState(budgetState);
   }
 
   /**
@@ -60,20 +51,23 @@ export class BudgetStateService extends StoreItem<BudgetState> {
    * @param budgetId The identity number of the selected budget.
    */
   changeBudget(budgetId: number): void {
-    this.item.budgetId = budgetId;
-    const budget = this.item.budgets.find((x) => x.id === budgetId);
-    this.item.budgetName = budget ? budget.budgetName : '';
-    this.storeBudgetState();
+    const budgetState = this.getItemValue();
+    const budget = budgetState.budgets.find((x) => x.id === budgetId);
+
+    const updatedBudgetState = {
+      ...budgetState,
+      budgetId: budgetId,
+      budgetName: budget ? budget.budgetName : '',
+    };
+
+    this.updateBudgetState(updatedBudgetState);
   }
 
   /**
-   * Store budget in localStorage and in memory store.
+   * Emit current value of type BudgetState to subscribers.
    */
-  private storeBudgetState(): void {
-    BudgetState.setLocalStorage(this.item);
-    // const item = new ItemFilter();
-    // item.budgetId = this.item.budgetId;
-    // ItemFilter.setFilter(item);
-    this.updateStore();
+  private updateBudgetState(budgetState: BudgetState): void {
+    this.setItem(budgetState);
+    BudgetState.setLocalStorage(budgetState);
   }
 }

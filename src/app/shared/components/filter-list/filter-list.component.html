@@ -1,12 +1,14 @@
-@if(filterListModel.isOpen) {
-<div class="wrapper" [style.left.px]="filterListModel.pos.x" [style.top.px]="filterListModel.pos.y">
+@if((filterListModel$ | async); as model){
+<!-- Check if modal should be open -->
+@if(model.isOpen) {
+<div class="wrapper" [style.left.px]="model.pos.x" [style.top.px]="model.pos.y">
   <div class="list-content">
     <mat-selection-list>
-      <mat-list-option checkboxPosition="before" [selected]="filterListModel.selectAll" (click)="onSelectAll()">
+      <mat-list-option checkboxPosition="before" [selected]="model.selectAll" (click)="onSelectAll()">
         (Välj alla)
       </mat-list-option>
       <mat-divider></mat-divider>
-      @for (item of filterListModel.list; track item.name) {
+      @for (item of model.list; track item.name) {
       <mat-list-option checkboxPosition="before" [selected]="item.selected" (click)="onClickListOption(item)">
         {{ item.name }}
       </mat-list-option>
@@ -15,8 +17,8 @@
   </div>
   <mat-divider></mat-divider>
   <div class="list-footer">
-    <button mat-flat-button type="button" color="primary" (click)="onOK()">OK</button>
-    <button mat-flat-button type="button" style="margin-left: 10px" (click)="onCancel()">Avbryt</button>
+    <button mat-button type="button" style="margin-right: 10px" (click)="onCancel()">Avbryt</button>
+    <button mat-flat-button type="button" (click)="onOK()">OK</button>
   </div>
 </div>
-}
+} }

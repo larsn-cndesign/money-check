@@ -13,9 +13,7 @@ describe('BudgetVarianceComponent', () => {
       imports: [SharedModule, BudgetVarianceComponent],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(BudgetVarianceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

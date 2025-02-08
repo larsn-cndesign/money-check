@@ -1,3 +1,4 @@
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +14,7 @@ import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend
 import { BUDGET_STATE, CATEGORIES, CATEGORY_1, OmitAllFromStore } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { Modify } from 'src/app/shared/enums/enums';
@@ -20,10 +22,9 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { CategoryComponent } from './category.component';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { signal } from '@angular/core';
 
-type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
+type OmitFromStore = 'items' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const categoryService: Omit<CategoryService, OmitFromStore> = {
   getCategories(_budgetId: number): Observable<Category[]> {
@@ -35,19 +36,11 @@ const categoryService: Omit<CategoryService, OmitFromStore> = {
   duplicate(_value: string, _action: string): boolean {
     return false;
   },
-  // StoreItem
-  get items(): Category[] {
-    return CATEGORIES;
-  },
+  // StoreItems
   clearSelection(): void {},
-  selectItem(_item: Category): void {},
-};
-
-type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
-
-const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
-  getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE);
+  getItem(_item: Category): void {},
+  getItems(skipSelected: boolean): Category[] {
+    return CATEGORIES;
   },
 };
 
@@ -56,6 +49,7 @@ describe('CategoryComponent', () => {
   let fixture: ComponentFixture<CategoryComponent>;
   let messageBoxService: MessageBoxService;
   let dialogService: ConfirmDialogService;
+  let budgetStateService: BudgetStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -71,26 +65,28 @@ describe('CategoryComponent', () => {
         CategoryComponent,
       ],
       providers: [
-        { provide: BudgetStateService, useValue: budgetStateService },
         { provide: CategoryService, useValue: categoryService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
+    budgetStateService = TestBed.inject(BudgetStateService);
+    budgetStateService.setBudgetSate(BUDGET_STATE);
+
     fixture = TestBed.createComponent(CategoryComponent);
     messageBoxService = TestBed.inject(MessageBoxService);
     dialogService = TestBed.inject(ConfirmDialogService);
     component = fixture.componentInstance;
 
-    component.categories$ = of([...CATEGORIES]);
+    component.categories = signal([...CATEGORIES]);
 
     fixture.detectChanges();
   });
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded$.value).toBeTrue();
+    expect(component.pageLoaded()).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
@@ -113,7 +109,7 @@ describe('CategoryComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const spy = spyOn(categoryService, 'selectItem').and.callFake((item) => {
+    const spy = spyOn(categoryService, 'getItem').and.callFake((item) => {
       item.selected = true;
     });
 
@@ -127,7 +123,7 @@ describe('CategoryComponent', () => {
   });
 
   it('submits the form successfully', () => {
-    const category = { id: -1, budgetId: -1, categoryName: 'Category 2' } as Category;
+    const category = { id: -1, budgetId: 1, categoryName: 'Category 2' } as Category;
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 

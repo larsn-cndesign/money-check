@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -17,10 +17,10 @@ import { MenuComponent } from '../menu/menu.component';
  * Class representing a responsible `toolbar` with `sidenav` for mobile devices.
  */
 @Component({
-    selector: 'app-navbar',
-    imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
-    templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+  selector: 'app-navbar',
+  imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
    * An observer of a user.
    * @public
    */
-  user$!: Observable<AppUser>;
+  user!: Signal<AppUser>;
 
   /**
    * A Subject that emits values to subscribers.
@@ -77,7 +77,7 @@ export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     private userService: UserService
   ) {
     this.isMobile = this.breakpointObserver.observe(Breakpoints.Handset);
-    this.budgetState$ = this.budgetStateService.item$;
+    this.budgetState$ = this.budgetStateService.getItem();
   }
 
   /**
@@ -100,7 +100,7 @@ export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.user$ = this.userService.item$;
+    this.user = this.userService.getItem();
   }
 
   /**

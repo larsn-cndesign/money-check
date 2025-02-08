@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil, toNumber } from 'src/app/shared/classes/common.fn';
 import { ItemFilter } from 'src/app/shared/classes/filter';
@@ -14,7 +13,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { BudgetItemService } from './shared/budget-item.service';
@@ -27,11 +25,11 @@ import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-budget-item',
-    imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
-    templateUrl: './budget-item.component.html',
-    styleUrls: ['./budget-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-budget-item',
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
+  templateUrl: './budget-item.component.html',
+  styleUrls: ['./budget-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BudgetItemComponent extends CommonFormService implements OnInit {
   /**
@@ -52,16 +50,16 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   }>;
 
   /**
-   * An observer of `ManageBudgetItem` class.
+   * Signal representing the current state of `ManageBudgetItem`.
    * @public
    */
-  manageBudgetItem$: Observable<ManageBudgetItem>;
+  manageBudgetItem: Signal<ManageBudgetItem>;
 
   /**
-   * An observer of an array of `BudgetItem` objects.
+   * Signal representing the current state of `BudgetItem` objects.
    * @public
    */
-  budgetItems$: Observable<BudgetItem[]>;
+  budgetItems: Signal<BudgetItem[]>;
 
   /**
    * A property that holds all columns to be displayed in a table
@@ -148,18 +146,16 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
    * Initializes form controls with validation, observables and services.
    * @param budgetItemService Manage expense budget items.
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
     private budgetItemService: BudgetItemService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup(
       {
@@ -177,19 +173,22 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
       { validators: [uniqueValidator(this.budgetItemService, 'category', 'unit', 'action')] }
     );
 
-    this.manageBudgetItem$ = this.budgetItemService.item$;
-    this.budgetItems$ = this.budgetItemService.items$;
+    this.manageBudgetItem = this.budgetItemService.getItem();
+    this.budgetItems = this.budgetItemService.getItems();
   }
 
   /**
    * @description Set title of HTML document and get budget items from server
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.item$, this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
-          this.budgetItemService.item.filter = ItemFilter.getFilter();
+
+          const currentItem = this.budgetItemService.getItemValue();
+          const updatedItem = { ...currentItem, filter: ItemFilter.getFilter() };
+          this.budgetItemService.setItem(updatedItem);
         }),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.budgetItemService.getBudgetItems(budgetState.budgetId), this.sub$);
@@ -205,7 +204,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
             this.currencyCode?.setValue(item.currencies[0].code);
           }
         }
-        this.pageLoaded$.next(true);
+        this.pageLoaded.set(true);
       });
   }
 
@@ -241,7 +240,8 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   onSelectItem(item: BudgetItem): void {
     this.budgetItemService.selectItem(item);
 
-    this.useCurrency = this.budgetItemService.item.units.find((x) => x.id === item.unitId)?.useCurrency ?? true;
+    this.useCurrency =
+      this.budgetItemService.getItemValue().units.find((x) => x.id === item.unitId)?.useCurrency ?? true;
 
     this.form.patchValue({
       action: Modify.Edit,
@@ -314,7 +314,7 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
    * @param e The event object emitted by the select.
    */
   onChangeUnit(e: MatSelectChange): void {
-    this.useCurrency = this.budgetItemService.item.units.find((x) => x.id === +e.value)?.useCurrency ?? true;
+    this.useCurrency = this.budgetItemService.getItemValue().units.find((x) => x.id === +e.value)?.useCurrency ?? true;
   }
 
   /**

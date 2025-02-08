@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && $any(budgetYear$ | async)?.budgetYears; as budgetYears) {
+@if(pageLoaded() && budgetYear().budgetYears; as budgetYears) {
 <!-- Check if budget exist -->
 @if(budgetYears.length !== 0) {
 <form [formGroup]="form" (ngSubmit)="onDeleteBudgetYear($event)">
@@ -38,6 +38,6 @@
 </form>
 }
 <!-- No budget -->
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <div>Det finns inget budgetår att ta bort</div>
 } }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -9,20 +9,17 @@ import {
 } from '@angular/forms';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
-import { ConfirmDialogService } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.service';
+import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/currency-form.component';
 import { CurrencyTableService } from 'src/app/shared/components/currency-table/shared/currency-table.service';
 import { MessageBoxService } from 'src/app/shared/components/message-box/shared/message-box.service';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { BudgetYear, Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/currency-form.component';
 
 /**
  * Class representing the creating of a version.
@@ -30,11 +27,11 @@ import { CurrencyFormComponent } from 'src/app/shared/components/currency-form/c
  * @implements OnInit
  */
 @Component({
-    selector: 'app-create-version',
-    imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, MatCheckboxModule],
-    templateUrl: './create-version.component.html',
-    styleUrls: ['./create-version.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-create-version',
+  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, MatCheckboxModule],
+  templateUrl: './create-version.component.html',
+  styleUrls: ['./create-version.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateVersionComponent extends CommonFormService implements OnInit {
   /**
@@ -48,16 +45,16 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
   }>;
 
   /**
-   * An observer of an array of `ManageBudgetYear` objects.
+   * Signal representing the current state of `ManageBudgetYear`.
    * @public
    */
-  budgetYear$: Observable<ManageBudgetYear>;
+  budgetYear: Signal<ManageBudgetYear>;
 
   /**
-   * An observer of an array of `Currency` objects.
+   * Signal representing the current state of `Currency`.
    * @public
    */
-  currencies$: Observable<Currency[]>;
+  currencies: Signal<Currency[]>;
 
   /**
    * Getter property for the budgetYearId form control
@@ -80,11 +77,9 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
     private versionService: BudgetVersionService,
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup({
       budgetYearId: new FormControl<number | null>(-1, Validators.required),
@@ -92,26 +87,24 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
       copy: new FormControl<boolean>(true, { nonNullable: true }),
     });
 
-    this.budgetYear$ = this.versionService.item$;
-    this.currencies$ = this.currencyTableService.items$;
+    this.budgetYear = this.versionService.getItem();
+    this.currencies = this.currencyTableService.items;
   }
 
   /**
    * @description Set title of HTML document, get availables budget years and listen to budget state changes.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.versionService.getBudgetYear(budgetState.budgetId), this.sub$);
         })
       )
       .subscribe((budgetYear: ManageBudgetYear) => {
         this.form.patchValue({ copy: budgetYear.copy });
-        this.pageLoaded$.next(true);
+        this.pageLoaded.set(true);
       });
   }
 
@@ -187,7 +180,7 @@ export class CreateVersionComponent extends CommonFormService implements OnInit 
 
     item.budgetYear = budgetYear;
     item.copy = copyVersion;
-    item.currencies = this.currencyTableService.items;
+    item.currencies = this.currencyTableService.items();
 
     return item;
   }

@@ -1,5 +1,5 @@
 <mat-toolbar class="container">
-  @if((isMobile | async)?.matches && (user$ | async)?.name !== '') {
+  @if((isMobile | async)?.matches && user().name !== '') {
   <button mat-icon-button (click)="onToggleSidenav()" data-testid="toggle-sidenav">
     <mat-icon>menu</mat-icon>
   </button>

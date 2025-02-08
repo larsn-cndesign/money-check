@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
 import { StoreItems } from 'src/app/shared/classes/store';
+import { Modify } from 'src/app/shared/enums/enums';
 
 /**
  * Class representing a service for a reusable currency table.
@@ -19,8 +20,7 @@ export class CurrencyTableService extends StoreItems<Currency> {
    * @param currency The currency object to be added.
    */
   addCurrency(currency: Currency): void {
-    this.store.items = [...this.store.items, currency];
-    this.updateStore();
+    this.addItem(currency);
   }
 
   /**
@@ -28,15 +28,7 @@ export class CurrencyTableService extends StoreItems<Currency> {
    * @param currency The currency object to be modified.
    */
   editCurrency(currency: Currency): void {
-    this.items.forEach((item) => {
-      if (item.id === currency.id) {
-        item.code = currency.code;
-        item.budgetRate = currency.budgetRate;
-        item.averageRate = currency.averageRate;
-      }
-    });
-
-    this.updateStore();
+    this.editItem(currency, 'id');
   }
 
   /**
@@ -44,15 +36,7 @@ export class CurrencyTableService extends StoreItems<Currency> {
    * @param currency The currency object to be removed.
    */
   deleteCurrency(currency: Currency): void {
-    const index = this.items.findIndex((x) => x.id === currency.id);
-
-    if (index === -1) {
-      return;
-    }
-
-    this.items.splice(index, 1);
-    this.store.items = [...this.items];
-    this.updateStore();
+    this.deleteItem(currency, 'id');
   }
 
   /**
@@ -66,7 +50,7 @@ export class CurrencyTableService extends StoreItems<Currency> {
       return false;
     }
 
-    const items = this.getUnselectedItems(action, 'id');
+    const items = this.getItems(action === Modify.Edit);
     return items.findIndex((x) => x.code.toLowerCase() === value.toLowerCase()) !== -1;
   }
 }

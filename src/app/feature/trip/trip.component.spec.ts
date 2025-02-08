@@ -24,9 +24,10 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { TripComponent } from './trip.component';
+import { signal } from '@angular/core';
 registerLocaleData(localeSv);
 
-type OmitFromStore = 'items$' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
+type OmitFromStore = 'items' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
 
 const tripService: Omit<TripService, OmitFromStore> = {
   getTrips(budgetId: number): Observable<Trip[]> {
@@ -42,25 +43,20 @@ const tripService: Omit<TripService, OmitFromStore> = {
     return false;
   },
 
-  // StoreItem
-  get items(): Trip[] {
+  // StoreItems
+  clearSelection(): void {},
+  getItem(_item: Trip): void {},
+  getItems(skipSelected: boolean): Trip[] {
     return TRIPS;
   },
-  clearSelection(): void {},
-  selectItem(_item: Trip): void {},
 };
 
-type OmitFromBudgetState = OmitAllFromStore | 'getBudgetState' | 'setBudgetSate' | 'changeBudget';
 
-const budgetStateService: Omit<BudgetStateService, OmitFromBudgetState> = {
-  getBudgetStateInStore(): Observable<BudgetState> {
-    return of(BUDGET_STATE);
-  },
-};
 
 describe('TripComponent', () => {
   let component: TripComponent;
   let fixture: ComponentFixture<TripComponent>;
+  let budgetStateService: BudgetStateService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -78,24 +74,26 @@ describe('TripComponent', () => {
         TripComponent,
       ],
       providers: [
-        { provide: BudgetStateService, useValue: budgetStateService },
         { provide: TripService, useValue: tripService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
+    budgetStateService = TestBed.inject(BudgetStateService);
+    budgetStateService.setBudgetSate(BUDGET_STATE);
+
     fixture = TestBed.createComponent(TripComponent);
     component = fixture.componentInstance;
 
-    component.trips$ = of([...TRIPS]);
+    component.trips = signal([...TRIPS]);
 
     fixture.detectChanges();
   });
 
   it('creates the component and loads the page', () => {
     expect(component).toBeTruthy();
-    expect(component.pageLoaded$.value).toBeTrue();
+    expect(component.pageLoaded()).toBeTrue();
   });
 
   it('clears selection and resets the form when selecting to add an item', () => {
@@ -118,7 +116,7 @@ describe('TripComponent', () => {
   });
 
   it('select an item in table when a table row is clicked', () => {
-    const spy = spyOn(tripService, 'selectItem').and.callFake((item) => {
+    const spy = spyOn(tripService, 'getItem').and.callFake((item) => {
       item.selected = true;
     });
 
@@ -132,7 +130,13 @@ describe('TripComponent', () => {
   });
 
   it('submits the form successfully', () => {
-    const trip = { id: -1, budgetId: -1, fromDate: new Date('2023-01-01'), toDate: new Date('2023-01-10'), note: '' } as Trip;
+    const trip = {
+      id: -1,
+      budgetId: 1,
+      fromDate: new Date('2023-01-01'),
+      toDate: new Date('2023-01-10'),
+      note: '',
+    } as Trip;
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 

@@ -1,27 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
 import { Currency } from 'src/app/feature/budget-year/shared/budget-year.model';
 
 /**
  * Class representing a reusable table for managing currencies.
  */
 @Component({
-    selector: 'app-currency-table',
-    imports: [CommonModule, MatTableModule, MatIconModule, MatInputModule],
-    templateUrl: './currency-table.component.html',
-    styleUrls: ['./currency-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-currency-table',
+  imports: [CommonModule, MatTableModule, MatIconModule, MatInputModule],
+  templateUrl: './currency-table.component.html',
+  styleUrls: ['./currency-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrencyTableComponent {
   /**
    * An observer of an array of `Currency` objects.
    * @private
    */
-  @Input() currencies$!: Observable<Currency[]>;
+  @Input() currencies: Signal<Currency[]> = signal([]);
 
   /**
    * Setter for the `_deletable` property.

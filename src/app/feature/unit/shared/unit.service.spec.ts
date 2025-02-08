@@ -2,7 +2,7 @@ import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@a
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { first } from 'rxjs/operators';
-import { UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
+import { UNITS, UNIT_1, UNIT_2 } from 'src/app/mock-backend/spec-constants';
 import { Modify } from 'src/app/shared/enums/enums';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -22,7 +22,7 @@ describe('UnitService', () => {
   function modifyItem(action: string, itemCount: number): void {
     let category: Unit | undefined;
     const expectedUrl = '/api/unit';
-    unitService.items.push(UNIT_1); // At least one item
+    unitService.addItem(UNIT_1); // At least one item
 
     unitService
       .modifyUnit(UNIT_1, action)
@@ -48,7 +48,7 @@ describe('UnitService', () => {
     }
 
     expect(category).toEqual(UNIT_1);
-    expect(unitService.items.length).toBe(itemCount);
+    expect(unitService.items().length).toBe(itemCount);
   }
 
   beforeEach(() => {
@@ -66,7 +66,7 @@ describe('UnitService', () => {
   });
 
   it('gets all units for a budget year on page load', () => {
-    let categories: Unit[] | undefined;
+    let units: Unit[] | undefined;
     const budgetId = 1;
     const expectedUrl = '/api/unit?id=1';
 
@@ -74,7 +74,7 @@ describe('UnitService', () => {
       .getUnits(budgetId)
       .pipe(first())
       .subscribe((items) => {
-        categories = items;
+        units = items;
       });
 
     const req = httpMock.expectOne(expectedUrl);
@@ -82,7 +82,7 @@ describe('UnitService', () => {
     httpMock.verify();
 
     expect(req.request.method).toBe('GET');
-    expect(categories).toEqual(UNITS);
+    expect(units).toEqual(UNITS);
   });
 
   it('passes through errors when getting unit items', () => {
@@ -126,7 +126,8 @@ describe('UnitService', () => {
   });
 
   it('validates that a unit name exists or not', () => {
-    unitService.items = UNITS;
+    unitService.addItem(UNIT_1);
+    unitService.addItem(UNIT_2);
 
     const validName = 'Unit 3';
     const invalidName = 'Unit 1';
@@ -137,7 +138,7 @@ describe('UnitService', () => {
     duplicate = unitService.duplicate(invalidName, Modify.Add);
     expect(duplicate).toBeTrue();
 
-    unitService.items[0].selected = true;
+    unitService.items()[0].selected = true;
 
     duplicate = unitService.duplicate(invalidName, Modify.Edit);
     expect(duplicate).toBeFalse();

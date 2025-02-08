@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -10,7 +10,6 @@ import {
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
@@ -20,7 +19,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Unit } from './shared/unit.model';
 import { UnitService } from './shared/unit.service';
@@ -32,11 +30,11 @@ import { duplicateValidator } from './shared/unit.validators';
  * @implements OnInit
  */
 @Component({
-    selector: 'app-unit',
-    imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
-    templateUrl: './unit.component.html',
-    styleUrls: ['./unit.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-unit',
+  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
+  templateUrl: './unit.component.html',
+  styleUrls: ['./unit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UnitComponent extends CommonFormService implements OnInit {
   /**
@@ -51,10 +49,10 @@ export class UnitComponent extends CommonFormService implements OnInit {
   }>;
 
   /**
-   * An observer of an array of `Unit` objects.
+   * Signal representing the current state of `Unit` objects.
    * @public
    */
-  units$: Observable<Unit[]>;
+  units: Signal<Unit[]>;
 
   /**
    * A property that holds all columns to be displayed in a table
@@ -78,30 +76,20 @@ export class UnitComponent extends CommonFormService implements OnInit {
     return this.form.get('unitName');
   }
 
-  // /**
-  //  * Getter property for the useCurrency form control
-  //  * @returns The useCurrency form control
-  //  */
-  // get useCurrency(): AbstractControl | null {
-  //   return this.form.get('useCurrency');
-  // }
-
   /**
    * Initializes form controls with validation, observables and services.
    * @param unitService Manage unit items.
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
    * @param messageBoxService Service to handle user messages.
    */
   constructor(
     private unitService: UnitService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup(
       {
@@ -113,25 +101,21 @@ export class UnitComponent extends CommonFormService implements OnInit {
       { validators: [duplicateValidator(unitService, 'unitName', 'action')] }
     );
 
-    this.units$ = this.unitService.items$;
+    this.units = this.unitService.items;
   }
 
   /**
    * @description Set title of HTML document, get budget state from `localStorage` and unit items from server.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.unitService.getUnits(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.pageLoaded$.next(true);
-      });
+      .subscribe(() => this.pageLoaded.set(true));
   }
 
   /**
@@ -159,7 +143,7 @@ export class UnitComponent extends CommonFormService implements OnInit {
    * @param item The selected unit item
    */
   onSelectUnit(item: Unit): void {
-    this.unitService.selectItem(item);
+    this.unitService.getItem(item);
 
     this.form.patchValue({
       action: Modify.Edit,

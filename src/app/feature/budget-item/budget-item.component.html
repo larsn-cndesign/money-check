@@ -3,7 +3,7 @@
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
-@if((pageLoaded$ | async) && (manageBudgetItem$ | async); as budget) {
+@if(pageLoaded() && manageBudgetItem(); as budget) {
 <!-- Check for existing budget -->
 @if(budget.budgetYears.length !== 0) {
 <!-- Check for existing categories -->
@@ -156,7 +156,7 @@
 </div>
 
 <div class="max-table-height">
-  <table mat-table [dataSource]="$any(budgetItems$ | async)" class="tbl">
+  <table mat-table [dataSource]="budgetItems()" class="tbl">
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef>Kategori</th>
       <td mat-cell *matCellDef="let item">
@@ -210,13 +210,13 @@
     ></tr>
   </table>
 </div>
-} @else { @if(pageLoaded$ | async) {
+} @else { @if(pageLoaded()) {
 <!-- No units -->
 <div>Det finns ingen enhet upplagd för denna budget. <a href="/feature/unit">Lägg upp enhet</a>.</div>
-} } } @else { @if(pageLoaded$ | async) {
+} } } @else { @if(pageLoaded()) {
 <!-- No categories -->
 <div>Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.</div>
-} } } @else { @if(pageLoaded$ | async) {
+} } } @else { @if(pageLoaded()) {
 <!-- No years -->
 <div>Det finns ingen budget eller budgetår att hantera.</div>
 } } }

@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppUser } from 'src/app/core/models/app-user.model';
-import { UserService } from './user.service';
 import { LS_ACCESS_TOKEN } from '../classes/constants';
-import { firstValueFrom } from 'rxjs';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -32,7 +31,7 @@ describe('UserService', () => {
 
     service.getStoredUser();
 
-    const user = await firstValueFrom(service.item$); // Convert Observable to Promise
+    const user = service.getItemValue();
 
     expect(user.name).toBe('Lars N');
     expect(user.isAdmin).toBe(true);

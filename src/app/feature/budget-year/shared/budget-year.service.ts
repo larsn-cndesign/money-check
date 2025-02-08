@@ -33,11 +33,8 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
     return this.httpService.getItemById<ManageBudgetYear>(budgetId, 'budgetYear').pipe(
       tap((budgetYear) => {
         if (budgetYear) {
-          this.store.item = budgetYear;
-          this.updateStore();
-
+          this.setItem(budgetYear);
           this.currencyTableService.items = budgetYear.currencies;
-          this.currencyTableService.updateStore();
         }
       })
     );
@@ -51,12 +48,11 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
   addBudgetYear(budgetYear: ManageBudgetYear): Observable<BudgetYear> {
     return this.httpService.postItemVar<ManageBudgetYear, BudgetYear>(budgetYear, 'budgetYear').pipe(
       tap((year) => {
-        this.store.item.copy = true;
-        this.store.item.budgetYears.push(year);
-        this.updateStore();
+        const currentItem = this.getItemValue();
+        const updatedItem = { ...currentItem, copy: true, budgetYears: [...currentItem.budgetYears, year] };
+        this.setItem(updatedItem);
 
         this.currencyTableService.items = budgetYear.currencies;
-        this.currencyTableService.updateStore();
       })
     );
   }
@@ -82,7 +78,7 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
       return false;
     }
 
-    return this.item.budgetYears.findIndex((x) => x.year === +year) !== -1;
+    return this.getItemValue().budgetYears.findIndex((x) => x.year === +year) !== -1;
   }
 
   /**
@@ -97,8 +93,8 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
       return budgetYear;
     }
 
-    const index = this.item.budgetYears.findIndex((x) => x.id === budgetYearId);
-    return index !== -1 ? this.item.budgetYears[index] : budgetYear;
+    const index = this.getItemValue().budgetYears.findIndex((x) => x.id === budgetYearId);
+    return index !== -1 ? this.getItemValue().budgetYears[index] : budgetYear;
   }
 
   /**
@@ -106,19 +102,21 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
    * @param copyVersion A flag that indicates if previous version including budget items should be copied.
    */
   changeCopyBudget(copyVersion: boolean): void {
-    this.item.copy = copyVersion;
-    this.updateStore();
+    const updatedItem = { ...this.getItemValue(), copy: copyVersion };
+    this.setItem(updatedItem);
   }
 
   /**
    * Remove a budget year from store.
    * @param id The identifier of a budget year
    */
-  private removeBudgetYear(id: number) {
-    const index = this.store.item.budgetYears.findIndex((x) => x.id === id);
-    if (index !== -1) {
-      this.store.item.budgetYears.splice(index, 1);
-      this.updateStore();
-    }
+  private removeBudgetYear(id: number): void {
+    const currentItem = this.getItemValue();
+    const updatedItem = {
+      ...currentItem,
+      budgetYears: currentItem.budgetYears.filter((x) => x.id !== id),
+    };
+
+    this.setItem(updatedItem);
   }
 }

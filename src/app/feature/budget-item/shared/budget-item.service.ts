@@ -30,16 +30,14 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
    * @returns Observer of `ManageBudgetItem` class.
    */
   getBudgetItems(budgetId: number): Observable<ManageBudgetItem> {
-    const filter = this.item.filter;
+    const filter = this.getItemValue().filter;
     filter.budgetId = budgetId;
 
     return this.httpService.postItemVar<ItemFilter, ManageBudgetItem>(filter, 'budgetItem/get').pipe(
       tap((budgetItem) => {
         if (budgetItem) {
-          this.store.item = budgetItem;
-          this.store.items = budgetItem.budgetItems;
-          this.updateStore();
-          this.updateStoreItems(false);
+          this.setItem(budgetItem);
+          this.setItems(budgetItem.budgetItems);
         }
       })
     );
@@ -80,7 +78,7 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
       return false;
     }
 
-    const items = this.getUnselectedItems(action, 'id');
+    const items = this.getItemValues(action === Modify.Edit);
     return items.findIndex((x) => x.categoryId === categoryId && x.unitId === unitId) !== -1;
   }
 
@@ -90,14 +88,19 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
    * @param filterType The type of filter currently used.
    */
   setFilterItem(value: any, filterType: string): void {
+    const currentItem = this.getItemValue();
+
     switch (filterType) {
       case 'budgetYearId':
-        this.item.filter.budgetYearId = +value;
+        currentItem.filter.budgetYearId = +value;
         break;
       case 'category':
-        this.item.filter.categoryId = +value;
+        currentItem.filter.categoryId = +value;
         break;
     }
-    ItemFilter.setFilter(this.item.filter);
+
+    const updatedItem = { ...currentItem };
+    this.setItem(updatedItem);
+    ItemFilter.setFilter(currentItem.filter);
   }
 }

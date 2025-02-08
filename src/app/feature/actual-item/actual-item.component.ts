@@ -5,6 +5,7 @@ import {
   HostListener,
   OnInit,
   Renderer2,
+  Signal,
   ViewChild,
 } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,7 +14,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { lineCount, pipeTakeUntil, toDate, toNumber } from 'src/app/shared/classes/common.fn';
@@ -25,7 +26,6 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { ImmediateUntouchedErrorMatcher } from 'src/app/shared/models/immediate-error-state';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
@@ -39,19 +39,19 @@ import { budgetYearNotExistValidator } from './shared/actual-item.validators';
  * @todo Remember sort order when filtering.
  */
 @Component({
-    selector: 'app-actual-item',
-    imports: [
-        SharedModule,
-        ReactiveFormsModule,
-        MatTableModule,
-        MatSelectModule,
-        MatRadioModule,
-        MatDatepickerModule,
-        MatSortModule,
-    ],
-    templateUrl: './actual-item.component.html',
-    styleUrls: ['./actual-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-actual-item',
+  imports: [
+    SharedModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatSortModule,
+  ],
+  templateUrl: './actual-item.component.html',
+  styleUrls: ['./actual-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActualItemComponent extends CommonFormService implements OnInit {
   /**
@@ -70,16 +70,16 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   }>;
 
   /**
-   * An observer of `ManageActualItem` class.
+   * Signal representing the current state of `ManageActualItem`.
    * @public
    */
-  manageActualItem$: Observable<ManageActualItem>;
+  manageActualItem: Signal<ManageActualItem>;
 
   /**
-   * An observer of an array of ActualItem's.
+   * Signal representing the current state of `ActualItem` objects.
    * @public
    */
-  actualItems$: Observable<ActualItem[]>;
+  actualItems: Signal<ActualItem[]>;
 
   /**
    * A property that holds all columns to be displayed in a table.
@@ -205,7 +205,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * Initializes form controls with validation, observables and services.
    * @param actualItemService Manage actual item expenses.
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service.
    * @param dialogService Confirmation dialog service.
    * @param messageBoxService Service to manipulate the DOM.
    * @param renderer DOM
@@ -213,12 +212,11 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   constructor(
     private actualItemService: ActualItemService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService,
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService,
     private renderer: Renderer2
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup({
       action: new FormControl(Modify.Add.toString(), { nonNullable: true }),
@@ -234,18 +232,8 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       note: new FormControl(''),
     });
 
-    this.manageActualItem$ = this.actualItemService.item$;
-    this.actualItems$ = this.actualItemService.items$;
-  }
-
-  /**
-   * Get error messages for an invalid form control
-   * @param ctrl The form control
-   * @param {string} [title] The title of the control (optional)
-   * @returns The error message as a string
-   */
-  getErrorMessage(control: AbstractControl | null, title?: string): string {
-    return this.errorService.getFormErrorMessage(control, title);
+    this.manageActualItem = this.actualItemService.getItem();
+    this.actualItems = this.actualItemService.getItems();
   }
 
   /**
@@ -261,11 +249,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @description Set title of HTML document and get acutal items from server
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
-          this.actualItemService.item.filter = ItemFilter.getFilter();
+          
+          const currentItem = this.actualItemService.getItemValue();
+          const updatedItem = { ...currentItem, filter: ItemFilter.getFilter() };
+          this.actualItemService.setItem(updatedItem);
         }),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.actualItemService.getActualItems(budgetState.budgetId), this.sub$);
@@ -275,11 +266,14 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         if (item.currencies.length == 1) {
           this.currencyCode?.setValue(item.currencies[0]);
           this.selCurrencyCode = item.currencies[0];
-          this.actualItemService.item.filter.currencyCode = this.selCurrencyCode;
+          const currentItem = this.actualItemService.getItemValue();
+          currentItem.filter.currencyCode = this.selCurrencyCode;
+          const updatedItem = { ...currentItem };
+          this.actualItemService.setItem(updatedItem);
         } else {
           this.selCurrencyCode = '';
         }
-        this.pageLoaded$.next(true);
+        this.pageLoaded.set(true);
       });
 
     pipeTakeUntil(this.filterNote$, this.sub$)
@@ -311,7 +305,6 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   onChangeAction(): void {
     if (this.action?.value === Modify.Add) {
       this.actualItemService.clearSelection();
-      // this.resetForm();
     }
   }
 
@@ -467,7 +460,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       let amount = 0;
       const selectedItem = this.findCurrency(this.selCurrencyCode);
 
-      this.actualItemService.items.forEach((x) => {
+      this.actualItemService.getItemValues().forEach((x) => {
         if (!selectedItem || x.currencyCode === selectedItem.currencyCode) {
           amount += x.amount;
         } else {
@@ -487,7 +480,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
    * @returns A `CurrencyItem` object if found. Otherwise undefined.
    */
   private findCurrency(currencyCode: string): CurrencyItem | undefined {
-    return this.actualItemService.item.currencyItems.find((c) => c.currencyCode === currencyCode);
+    return this.actualItemService.getItemValue().currencyItems.find((c) => c.currencyCode === currencyCode);
   }
 
   /**

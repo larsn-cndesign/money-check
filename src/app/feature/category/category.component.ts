@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -9,8 +9,7 @@ import {
 } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
-import { Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { pipeTakeUntil } from 'src/app/shared/classes/common.fn';
 import { DialogOptions } from 'src/app/shared/components/confirm-dialog/shared/confirm-dialog.model';
@@ -19,7 +18,6 @@ import { MessageBoxService } from 'src/app/shared/components/message-box/shared/
 import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { CommonFormService } from 'src/app/shared/services/common-form.service';
-import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
@@ -49,10 +47,10 @@ export class CategoryComponent extends CommonFormService implements OnInit {
   }>;
 
   /**
-   * An observer of an array of `Category` objects.
+   * Signal representing the current state of `Category` objects.
    * @public
    */
-  categories$: Observable<Category[]>;
+  categories: Signal<Category[]>;
 
   /**
    * A property that holds all columns to be displayed in a table
@@ -80,18 +78,16 @@ export class CategoryComponent extends CommonFormService implements OnInit {
    * Initializes form controls with validation, observables and services
    * @param categoryService Manage category items
    * @param budgetStateService Manage the state of a budget.
-   * @param errorService Application error service
    * @param dialogService Confirmation dialog service
    * @param messageBoxService Service to handle user messages
    */
   constructor(
     private categoryService: CategoryService,
     private budgetStateService: BudgetStateService,
-    protected errorService: ErrorService,
-    protected dialogService: ConfirmDialogService,
-    protected messageBoxService: MessageBoxService
+    private dialogService: ConfirmDialogService,
+    private messageBoxService: MessageBoxService
   ) {
-    super(errorService, dialogService, messageBoxService);
+    super();
 
     this.form = new FormGroup(
       {
@@ -102,25 +98,21 @@ export class CategoryComponent extends CommonFormService implements OnInit {
       { validators: [duplicateValidator(categoryService, 'categoryName', 'action')] }
     );
 
-    this.categories$ = this.categoryService.items$;
+    this.categories = this.categoryService.items;
   }
 
   /**
    * @description Set title of HTML document, get budget state from `localStorage` and category items from server.
    */
   ngOnInit(): void {
-    pipeTakeUntil(this.budgetStateService.getBudgetStateInStore(), this.sub$)
+    pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
-        tap((budgetState) => {
-          this.budgetState = budgetState;
-        }),
+        tap((budgetState) => (this.budgetState = budgetState)),
         switchMap((budgetState: BudgetState) => {
           return pipeTakeUntil(this.categoryService.getCategories(budgetState.budgetId), this.sub$);
         })
       )
-      .subscribe(() => {
-        this.pageLoaded$.next(true);
-      });
+      .subscribe(() => this.pageLoaded.set(true));
   }
 
   /**
@@ -139,7 +131,7 @@ export class CategoryComponent extends CommonFormService implements OnInit {
    * @param item The selected category item
    */
   onSelectCategory(item: Category): void {
-    this.categoryService.selectItem(item);
+    this.categoryService.getItem(item);
 
     this.form.patchValue({
       action: Modify.Edit,
