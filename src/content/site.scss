@@ -98,7 +98,7 @@ h2 {
 // Angular material styles
 // -------------------------------
 .form-field-note {
-  width: 50%;
+  width: 100%;
   min-width: 300px;
 }
 
@@ -110,7 +110,9 @@ h2 {
   font-size: 11px;
 }
 
-.mat-mdc-form-field {
+.mat-mdc-form-field,
+.mat-mdc-select,
+.mat-mdc-option {
   margin-right: 3px;
   color: v.$color !important;
   vertical-align: top;
@@ -152,4 +154,7 @@ input:-webkit-autofill:active {
 // Computer
 // -------------------------------
 @media (min-width: 600px) {
+  .form-field-note {
+    width: 50%;
+  }
 }

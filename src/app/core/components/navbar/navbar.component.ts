@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { AfterViewInit, Component, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal } from '@angular/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -22,7 +22,7 @@ import { MenuComponent } from '../menu/menu.component';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   /**
    * An observer of a `BudgetState` object.
    * @public
@@ -78,6 +78,8 @@ export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
     this.isMobile = this.breakpointObserver.observe(Breakpoints.Handset);
     this.budgetState$ = this.budgetStateService.getItem();
+
+    this.user = this.userService.getItem();
   }
 
   /**
@@ -97,10 +99,6 @@ export class NavbarComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.user = this.userService.getItem();
   }
 
   /**

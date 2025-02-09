@@ -1,0 +1,15 @@
+@use '../../../../content/variables' as v;
+
+button {
+  display: block;
+  color: v.$color !important;
+}
+
+// -------------------------------
+// Computer
+// -------------------------------
+@media (min-width: 600px) {
+  button {
+    display: inline-block;
+  }
+}

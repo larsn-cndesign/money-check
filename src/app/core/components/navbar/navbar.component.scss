@@ -8,6 +8,10 @@
   top: 56px;
 }
 
+.sidenav-container mat-sidenav {
+  width: 150px;
+}
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -27,7 +31,7 @@
 }
 
 .budget {
-  color: v.$accent-fg;
+  max-width: 150px;
 }
 
 // -------------------------------
@@ -45,5 +49,9 @@
 
   .menu-font {
     font-size: unset;
+  }
+
+  .budget {
+    max-width: 350px;
   }
 }

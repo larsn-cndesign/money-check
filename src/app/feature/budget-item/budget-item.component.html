@@ -134,10 +134,10 @@
 
 <div class="row-xl filter">
   <div>
-    <button mat-icon-button matPrefix type="button" (click)="showFilter = !showFilter">
-      <mat-icon>filter_alt</mat-icon>
+    <button mat-button type="button" (click)="showFilter = !showFilter" data-testid="show-filter">
       Filter
-    </button>
+      <mat-icon>filter_alt</mat-icon>
+    </button>    
   </div>
 
   @if(showFilter) {

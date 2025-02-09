@@ -52,7 +52,7 @@
   </mat-form-field>
 
   <mat-checkbox [checked]="variance.filter.travelDay" (change)="onChangeTravelDay($event, 'day')">
-    Antal resdagar {{ variance.filter.travelDay ? variance.filter.travelDayCount : '' }}
+    Antal resdagar {{ variance.filter.travelDay && variance.filter.travelDayCount !== 1 ? variance.filter.travelDayCount : '' }}
   </mat-checkbox>
 </div>
 
