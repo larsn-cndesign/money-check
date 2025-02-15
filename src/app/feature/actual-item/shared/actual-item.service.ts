@@ -9,6 +9,7 @@ import { StoreItem } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { ActualItem, ManageActualItem } from './actual-item.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for managing actual expense items.
@@ -22,7 +23,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * Creates an actual item services.
    * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private translate: TranslateService) {
     super(new ManageActualItem());
   }
 
@@ -63,7 +64,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
           .pipe(tap((item) => this.deleteItem(item, 'id')));
     }
 
-    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
+    throw new HttpErrorResponse({ error: `${action}: ${this.translate.instant('error.unknown_event')}` });
   }
 
   /**
@@ -128,7 +129,9 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @returns True if a year does not exist in the selected budget.
    */
   budgetYearNotExist(purchaseDate: Date): boolean {
-    const yearFound = this.getItemValue().budgetYears.find((x) => x.year === new Date(toDate(purchaseDate)).getFullYear());
+    const yearFound = this.getItemValue().budgetYears.find(
+      (x) => x.year === new Date(toDate(purchaseDate)).getFullYear()
+    );
     return yearFound ? false : true;
   }
 

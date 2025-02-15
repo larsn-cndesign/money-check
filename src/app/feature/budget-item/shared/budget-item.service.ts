@@ -7,6 +7,7 @@ import { StoreItem } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { BudgetItem, ManageBudgetItem } from './butget-item.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for managing budget expense items.
@@ -20,7 +21,7 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
    * Initializes services.
    * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private translate: TranslateService) {
     super(new ManageBudgetItem());
   }
 
@@ -63,7 +64,7 @@ export class BudgetItemService extends StoreItem<ManageBudgetItem, BudgetItem> {
           .pipe(tap((item) => this.deleteItem(item, 'id')));
     }
 
-    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
+    throw new HttpErrorResponse({ error: `${action}: ${this.translate.instant('error.unknown_event')}` });
   }
 
   /**

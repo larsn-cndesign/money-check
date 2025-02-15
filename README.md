@@ -6,7 +6,7 @@ The main purpose of the project is to develop Angular skills and to adhere to An
 ### Notes
 - Uses Angular version 19
 - Data is stored in localStorage
-- Language is currently only available in Swedish
+- Available languages are English, Spanish (AI translation) and Swedish
 - Unit testing is ongoing. For a complete unit test of a feature, please see [feature/actual-item](https://github.com/larsn-cndesign/money-check/tree/main/src/app/feature/actual-item)
 - A fake backend interceptor is used to simulate HTTP requests to a server
 - So far the app is mainly tested in Chrome
@@ -45,6 +45,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 - [@angular/material](https://material.angular.io/) - Material Design components for Angular
 - [@auth0/angular-jwt](https://www.npmjs.com/package/@auth0/angular-jwt) - Automatically attaches a JSON Web Token to HttpClient requests
+- [@ngx-translate/core](https://github.com/ngx-translate/core) - The internationalization (i18n) library for Angular
 
 ## Versioning
 

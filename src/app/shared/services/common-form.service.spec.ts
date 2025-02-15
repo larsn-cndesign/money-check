@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonFormService } from './common-form.service';
 
 describe('CommonFormService', () => {
@@ -7,7 +8,7 @@ describe('CommonFormService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule],
+      imports: [MatDialogModule, TranslateModule.forRoot()],
     });
     service = TestBed.inject(CommonFormService);
   });

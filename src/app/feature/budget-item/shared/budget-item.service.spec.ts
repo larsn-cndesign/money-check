@@ -2,15 +2,16 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-import { BudgetItemService } from './budget-item.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { BudgetItemService } from './budget-item.service';
 
 describe('BudgetItemService', () => {
   let service: BudgetItemService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [SharedModule],
+    imports: [SharedModule,TranslateModule.forRoot()],
     providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 });
     service = TestBed.inject(BudgetItemService);

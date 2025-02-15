@@ -1,35 +1,87 @@
 @if (user(); as user) {
 <!-- Menu level 1 -->
 @if(user.name) {
-<button mat-button routerLink="/feature/budget-variance" data-testid="budget-variance">Utfall</button>
+<button mat-button routerLink="/feature/budget-variance" data-testid="budget-variance">
+  {{ 'menu.actual' | translate }}
+</button>
 } @if(user.isAdmin) {
-<button mat-button routerLink="/feature/actual-item" data-testid="admin">Transaktoner</button>
+<button mat-button routerLink="/feature/actual-item" data-testid="admin">
+  {{ 'menu.transaction' | translate }}
+</button>
 <button mat-button [matMenuTriggerFor]="budget" data-testid="admin">
-  <span>Budget</span>
+  <span>{{ 'menu.budget' | translate }}</span>
 </button>
 } @if(user.name) {
-<button mat-button (click)="logout()" data-testid="logout">
-  <span>Logga ut</span>
+<button mat-icon-button [matMenuTriggerFor]="person" data-testid="person">
+  <mat-icon style="vertical-align: middle">person</mat-icon>
 </button>
 }
+
 <!-- Menu level 2 -->
 <mat-menu #budget="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item routerLink="/feature/budget-item">Hantera budget</button>
-  <button mat-menu-item routerLink="/feature/create-budget">Skapa budget</button>
-  <button mat-menu-item [matMenuTriggerFor]="year">År</button>
-  <button mat-menu-item [matMenuTriggerFor]="version">Version</button>
-  <button mat-menu-item routerLink="/feature/category">Kategori</button>
-  <button mat-menu-item routerLink="/feature/unit">Enheter</button>
-  <button mat-menu-item routerLink="/feature/trip">Resor</button>
+  <button mat-menu-item routerLink="/feature/budget-item">
+    {{ 'menu.manage_budget' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/create-budget">
+    {{ 'menu.create_budget' | translate }}
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="year">
+    {{ 'menu.year' | translate }}
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="version">
+    {{ 'menu.version' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/category">
+    {{ 'menu.category' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/unit">
+    {{ 'menu.unit' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/trip">
+    {{ 'menu.trip' | translate }}
+  </button>
 </mat-menu>
+
+<mat-menu #person="matMenu" [overlapTrigger]="false">
+  <button mat-menu-item (click)="onSelectLanguage('en-GB')" data-testid="lang-es">
+    <div class="valign-icon-text" title="English">
+      <img class="flag" src="../../../../assets/images/flag_united_kingdom_64x64.png" alt="English" height="32" />
+      <span>English</span>
+    </div>
+  </button>
+  <button mat-menu-item (click)="onSelectLanguage('es-ES')" data-testid="lang-en">
+    <div class="valign-icon-text" title="Español">
+      <img class="flag" src="../../../../assets/images/flag_spain_64x64.png" alt="Español" height="32" />
+      <span>Español</span>
+    </div>
+  </button>
+  <button mat-menu-item (click)="onSelectLanguage('sv-SE')" data-testid="lang-sv">
+    <div class="valign-icon-text" title="Svenska">
+      <img class="flag" src="../../../../assets/images/flag_sweden_64x64.png" alt="Svenska" height="32" />
+      <span>Svenska</span>
+    </div>
+  </button>
+  <button mat-menu-item (click)="logout()" data-testid="logout">
+    {{ 'menu.logout' | translate }}
+  </button>
+</mat-menu>
+
 <!-- Menu level 3 -->
 <mat-menu #year="matMenu">
-  <button mat-menu-item routerLink="/feature/create-budget-year">Skapa nytt budgetår</button>
-  <button mat-menu-item routerLink="/feature/delete-budget-year">Ta bort budgetår</button>
+  <button mat-menu-item routerLink="/feature/create-budget-year">
+    {{ 'menu.create_budget_year' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/delete-budget-year">
+    {{ 'menu.delete_budget_year' | translate }}
+  </button>
 </mat-menu>
 
 <mat-menu #version="matMenu">
-  <button mat-menu-item routerLink="/feature/create-version">Skapa ny version</button>
-  <button mat-menu-item routerLink="/feature/modify-version">Ändra/Ta bort version</button>
+  <button mat-menu-item routerLink="/feature/create-version">
+    {{ 'menu.create_version' | translate }}
+  </button>
+  <button mat-menu-item routerLink="/feature/modify-version">
+    {{ 'menu.modify_version' | translate }}
+  </button>
 </mat-menu>
 }

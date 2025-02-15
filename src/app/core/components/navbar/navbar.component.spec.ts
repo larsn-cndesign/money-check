@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgZone } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -9,7 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { NavigationEnd, provideRouter, Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { APP_ROUTES } from 'src/app/app.routes';
 import { click, findComponent, findEl } from 'src/app/mock-backend/element.spec-helper';
@@ -59,6 +60,7 @@ describe('NavbarComponent', () => {
         MatSelectModule,
         NavbarComponent,
         MenuComponent,
+        TranslateModule.forRoot(),
       ],
       providers: [
         { provide: BudgetStateService, useValue: budgetStateService },

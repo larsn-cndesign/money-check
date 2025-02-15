@@ -1,13 +1,13 @@
 <div class="page" style="text-align: center">
-  <h2>Logga In</h2>
+  <h2>{{ 'page.title.login' | translate }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="login()" data-testid="form">
     <div class="form-field-error">
       <!-- @Test only for testing purpose -->
-      <div>Ange: test&#64;test.com</div>
+      <div>{{ 'test.enter' | translate }}: test&#64;test.com</div>
       <mat-form-field style="width: 234px">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" placeholder="Ange email" required data-testid="email" />
+        <mat-label>{{ 'global.email' | translate }}</mat-label>
+        <input matInput formControlName="email" placeholder="Email" required data-testid="email" />
         @if(email?.invalid) {
         <mat-error>
           <span data-testid="email-error">{{ getErrorMessage(email, 'Email') }}</span>
@@ -17,14 +17,14 @@
     </div>
     <div class="form-field-error">
       <!-- @Test only for testing purpose -->
-      <div>Ange: 123456</div>
+      <div>{{ 'test.enter' | translate }}: 123456</div>
       <mat-form-field>
-        <mat-label>Lösenord</mat-label>
+        <mat-label>{{ 'global.password' | translate }}</mat-label>
         <input
           matInput
           [type]="hidePassword ? 'password' : 'text'"
           formControlName="password"
-          placeholder="Lösenord"
+          placeholder="{{ 'global.password' | translate }}"
           required
           data-testid="password"
         />
@@ -39,14 +39,16 @@
         </button>
         @if(password?.invalid) {
         <mat-error>
-          <span data-testid="password-error">{{ getErrorMessage(password, 'Lösenord') }}</span>
+          <span data-testid="password-error">{{ getErrorMessage(password, 'global.password' | translate) }}</span>
         </mat-error>
         }
       </mat-form-field>
     </div>
 
     <div>
-      <button mat-flat-button color="primary" type="submit" data-testid="submit">Logga in</button>
+      <button mat-flat-button color="primary" type="submit" data-testid="submit">
+        {{ 'ctrl.button.login' | translate }}
+      </button>
     </div>
   </form>
 </div>

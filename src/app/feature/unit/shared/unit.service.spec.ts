@@ -1,6 +1,7 @@
 import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
 import { UNITS, UNIT_1, UNIT_2 } from 'src/app/mock-backend/spec-constants';
 import { Modify } from 'src/app/shared/enums/enums';
@@ -53,7 +54,7 @@ describe('UnitService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [SharedModule, TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     unitService = TestBed.inject(UnitService);

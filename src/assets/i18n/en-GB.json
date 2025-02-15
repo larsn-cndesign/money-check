@@ -1,0 +1,211 @@
+{
+  "app": {
+    "title": "MoneyCheck"
+  },
+  "menu": {
+    "actual": "Actual",
+    "transaction": "Transactions",
+    "budget": "Budget",
+    "manage_budget": "Manage Budget",
+    "create_budget": "Create Budget",
+    "year": "Year",
+    "version": "Version",
+    "category": "Category",
+    "unit": "Units",
+    "trip": "Trips",
+    "logout": "Log Out",
+    "create_budget_year": "Create New Budget Year",
+    "delete_budget_year": "Delete Budget Year",
+    "create_version": "Create New Version",
+    "modify_version": "Modify/Delete Version",
+    "new_version": "New Version"
+  },
+  "page": {
+    "title": {
+      "login": "Log In",
+      "transactions": "Manage Transactions",
+      "create_budget": "Create Budget",
+      "manage_budget": "Manage Budget",
+      "budget_vs_actual": "Budget vs Actual",
+      "create_budget_year": "Create Budget Year",
+      "delete_budget_year": "Delete Budget Year",
+      "manage_categories": "Manage Categories",
+      "manage_trips": "Manage Trips",
+      "manage_units": "Manage Units",
+      "create_version": "Create Version",
+      "manage_version": "Manage Version"
+    },
+    "label": {
+      "category": "Category",
+      "trip": "Trip",
+      "currency": "Currency",
+      "transaction_count": "Transactions",
+      "current_version": "Current Version",
+      "unit": "Unit",
+      "variance": "Variance",
+      "sum_budget": "Total Budget",
+      "sum_actual": "Total Actual",
+      "sum_variance": "Total Variance",
+      "actual": "Actual",
+      "unit_name": "Unit",
+      "use_currency": "Currency Calculation",
+      "the_name": "Name",
+      "version_restriction": "Version can only be deleted if more than one version exists for the selected year.",
+      "budget_fx_rate_info": "Used for recalculating budget values",
+      "average_fx_rate_info": "Used for recalculating transactions and actuals",
+      "remove_currency": "Remove currency"
+    },
+    "link": {
+      "add_category": "Add Category",
+      "add_unit": "Add Unit",
+      "create_budget": "Create a New Budget"
+    },
+    "empty": {
+      "category": "No category has been added for this budget.",
+      "budget": "No budget or budget year exists.",
+      "unit": "No unit has been added for this budget.",
+      "budget_year": "No budget exists that a budget year can be linked to.",
+      "remove_year": "No budget year to remove.",
+      "budget_category": "No budget exists that categories can be linked to.",
+      "trip": "No budget exists that trips can be linked to.",
+      "budget_unit": "No budget exists that units can be linked to.",
+      "budget_version": "No budget year to create a version for.",
+      "version": "No budget year exists, so no version can be modified or deleted."
+    }
+  },
+  "dialog": {
+    "confirm": {
+      "remove_transaction": "Click OK to remove the selected transaction from the budget",
+      "remove_budget_item": "Click OK to remove the selected budget item from the budget"
+    },
+    "title": {
+      "budget_year_created": "Budget Year Created",
+      "change_currency": "Change Currency"
+    },
+    "message": {
+      "budget_year_created": "Budget year with version and currencies has been created.",
+      "delete_year": "Click OK to remove <i>budget year {{year}}</i> from budget <i>{{name}}</i>.<br/>Note: All versions, currencies, and budget transactions linked to this year will also be deleted.",
+      "delete_category": "Click OK to permanently delete category <i>{{name}}</i> from budget <i>{{budget}}</i>.",
+      "delete_trip": "Click OK to permanently delete <i>trip</i> that started on <i>{{date}}</i> from budget {{budget}}.",
+      "delete_unit": "Click OK to permanently delete category <i>{{name}}</i> from budget <i>{{budget}}</i>.",
+      "delete_version": "Click OK to delete <i>version {{name}}</i> from budget <i>{{budget}}</i>.<br/>Note: All currencies and budget transactions linked to this year will also be deleted.",
+      "update_version": "Do you want to update the version despite unsaved currency changes?"
+    }
+  },
+  "ctrl": {
+    "select": {
+      "budget": "Select Budget",
+      "category": "Select Category",
+      "trip": "Select Trip",
+      "no_trip": "No Trip",
+      "currency": "Select Currency",
+      "sum_currency": "Total Currency",
+      "all_years": "All Years",
+      "all_categories": "All Categories",
+      "all_trips": "All Trips",
+      "all_currencies": "All Currencies",
+      "unit": "Select Unit",
+      "version": "Select Version",
+      "month": "Select Month",
+      "year": "Select Year"
+    },
+    "checkbox": {
+      "travel_day": "Number of Travel Days",
+      "copy_budget": "Copy latest version including budget items",
+      "use_currency": "Use currency calculation for this unit",
+      "copy_version": "Copy previous version's budget items"
+    },
+    "button": {
+      "login": "Log In",
+      "save": {
+        "transaction": "Save Transaction",
+        "budget_item": "Save Budget Item"
+      },
+      "delete": {
+        "transaction": "Delete Transaction",
+        "budget_item": "Delete Budget Item",
+        "budget_year": "Delete Budget Year",
+        "category": "Delete Category",
+        "trip": "Delete Trip",
+        "unit": "Delete Unit",
+        "version": "Delete Current Version"
+      },
+      "update": {
+        "version": "Update Version"
+      },
+      "filter": "Filter",
+      "create_budget_year": "Create Budget Year",
+      "create_version": "Create Version"
+    },
+    "input": {
+      "budget": "Budget",
+      "budget_name": "Budget Name",
+      "budget_year": "Budget Year",
+      "category": "Category",
+      "from_date": "From Date",
+      "to_date": "To Date",
+      "unit_name": "Unit",
+      "unit_example": "Example: Quantity, Price per month, etc...",
+      "currency": "Currency (3 characters)",
+      "budget_fx_rate": "Budget Exchange Rate",
+      "average_fx_rate": "Average Exchange Rate",
+      "value": "Value"
+    },
+    "radio": {
+      "add_budget": "Add Budget",
+      "edit_budget": "Edit Selected Budget",
+      "add_currency": "Add currency",
+      "edit_currency": "Edit currency"
+    }
+  },
+  "test": {
+    "enter": "Enter"
+  },
+  "error": {
+    "unknown_event": "Unknown Event",
+    "required_value": "You must enter a value",
+    "invalid_date": "Invalid Date",
+    "invalid_number": "Invalid Number",
+    "duplicate_combination": "Combination already exists",
+    "date_in_trip": "Date is already included in a trip",
+    "invalid_date_order": "End date is earlier than start date",
+    "duplicate": "This {{title}} already exists",
+    "min_length": "{{title}} must be at least {{length}} characters",
+    "max_length": "{{title}} can be at most {{length}} characters",
+    "invalid_input": "{{title}} is not valid",
+    "missing_budget": "Budget is missing for this year",
+    "program": "Program Error",
+    "occured": "An error occurred",
+    "authorization": "Authorization missing"
+  },
+  "global": {
+    "note": "Note",
+    "date": "Date",
+    "sum": "Total",
+    "add": "Add",
+    "edit": "Edit",
+    "amount": "Amount",
+    "email": "Email",
+    "password": "Password",
+    "save": "Save",
+    "year": "Year",
+    "name": "Name",
+    "ok": "OK",
+    "cancel": "Cancel"
+  },
+  "months": {
+    "month_0": "All months",
+    "month_1": "January",
+    "month_2": "February",
+    "month_3": "March",
+    "month_4": "April",
+    "month_5": "May",
+    "month_6": "June",
+    "month_7": "July",
+    "month_8": "August",
+    "month_9": "September",
+    "month_10": "October",
+    "month_11": "November",
+    "month_12": "December"
+  }
+}

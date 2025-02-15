@@ -2,6 +2,7 @@ import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeSv from '@angular/common/locales/sv';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +14,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
-import { BUDGET_STATE, OmitAllFromStore, TRIPS, TRIP_1 } from 'src/app/mock-backend/spec-constants';
-import { BudgetState } from 'src/app/shared/classes/budget-state.model';
+import { BUDGET_STATE, TRIPS, TRIP_1 } from 'src/app/mock-backend/spec-constants';
 import { toDate } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Modify } from 'src/app/shared/enums/enums';
@@ -24,7 +25,6 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { TripComponent } from './trip.component';
-import { signal } from '@angular/core';
 registerLocaleData(localeSv);
 
 type OmitFromStore = 'items' | 'getUnselectedItems' | 'addItem' | 'editItem' | 'deleteItem' | 'updateStore';
@@ -51,8 +51,6 @@ const tripService: Omit<TripService, OmitFromStore> = {
   },
 };
 
-
-
 describe('TripComponent', () => {
   let component: TripComponent;
   let fixture: ComponentFixture<TripComponent>;
@@ -72,6 +70,7 @@ describe('TripComponent', () => {
         MatNativeDateModule,
         ConfirmDialogComponent,
         TripComponent,
+        TranslateModule.forRoot(),
       ],
       providers: [
         { provide: TripService, useValue: tripService },

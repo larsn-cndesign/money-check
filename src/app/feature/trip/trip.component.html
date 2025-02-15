@@ -1,5 +1,5 @@
 <h2>
-  Hantera Resor
+  {{ 'page.title.manage_trips' | translate }}
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -13,7 +13,7 @@
 >
   <div class="head-section form-field-error">
     <mat-form-field>
-      <mat-label>Från datum</mat-label>
+      <mat-label>{{ 'ctrl.input.from_date' | translate }}</mat-label>
       <input
         matInput
         formControlName="fromDate"
@@ -27,12 +27,12 @@
       <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #fromDatePicker></mat-datepicker>
       @if(fromDate?.invalid) {
-      <mat-error> {{ getErrorMessage(fromDate, 'Resa') }} </mat-error>
+      <mat-error> {{ getErrorMessage(fromDate, 'page.label.trip' | translate) }} </mat-error>
       }
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Till datum</mat-label>
+      <mat-label>{{ 'ctrl.input.to_date' | translate }}</mat-label>
       <input
         matInput
         formControlName="toDate"
@@ -46,46 +46,49 @@
       <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #toDatePicker></mat-datepicker>
       @if(toDate?.invalid) {
-      <mat-error> {{ getErrorMessage(toDate, 'Resa') }} </mat-error>
+      <mat-error> {{ getErrorMessage(toDate, 'page.label.trip' | translate) }} </mat-error>
       }
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Notering</mat-label>
+      <mat-label>{{ 'global.note' | translate }}</mat-label>
       <input matInput type="text" formControlName="note" data-testid="note" />
     </mat-form-field>
   </div>
 
   @if(form) {
   <div>
-    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">
+      {{ 'global.save' | translate }}
+    </button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
-      <mat-radio-button value="add">Lägg till</mat-radio-button>
-      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
+      <mat-radio-button value="add">{{ 'global.add' | translate }}</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">{{
+        'global.edit' | translate
+      }}</mat-radio-button>
     </mat-radio-group>
   </div>
   }
 </form>
 
 <div class="row-xl max-table-height">
-  <!-- <table mat-table [dataSource]="$any(trips$ | async)" class="tbl"> -->
   <table mat-table [dataSource]="trips()" class="tbl">
     <ng-container matColumnDef="fromDate">
-      <th mat-header-cell *matHeaderCellDef>Från datum</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'ctrl.input.from_date' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.fromDate | date : 'yyyy-MM-dd' }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="toDate">
-      <th mat-header-cell *matHeaderCellDef>Till datum</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'ctrl.input.to_date' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.toDate | date : 'yyyy-MM-dd' }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="note">
-      <th mat-header-cell *matHeaderCellDef>Notering</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'global.note' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
       </td>
@@ -94,7 +97,12 @@
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let item">
-        <button mat-icon-button type="button" title="Ta bort resa" (click)="onDeleteTrip($event, item)">
+        <button
+          mat-icon-button
+          type="button"
+          title="{{ 'ctrl.button.delete.trip' | translate }}"
+          (click)="onDeleteTrip($event, item)"
+        >
           <mat-icon>delete_forever</mat-icon>
         </button>
       </td>
@@ -113,7 +121,8 @@
 <!-- No budget -->
 } @else { @if(pageLoaded()) {
 <div>
-  Det finns ingen budget upplagd som resor kan kopplas till.
-  <a href="/feature/create-budget">Skapa en ny budget</a>.
+  {{ 'page.empty.trip' | translate }}
+  <a href="/feature/create-budget">{{ 'page.link.create_budget' | translate }}</a
+  >.
 </div>
 } }

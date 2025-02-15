@@ -4,7 +4,7 @@ import { NgZone, signal } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, provideRouter, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { BudgetVarianceComponent } from 'src/app/feature/budget-variance/budget-variance.component';
 import { click, findEl, findEls } from 'src/app/mock-backend/element.spec-helper';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -24,7 +24,7 @@ describe('MenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatMenuModule, MenuComponent],
+      imports: [MatMenuModule, MenuComponent, TranslateModule.forRoot()],
       providers: [
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -48,6 +48,9 @@ describe('MenuComponent', () => {
     const logoutSpy = spyOn(authService, 'logout');
 
     component.user = signal(loggedInUser);
+    fixture.detectChanges();
+
+    click(fixture, 'person');
     fixture.detectChanges();
 
     click(fixture, 'logout');

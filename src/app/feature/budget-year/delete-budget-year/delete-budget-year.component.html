@@ -1,5 +1,5 @@
 <h2>
-  Ta Bort Budgetår
+  {{ 'page.title.delete_budget_year' | translate }}
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -10,7 +10,7 @@
   <div class="head-section">
     <div>
       <mat-form-field>
-        <mat-label>Välj år</mat-label>
+        <mat-label>{{ 'ctrl.select.year' | translate }}</mat-label>
         <mat-select formControlName="budgetYearId" [errorStateMatcher]="matcher" required>
           @for (item of budgetYears; track item.id) {
           <mat-option [value]="item.id">
@@ -19,7 +19,7 @@
           }
         </mat-select>
         @if(budgetYearId?.invalid) {
-        <mat-error>{{ getErrorMessage(budgetYearId, 'År') }}</mat-error>
+        <mat-error>{{ getErrorMessage(budgetYearId, 'global.year' | translate) }}</mat-error>
         }
       </mat-form-field>
     </div>
@@ -31,7 +31,7 @@
         type="submit"
         [disabled]="budgetYears.length === 0 || !form.valid || budgetYearId?.value === -1"
       >
-        Ta bort
+        {{ 'ctrl.button.delete.budget_year' | translate }}
       </button>
     </div>
   </div>
@@ -39,5 +39,5 @@
 }
 <!-- No budget -->
 } @else { @if(pageLoaded()) {
-<div>Det finns inget budgetår att ta bort</div>
+<div>{{ 'page.empty.remove_year' | translate }}</div>
 } }

@@ -6,6 +6,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import localeSv from '@angular/common/locales/sv';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { triggerEvent } from 'src/app/mock-backend/element.spec-helper';
 import { selectMatOption } from 'src/app/mock-backend/material.spec-helper';
@@ -24,7 +25,7 @@ describe('CreateVersionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CreateVersionComponent],
+      imports: [NoopAnimationsModule, CreateVersionComponent, TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
 

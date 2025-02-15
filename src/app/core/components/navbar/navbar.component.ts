@@ -12,13 +12,23 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AppUser } from '../../models/app-user.model';
 import { MenuComponent } from '../menu/menu.component';
+import { LanguageService } from 'src/app/shared/services/language.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing a responsible `toolbar` with `sidenav` for mobile devices.
  */
 @Component({
   selector: 'app-navbar',
-  imports: [SharedModule, RouterLink, MatToolbarModule, MatSidenavModule, MatSelectModule, MenuComponent],
+  imports: [
+    SharedModule,
+    RouterLink,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatSelectModule,
+    MenuComponent,
+    TranslatePipe,
+  ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
@@ -74,7 +84,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private budgetStateService: BudgetStateService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private languageService: LanguageService
   ) {
     this.isMobile = this.breakpointObserver.observe(Breakpoints.Handset);
     this.budgetState$ = this.budgetStateService.getItem();
@@ -131,5 +142,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
    */
   onToggleSidenav(): void {
     this.isSideNavOpen = !this.isSideNavOpen;
+  }
+
+  /**
+   *
+   * @param lang Set UI language for the application
+   */
+  onSelectLanguage(lang: string): void {
+    this.languageService.setLanguage(lang);
   }
 }

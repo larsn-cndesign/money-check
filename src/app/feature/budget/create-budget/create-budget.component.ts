@@ -18,6 +18,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { Budget } from '../shared/budget.model';
 import { BudgetService } from '../shared/budget.service';
 import { duplicateValidator } from '../shared/budget.validators';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing budget modification.
@@ -26,7 +27,7 @@ import { duplicateValidator } from '../shared/budget.validators';
  */
 @Component({
   selector: 'app-create-budget',
-  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule],
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatRadioModule, MatCheckboxModule, TranslatePipe],
   templateUrl: './create-budget.component.html',
   styleUrls: ['./create-budget.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

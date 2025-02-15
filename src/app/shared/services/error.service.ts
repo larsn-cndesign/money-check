@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, throwError } from 'rxjs';
 import { MessageBox } from '../components/message-box/shared/message-box.model';
 import { MessageBoxService } from '../components/message-box/shared/message-box.service';
@@ -18,7 +19,11 @@ export class ErrorService {
    * @param router Navigation service.
    * @param messageBoxService Manage messages to show to the user.
    */
-  constructor(public router: Router, private messageBoxService: MessageBoxService) {}
+  constructor(
+    public router: Router,
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
+  ) {}
 
   /**
    * Get error messages for an invalid form control.
@@ -29,47 +34,53 @@ export class ErrorService {
   getFormErrorMessage(control: AbstractControl | null, title = ''): string {
     if (control) {
       if (control.hasError('required')) {
-        return 'Du måste ange ett värde';
+        return this.translate.instant('error.required_value');
       }
 
       if (control.hasError('invalidDate')) {
-        return 'Ogiltigt datum';
+        return this.translate.instant('error.invalid_date');
       }
 
       if (control.hasError('isNumber')) {
-        return 'Ogiltigt nummer';
+        return this.translate.instant('error.invalid_number');
       }
 
       if (control.hasError('unique')) {
-        return 'Kombinationen finns redan';
+        return this.translate.instant('error.duplicate_combination');
       }
 
       if (control.hasError('betweenDate')) {
-        return 'Datumet ingår redan i en resa';
+        return this.translate.instant('error.date_in_trip');
       }
 
       if (control.hasError('invalidToDate')) {
-        return 'Till datum är tidigare än från datum';
+        return this.translate.instant('error.invalid_date_order');
       }
 
       if (control.hasError('duplicate')) {
-        return 'Denna ' + title.toLowerCase() + ' finns redan';
+        return this.translate.instant('error.duplicate', { title: title });
       }
 
       if (control.hasError('minlength') && control.errors) {
-        return title + ' måste vara minst ' + control.errors.minlength.requiredLength + ' tecken';
+        return this.translate.instant('error.min_length', {
+          title: title,
+          length: control.errors.minlength.requiredLength,
+        });
       }
 
       if (control.hasError('maxlength') && control.errors) {
-        return title + ' får högste vara ' + control.errors.maxlength.requiredLength + ' tecken';
+        return this.translate.instant('error.max_length', {
+          title: title,
+          length: control.errors.minlength.requiredLength,
+        });
       }
 
       if (control.hasError('email') && control.errors) {
-        return title + ' är inte giltigt';
+        return this.translate.instant('error.invalid_input', { title: title });
       }
 
       if (control.hasError('budgetYearNotExist') && control.errors) {
-        return 'Budget saknas för detta år';
+        return this.translate.instant('error.missing_budget');
       }
 
       return '';
@@ -86,10 +97,10 @@ export class ErrorService {
    */
   handleHttpError = (error: HttpErrorResponse): Observable<never> => {
     let errorDescription = '';
-    let title = 'Programfel';
+    let title = this.translate.instant('error.program'); // 'Programfel';
 
     if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
+      console.error(this.translate.instant('error.occured'), error.error.message);
     } else {
       errorDescription = error.error;
 
@@ -101,7 +112,7 @@ export class ErrorService {
       }
 
       if (error.status === 401) {
-        title = 'Behörighet saknas';
+        title = this.translate.instant('error.authorization');
         this.router.navigate(['/login']);
       }
 

@@ -3,6 +3,7 @@ import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@a
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Sort } from '@angular/material/sort';
+import { TranslateModule } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
 import {
   ACTUAL_ITEM_1,
@@ -124,7 +125,7 @@ describe('ActualItemService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule],
+      imports: [CommonModule, TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     actualItemService = TestBed.inject(ActualItemService);

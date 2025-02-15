@@ -24,6 +24,7 @@ import { isNumberValidator } from '../../validators/common.validators';
 import { CurrencyTableComponent } from '../currency-table/currency-table.component';
 import { CurrencyTableService } from '../currency-table/shared/currency-table.service';
 import { duplicateValidator } from '../currency-table/shared/currency-table.validators';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing a custom form control for managing currencies.
@@ -45,7 +46,15 @@ import { duplicateValidator } from '../currency-table/shared/currency-table.vali
  */
 @Component({
   selector: 'app-currency-form',
-  imports: [CommonModule, ReactiveFormsModule, MatRadioModule, MatButtonModule, MatInputModule, CurrencyTableComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatRadioModule,
+    MatButtonModule,
+    MatInputModule,
+    CurrencyTableComponent,
+    TranslatePipe,
+  ],
   templateUrl: './currency-form.component.html',
   styleUrls: ['./currency-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

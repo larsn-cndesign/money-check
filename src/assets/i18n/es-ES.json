@@ -1,0 +1,211 @@
+{
+  "app": {
+    "title": "MoneyCheck"
+  },
+  "menu": {
+    "actual": "Real",
+    "transaction": "Transacciones",
+    "budget": "Presupuesto",
+    "manage_budget": "Gestionar Presupuesto",
+    "create_budget": "Crear Presupuesto",
+    "year": "Año",
+    "version": "Versión",
+    "category": "Categoría",
+    "unit": "Unidades",
+    "trip": "Viajes",
+    "logout": "Cerrar sesión",
+    "create_budget_year": "Crear Año Presupuestario",
+    "delete_budget_year": "Eliminar Año Presupuestario",
+    "create_version": "Crear Nueva Versión",
+    "modify_version": "Modificar/Eliminar Versión",
+    "new_version": "Nueva Versión"
+  },
+  "page": {
+    "title": {
+      "login": "Iniciar Sesión",
+      "transactions": "Gestionar Transacciones",
+      "create_budget": "Crear Presupuesto",
+      "manage_budget": "Gestionar Presupuesto",
+      "budget_vs_actual": "Presupuesto vs Real",
+      "create_budget_year": "Crear Año Presupuestario",
+      "delete_budget_year": "Eliminar Año Presupuestario",
+      "manage_categories": "Gestionar Categorías",
+      "manage_trips": "Gestionar Viajes",
+      "manage_units": "Gestionar Unidades",
+      "create_version": "Crear Versión",
+      "manage_version": "Gestionar Versión"
+    },
+    "label": {
+      "category": "Categoría",
+      "trip": "Viaje",
+      "currency": "Moneda",
+      "transaction_count": "Transacciones",
+      "current_version": "Versión Actual",
+      "unit": "Unidad",
+      "variance": "Diferencia",
+      "sum_budget": "Total Presupuesto",
+      "sum_actual": "Total Real",
+      "sum_variance": "Diferencia Total",
+      "actual": "Real",
+      "unit_name": "Unidad",
+      "use_currency": "Cálculo en Moneda",
+      "the_name": "Nombre",
+      "version_restriction": "La versión solo se puede eliminar si existe más de una versión para el año seleccionado.",
+      "budget_fx_rate_info": "Usado para recalcular valores presupuestarios",
+      "average_fx_rate_info": "Usado para recalcular transacciones y valores reales",
+      "remove_currency": "Eliminar moneda"
+    },
+    "link": {
+      "add_category": "Añadir Categoría",
+      "add_unit": "Añadir Unidad",
+      "create_budget": "Crear Nuevo Presupuesto"
+    },
+    "empty": {
+      "category": "No se ha añadido ninguna categoría a este presupuesto.",
+      "budget": "No existe ningún presupuesto o año presupuestario.",
+      "unit": "No se ha añadido ninguna unidad a este presupuesto.",
+      "budget_year": "No existe un presupuesto al que se pueda vincular un año presupuestario.",
+      "remove_year": "No hay año presupuestario para eliminar.",
+      "budget_category": "No existe un presupuesto al que se puedan vincular categorías.",
+      "trip": "No existe un presupuesto al que se puedan vincular viajes.",
+      "budget_unit": "No existe un presupuesto al que se puedan vincular unidades.",
+      "budget_version": "No hay año presupuestario para crear una versión.",
+      "version": "No existe un año presupuestario, por lo que no se puede modificar o eliminar ninguna versión."
+    }
+  },
+  "dialog": {
+    "confirm": {
+      "remove_transaction": "Haz clic en OK para eliminar la transacción seleccionada del presupuesto",
+      "remove_budget_item": "Haz clic en OK para eliminar el elemento presupuestario seleccionado"
+    },
+    "title": {
+      "budget_year_created": "Año Presupuestario Creado",
+      "change_currency": "Cambiar Moneda"
+    },
+    "message": {
+      "budget_year_created": "Se ha creado el año presupuestario con versiones y monedas.",
+      "delete_year": "Haz clic en OK para eliminar <i>año presupuestario {{year}}</i> del presupuesto <i>{{name}}</i>.<br/>Nota: Todas las versiones, monedas y transacciones presupuestarias vinculadas a este año también se eliminarán.",
+      "delete_category": "Haz clic en OK para eliminar permanentemente la categoría <i>{{name}}</i> del presupuesto <i>{{budget}}</i>.",
+      "delete_trip": "Haz clic en OK para eliminar permanentemente el <i>viaje</i> que comenzó el <i>{{date}}</i> del presupuesto {{budget}}.",
+      "delete_unit": "Haz clic en OK para eliminar permanentemente la unidad <i>{{name}}</i> del presupuesto <i>{{budget}}</i>.",
+      "delete_version": "Haz clic en OK para eliminar la <i>versión {{name}}</i> del presupuesto <i>{{budget}}</i>.<br/>Nota: Todas las monedas y transacciones presupuestarias vinculadas a este año también se eliminarán.",
+      "update_version": "¿Quieres actualizar la versión a pesar de los cambios de moneda no guardados?"
+    }
+  },
+  "ctrl": {
+    "select": {
+      "budget": "Seleccionar presupuesto",
+      "category": "Seleccionar categoría",
+      "trip": "Seleccionar viaje",
+      "no_trip": "Sin viaje",
+      "currency": "Seleccionar moneda",
+      "sum_currency": "Total moneda",
+      "all_years": "Todos los años",
+      "all_categories": "Todas las categorías",
+      "all_trips": "Todos los viajes",
+      "all_currencies": "Todas las monedas",
+      "unit": "Seleccionar unidad",
+      "version": "Seleccionar versión",
+      "month": "Seleccionar mes",
+      "year": "Seleccionar año"
+    },
+    "checkbox": {
+      "travel_day": "Número de días de viaje",
+      "copy_budget": "Copiar la última versión incluyendo los elementos del presupuesto",
+      "use_currency": "Usar cálculo de moneda para esta unidad",
+      "copy_version": "Copiar los elementos del presupuesto de la versión anterior"
+    },
+    "button": {
+      "login": "Iniciar sesión",
+      "save": {
+        "transaction": "Guardar transacción",
+        "budget_item": "Guardar elemento del presupuesto"
+      },
+      "delete": {
+        "transaction": "Eliminar transacción",
+        "budget_item": "Eliminar elemento del presupuesto",
+        "budget_year": "Eliminar año del presupuesto",
+        "category": "Eliminar categoría",
+        "trip": "Eliminar viaje",
+        "unit": "Eliminar unidad",
+        "version": "Eliminar versión actual"
+      },
+      "update": {
+        "version": "Actualizar versión"
+      },
+      "filter": "Filtrar",
+      "create_budget_year": "Crear año de presupuesto",
+      "create_version": "Crear versión"
+    },
+    "input": {
+      "budget": "Presupuesto",
+      "budget_name": "Nombre del presupuesto",
+      "budget_year": "Año del presupuesto",
+      "category": "Categoría",
+      "from_date": "Desde la fecha",
+      "to_date": "Hasta la fecha",
+      "unit_name": "Unidad",
+      "unit_example": "Ejemplo: Cantidad, Precio por mes, etc...",
+      "currency": "Moneda (3 caracteres)",
+      "budget_fx_rate": "Tasa de cambio del presupuesto",
+      "average_fx_rate": "Tasa de cambio promedio",
+      "value": "Valor"
+    },
+    "radio": {
+      "add_budget": "Agregar presupuesto",
+      "edit_budget": "Editar presupuesto seleccionado",
+      "add_currency": "Agregar moneda",
+      "edit_currency": "Editar moneda"
+    }
+  },
+  "test": {
+    "enter": "Ingresar"
+  },
+  "error": {
+    "unknown_event": "Evento Desconocido",
+    "required_value": "Debes ingresar un valor",
+    "invalid_date": "Fecha Inválida",
+    "invalid_number": "Número Inválido",
+    "duplicate_combination": "La combinación ya existe",
+    "date_in_trip": "La fecha ya está incluida en un viaje",
+    "invalid_date_order": "La fecha de finalización es anterior a la de inicio",
+    "duplicate": "Este {{title}} ya existe",
+    "min_length": "{{title}} debe tener al menos {{length}} caracteres",
+    "max_length": "{{title}} puede tener como máximo {{length}} caracteres",
+    "invalid_input": "{{title}} no es válido",
+    "missing_budget": "Falta el presupuesto para este año",
+    "program": "Error de Programa",
+    "occured": "Ocurrió un error",
+    "authorization": "Falta autorización"
+  },
+  "global": {
+    "note": "Nota",
+    "date": "Fecha",
+    "sum": "Total",
+    "add": "Añadir",
+    "edit": "Editar",
+    "amount": "Monto",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "save": "Guardar",
+    "year": "Año",
+    "name": "Nombre",
+    "ok": "OK",
+    "cancel": "Cancelar"
+  },
+  "months": {
+    "month_0": "Todos los meses",
+    "month_1": "Enero",
+    "month_2": "Febrero",
+    "month_3": "Marzo",
+    "month_4": "Abril",
+    "month_5": "Mayo",
+    "month_6": "Junio",
+    "month_7": "Julio",
+    "month_8": "Agosto",
+    "month_9": "Septiembre",
+    "month_10": "Octubre",
+    "month_11": "Noviembre",
+    "month_12": "Diciembre"
+  }
+}

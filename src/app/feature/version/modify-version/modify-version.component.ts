@@ -23,6 +23,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
 import { duplicateValidator } from '../shared/budget-version.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing modification of a version.
@@ -31,7 +32,7 @@ import { duplicateValidator } from '../shared/budget-version.validators';
  */
 @Component({
   selector: 'app-modify-version',
-  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent],
+  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, TranslatePipe],
   templateUrl: './modify-version.component.html',
   styleUrls: ['./modify-version.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,7 +89,8 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -146,11 +148,11 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: 'Ta bort version?',
-      message: `Klicka OK för att ta bort <strong>version ${this.versionName?.value}</strong> från budget
-        ${this.budgetState.budgetName}.<br/>
-        Obs! alla valutor och budgettransaktioner som är kopplade till det här året
-        kommer också att tas bort`,
+      title: `${this.translate.instant('ctrl.button.delete.version')}`,
+      message: this.translate.instant('dialog.message.delete_version', {
+        name: this.versionName?.value,
+        budget: this.budgetState.budgetName,
+      }),
     };
     this.dialogService.open(options);
 
@@ -176,8 +178,8 @@ export class ModifyVersionComponent extends CommonFormService implements OnInit 
 
     if (this.form.controls.currencyForm.valid) {
       const options: DialogOptions = {
-        title: 'Ändrad Valuta',
-        message: `Vill du uppdatera version trots att du inte sparat ändringar av valuta?`,
+        title: `${this.translate.instant('dialog.title.change_currency')}`,
+        message: this.translate.instant('dialog.message.update_version'),
       };
       this.dialogService.open(options);
 

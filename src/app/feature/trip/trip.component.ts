@@ -23,6 +23,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { Trip } from './shared/trip.model';
 import { TripService } from './shared/trip.service';
 import { betweenDateValidator, rangeDateValidator } from './shared/trip.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing expense category management.
@@ -32,7 +33,7 @@ import { betweenDateValidator, rangeDateValidator } from './shared/trip.validato
  */
 @Component({
   selector: 'app-trip',
-  imports: [SharedModule, ReactiveFormsModule, MatDatepickerModule, MatRadioModule, MatTableModule],
+  imports: [SharedModule, ReactiveFormsModule, MatDatepickerModule, MatRadioModule, MatTableModule, TranslatePipe],
   templateUrl: './trip.component.html',
   styleUrls: ['./trip.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -105,7 +106,8 @@ export class TripComponent extends CommonFormService implements OnInit {
     private tripService: TripService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -203,9 +205,11 @@ export class TripComponent extends CommonFormService implements OnInit {
     e.stopPropagation();
 
     const options: DialogOptions = {
-      title: 'Ta bort resa?',
-      message: `Klicka OK för att ta bort <strong>resan</strong> som började
-        <strong>${toDate(item.fromDate)}</strong> från budget ${this.budgetState.budgetName} permanent.`,
+      title: `${this.translate.instant('ctrl.button.delete.trip')}`,
+      message: this.translate.instant('dialog.message.delete_trip', {
+        date: toDate(item.fromDate),
+        budget: this.budgetState.budgetName,
+      }),
     };
     this.dialogService.open(options);
 

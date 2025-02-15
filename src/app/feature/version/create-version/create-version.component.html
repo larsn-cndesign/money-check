@@ -1,5 +1,5 @@
 <h2>
-  Skapa Version
+  {{ 'page.title.create_version' | translate }}
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -9,7 +9,7 @@
 <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onCreateVersion(formDirective)">
   <div class="head-section form-field-error">
     <mat-form-field>
-      <mat-label>Välj år</mat-label>
+      <mat-label>{{ 'ctrl.select.year' | translate }}</mat-label>
       <mat-select
         formControlName="budgetYearId"
         [errorStateMatcher]="matcher"
@@ -24,7 +24,7 @@
         }
       </mat-select>
       @if(budgetYearId?.invalid) {
-      <mat-error>{{ getErrorMessage(budgetYearId, 'År') }}</mat-error>
+      <mat-error>{{ getErrorMessage(budgetYearId, 'global.year' | translate) }}</mat-error>
       }
     </mat-form-field>
   </div>
@@ -32,7 +32,7 @@
   @if(budget.budgetYears.length > 0) {
   <div class="row-xl">
     <mat-checkbox formControlName="copy" (change)="onChangeCopyBudget($event)" data-testid="copy">
-      Kopiera föregående versions budgetposter
+      {{ 'ctrl.checkbox.copy_version' | translate }}
     </mat-checkbox>
   </div>
   } @if(budgetYearId?.value !== -1) {
@@ -52,11 +52,11 @@
       type="submit"
       [disabled]="currencies().length === 0 || budgetYearId?.value === -1"
     >
-      Skapa version
+      {{ 'ctrl.button.create_version' | translate }}
     </button>
   </div>
 </form>
 <!-- No budget -->
 } @else { @if(pageLoaded()) {
-<div>Det finns inget budgetår att skapa en version för</div>
+<div>{{ 'page.empty.budget_version' | translate }}</div>
 } }}

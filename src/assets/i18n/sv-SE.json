@@ -1,0 +1,211 @@
+{
+  "app": {
+    "title": "MoneyCheck"
+  },
+  "menu": {
+    "actual": "Utfall",
+    "transaction": "Transaktioner",
+    "budget": "Budget",
+    "manage_budget": "Hantera budget",
+    "create_budget": "Skapa budget",
+    "year": "År",
+    "version": "Version",
+    "category": "Kategori",
+    "unit": "Enheter",
+    "trip": "Resor",
+    "logout": "Logga ut",
+    "create_budget_year": "Skapa nytt budgetår",
+    "delete_budget_year": "Ta bort budgetår",
+    "create_version": "Skapa ny version",
+    "modify_version": "Ändra/Ta bort version",
+    "new_version": "Ny Version"
+  },
+  "page": {
+    "title": {
+      "login": "Logga In",
+      "transactions": "Hantera Transaktioner",
+      "create_budget": "Skapa Budget",
+      "manage_budget": "Hantera Budget",
+      "budget_vs_actual": "Budget vs Utfall",
+      "create_budget_year": "Skapa Budgetår",
+      "delete_budget_year": "Ta Bort Budgetår",
+      "manage_categories": "Hantera Kategorier",
+      "manage_trips": "Hantera Resor",
+      "manage_units": "Hantera Enheter",
+      "create_version": "Skapa Version",
+      "manage_version": "Hantera Version"
+    },
+    "label": {
+      "category": "Kategori",
+      "trip": "Resa",
+      "currency": "Valuta",
+      "transaction_count": "Antal transaktioner",
+      "current_version": "Nuvarande version",
+      "unit": "Enhet",
+      "variance": "Avvikelse",
+      "sum_budget": "Total Budget",
+      "sum_actual": "Total Utfall",
+      "sum_variance": "Total Avvikelse",
+      "actual": "Utfall",
+      "unit_name": "Enhet",
+      "use_currency": "Valutaberäkning",
+      "the_name": "Namnet",
+      "version_restriction": "Version kan endast tas bort om det finns mer än en version för det valda året.",
+      "budget_fx_rate_info": "Används vid omräkning av budgetvärden",
+      "average_fx_rate_info": "Används vid omräkning av transaktioner och utfall",
+      "remove_currency": "Ta bort valuta"
+    },
+    "link": {
+      "add_category": "Lägg upp kategori",
+      "add_unit": "Lägg upp enhet",
+      "create_budget": "Skapa en ny budget"
+    },
+    "empty": {
+      "category": "Det finns ingen kategori upplagd för denna budget.",
+      "budget": "Det finns ingen budget eller budgetår.",
+      "unit": "Det finns ingen enhet upplagd för denna budget.",
+      "budget_year": "Det finns ingen budget upplagd som ett budgetår kan kopplas till.",
+      "remove_year": "Det finns inget budgetår att ta bort.",
+      "budget_category": "Det finns ingen budget upplagd som kategorier kan kopplas till.",
+      "trip": "Det finns ingen budget upplagd som resor kan kopplas till.",
+      "budget_unit": "Det finns ingen budget upplagd som enheter kan kopplas till.",
+      "budget_version": "Det finns inget budgetår att skapa en version för.",
+      "version": "Det finns inget budgetår och därmed ingen version att modifiera eller ta bort."
+    }
+  },
+  "dialog": {
+    "confirm": {
+      "remove_transaction": "Klicka OK för att ta bort den markerade transaktionen från budget",
+      "remove_budget_item": "Klicka OK för att ta bort den markerade budgetposten från budget"
+    },
+    "title": {
+      "budget_year_created": "Budgetår skapat",
+      "change_currency": "Ändra valuta"
+    },
+    "message": {
+      "budget_year_created": "Budgetår med version och valutor har skapats.",
+      "delete_year": "Klicka OK för att ta bort <i>budgetåret {{year}}</i> från budget <i>{{name}}</i>.<br/>Obs! alla versioner, valutor och budgettransaktioner som är kopplade till det här året kommer också att tas bort.",
+      "delete_category": "Klicka OK för att ta bort kategori <i>{{name}}</i> från budget <i>{{budget}}</i> permanent.",
+      "delete_trip": "Klicka OK för att ta bort <i>resan</i> som började <i>{{date}}</i> från budget {{budget}} permanent.",
+      "delete_unit": "Klicka OK för att ta bort kategori <i>{{name}}</i> från budget <i>{{budget}}</i> permanent.",
+      "delete_version": "Klicka OK för att ta bort <i>version {{name}}</i> från budget <i>{{budget}}</i>.<br/>Obs! alla valutor och budgettransaktioner som är kopplade till det här året kommer också att tas bort.",
+      "update_version": "Vill du uppdatera version trots att du inte sparat ändringar av valuta?"
+    }
+  },
+  "ctrl": {
+    "select": {
+      "budget": "Välj budget",
+      "category": "Välj kategori",
+      "trip": "Välj resa",
+      "no_trip": "Ingen resa",
+      "currency": "Välj valuta",
+      "sum_currency": "Summa valuta",
+      "all_years": "Alla år",
+      "all_categories": "Alla kategorier",
+      "all_trips": "Alla resor",
+      "all_currencies": "Alla valutor",
+      "unit": "Välj enhet",
+      "version": "Välj version",
+      "month": "Välj månad",
+      "year": "Välj år"
+    },
+    "checkbox": {
+      "travel_day": "Antal resdagar",
+      "copy_budget": "Kopiera senaste version inklusive budgetposter",
+      "use_currency": "Använd valutaberäkning för den här enheten",
+      "copy_version": "Kopiera föregående versions budgetposter"
+    },
+    "button": {
+      "login": "Logga in",
+      "save": {
+        "transaction": "Spara transaktion",
+        "budget_item": "Spara budgetpost"
+      },
+      "delete": {
+        "transaction": "Ta bort transaktion",
+        "budget_item": "Ta bort budgetpost",
+        "budget_year": "Ta bort budgetår",
+        "category": "Ta bort kategori",
+        "trip": "Ta bort resa",
+        "unit": "Ta bort enhet",
+        "version": "Ta bort aktuell version"
+      },
+      "update": {
+        "version": "Uppdatera version"
+      },
+      "filter": "Filter",
+      "create_budget_year": "Skapa budgetår",
+      "create_version": "Skapa version"
+    },
+    "input": {
+      "budget": "Budget",
+      "budget_name": "Namn på budget",
+      "budget_year": "Budgetår",
+      "category": "Kategori",
+      "from_date": "Från datum",
+      "to_date": "Till datum",
+      "unit_name": "Enhet",
+      "unit_example": "Exempel: Antal, Pris per månad, etc...",
+      "currency": "Valuta (3 tecken)",
+      "budget_fx_rate": "Valutakurs budget",
+      "average_fx_rate": "Valutakurs medel",
+      "value": "Värde"
+    },
+    "radio": {
+      "add_budget": "Lägg till budget",
+      "edit_budget": "Ändra vald budget",
+      "add_currency": "Lägg till valuta",
+      "edit_currency": "Ändra vald valuta"
+    }
+  },
+  "test": {
+    "enter": "Ange"
+  },
+  "error": {
+    "unknown_event": "Okänd händelse",
+    "required_value": "Du måste ange ett värde",
+    "invalid_date": "Ogiltigt datum",
+    "invalid_number": "Ogiltigt nummer",
+    "duplicate_combination": "Kombinationen finns redan",
+    "date_in_trip": "Datumet ingår redan i en resa",
+    "invalid_date_order": "Till datum är tidigare än från datum",
+    "duplicate": "Denna {{title}} finns redan",
+    "min_length": "{{title}} måste vara minst {{length}} tecken",
+    "max_length": "{{title}} får högst vara {{length}} tecken",
+    "invalid_input": "{{title}} är inte giltigt",
+    "missing_budget": "Budget saknas för detta år",
+    "program": "Programfel",
+    "occured": "Ett fel inträffade",
+    "authorization": "Behörighet saknas"
+  },
+  "global": {
+    "note": "Notering",
+    "date": "Datum",
+    "sum": "Summa",
+    "add": "Lägg till",
+    "edit": "Ändra",
+    "amount": "Belopp",
+    "email": "Email",
+    "password": "Lösenord",
+    "save": "Spara",
+    "year": "År",
+    "name": "Namn",
+    "ok": "OK",
+    "cancel": "Avbryt"
+  },
+  "months": {
+    "month_0": "Alla månader",
+    "month_1": "Januari",
+    "month_2": "Februari",
+    "month_3": "Mars",
+    "month_4": "April",
+    "month_5": "Maj",
+    "month_6": "Juni",
+    "month_7": "Juli",
+    "month_8": "Augusti",
+    "month_9": "September",
+    "month_10": "Oktober",
+    "month_11": "November",
+    "month_12": "December"
+  }
+}

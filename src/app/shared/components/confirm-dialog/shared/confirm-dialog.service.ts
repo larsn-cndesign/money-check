@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../confirm-dialog.component';
 import { DialogOptions } from './confirm-dialog.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for the `ConfirmDialogComponent`
@@ -22,7 +23,7 @@ export class ConfirmDialogService {
    * Initializes properties
    * @param dialog A property to handle the opening of a dialog box
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private translate: TranslateService) {}
 
   /**
    * Method to open dialog with options
@@ -33,8 +34,8 @@ export class ConfirmDialogService {
       data: {
         title: options.title,
         message: options.message,
-        cancelText: options.cancelText ?? 'Avbryt',
-        confirmText: options.confirmText ?? 'OK',
+        cancelText: options.cancelText ?? this.translate.instant('global.cancel'),
+        confirmText: options.confirmText ?? this.translate.instant('global.ok'),
       },
     });
   }

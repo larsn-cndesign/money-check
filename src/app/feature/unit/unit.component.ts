@@ -23,6 +23,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { Unit } from './shared/unit.model';
 import { UnitService } from './shared/unit.service';
 import { duplicateValidator } from './shared/unit.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing unit management.
@@ -31,7 +32,7 @@ import { duplicateValidator } from './shared/unit.validators';
  */
 @Component({
   selector: 'app-unit',
-  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule],
+  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, MatRadioModule, MatTableModule, TranslatePipe],
   templateUrl: './unit.component.html',
   styleUrls: ['./unit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,7 +88,8 @@ export class UnitComponent extends CommonFormService implements OnInit {
     private unitService: UnitService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -163,9 +165,11 @@ export class UnitComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: `Ta bort enhet?`,
-      message: `Klicka OK för att ta bort kategori <strong>${item.unitName}</strong> från budget
-        ${this.budgetState.budgetName} permanent.`,
+      title: `${this.translate.instant('ctrl.button.delete.unit')}?`,
+      message: this.translate.instant('dialog.message.delete_unit', {
+        name: item.unitName,
+        budget: this.budgetState.budgetName,
+      }),
     };
     this.dialogService.open(options);
 

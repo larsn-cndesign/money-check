@@ -18,6 +18,7 @@ import {
 } from '../../../mock-backend/element.spec-helper';
 import { UserCredential } from '../../models/user-credential.model';
 import { LoginComponent } from './login.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 class FakeAuthService implements Partial<AuthService> {
   login(): Observable<boolean> {
@@ -37,6 +38,7 @@ describe('LoginComponent', () => {
       imports: [
         MatDialogModule,
         RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatIconModule,
@@ -109,7 +111,7 @@ describe('LoginComponent', () => {
 
       fixture.detectChanges();
 
-      expectContainedText(fixture, `${field}-error`, 'måste ange');
+      expectContainedText(fixture, `${field}-error`, 'error.required_value');
     });
   });
 
@@ -119,7 +121,7 @@ describe('LoginComponent', () => {
 
     fixture.detectChanges();
 
-    expectText(fixture, 'email-error', 'Email är inte giltigt');
+    expectText(fixture, 'email-error', 'error.invalid_input');
   });
 
   it('fails if password is less than 6 characters', () => {
@@ -128,7 +130,7 @@ describe('LoginComponent', () => {
 
     fixture.detectChanges();
 
-    expectText(fixture, 'password-error', 'Lösenord måste vara minst 6 tecken');
+    expectText(fixture, 'password-error', 'error.min_length');
   });
 
   it('fails to login if server returns error', () => {

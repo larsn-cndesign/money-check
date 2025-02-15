@@ -6,6 +6,7 @@ import { StoreItems } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { Category } from './category.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for managing expense categories.
@@ -19,7 +20,7 @@ export class CategoryService extends StoreItems<Category> {
    * Initializes services.
    * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private translate: TranslateService) {
     super();
   }
 
@@ -54,7 +55,7 @@ export class CategoryService extends StoreItems<Category> {
           .pipe(tap((item) => this.deleteItem(item, 'id')));
     }
 
-    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
+    throw new HttpErrorResponse({ error: `${action}: ${this.translate.instant('error.unknown_event')}` });
   }
 
   /**

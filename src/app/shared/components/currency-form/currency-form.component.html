@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <div class="form-field-error">
     <mat-form-field>
-      <mat-label>Valuta (3 tecken)</mat-label>
+      <mat-label>{{ 'ctrl.input.currency' | translate }}</mat-label>
       <input matInput type="text" formControlName="code" [errorStateMatcher]="matcher" required />
       @if(code?.invalid){
       <mat-error>{{ getErrorMessage(code, 'Valuta') }}</mat-error>
@@ -9,7 +9,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Budgetkurs</mat-label>
+      <mat-label>{{ 'ctrl.input.budget_fx_rate' | translate }}</mat-label>
       <input matInput type="text" formControlName="budgetRate" [errorStateMatcher]="matcher" required />
       @if(budgetRate?.invalid) {
       <mat-error>{{ getErrorMessage(budgetRate, 'Kurs') }}</mat-error>
@@ -17,7 +17,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Medlekurs</mat-label>
+      <mat-label>{{ 'ctrl.input.average_fx_rate' | translate }}</mat-label>
       <input matInput type="text" formControlName="averageRate" [errorStateMatcher]="matcher" required />
       @if(averageRate?.invalid) {
       <mat-error>{{ getErrorMessage(averageRate, 'Kurs') }}</mat-error>
@@ -33,12 +33,12 @@
       [disabled]="!code?.valid || !budgetRate?.valid || !averageRate?.valid"
       (click)="onSaveCurrency($event)"
     >
-      OK
+      {{ 'global.ok' | translate }}
     </button>
     <mat-radio-group class="v-radio-group" formControlName="action">
-      <mat-radio-button value="add">Lägg till valuta</mat-radio-button>
+      <mat-radio-button value="add">{{ 'ctrl.radio.add_currency' | translate }}</mat-radio-button>
       <mat-radio-button value="edit" [disabled]="form.get('action')?.value === 'Add'">
-        Ändra vald valuta
+        {{ 'ctrl.radio.edit_currency' | translate }}
       </mat-radio-button>
     </mat-radio-group>
   </div>

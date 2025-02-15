@@ -1,5 +1,5 @@
 <h2>
-  Hantera Version*
+  {{ 'page.title.manage_version' | translate }}*
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -9,7 +9,7 @@
 <form [formGroup]="form" #formDirective="ngForm" (ngSubmit)="onSaveVersion(formDirective)">
   <div class="head-section form-field-error">
     <mat-form-field>
-      <mat-label>Välj år</mat-label>
+      <mat-label>{{ 'ctrl.select.year' | translate }}</mat-label>
       <mat-select
         formControlName="year"
         [errorStateMatcher]="matcher"
@@ -29,10 +29,10 @@
   </div>
 
   <mat-form-field>
-    <mat-label>Namn</mat-label>
+    <mat-label>{{ 'global.name' | translate }}</mat-label>
     <input matInput type="text" formControlName="versionName" [errorStateMatcher]="matcher" required />
     @if(versionName?.invalid) {
-    <mat-error>{{ getErrorMessage(versionName, 'Namnet') }}</mat-error>
+    <mat-error>{{ getErrorMessage(versionName, 'page.label.the_name' | translate) }}</mat-error>
     }
   </mat-form-field>
   @if(budget.versions.length > 1) {
@@ -42,7 +42,7 @@
     [disabled]="currencies().length === 0 || year?.value === -1"
     (click)="onDeleteVersion($event)"
   >
-    Ta bort aktuell version
+    {{ 'ctrl.button.delete.version' | translate }}
   </button>
   } @if(year?.value && year?.value !== -1) {
   <div>
@@ -52,17 +52,17 @@
 
   <div>
     <button mat-flat-button color="primary" type="submit" [disabled]="currencies().length === 0 || year?.value === -1">
-      Uppdatera version
+      {{ 'ctrl.button.update.version' | translate }}
     </button>
   </div>
 </form>
 <!-- No budget -->
 } @else { @if(pageLoaded()) {
-<div>Det finns inget budgetår och därmed ingen version att modifiera eller ta bort</div>
+<div>{{ 'page.empty.version' | translate }}</div>
 } }}
 
 <div class="row-xl">
   <span style="font-style: italic">
-    * Version kan endast tas bort om det finns mer än en version för det valda året
+    * {{ 'page.label.version_restriction' | translate }}
   </span>
 </div>

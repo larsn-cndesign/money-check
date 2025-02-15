@@ -1,7 +1,7 @@
 <div class="row-xl max-table-height">
   <table mat-table [dataSource]="currencies()" class="tbl">
     <ng-container matColumnDef="currencyCode">
-      <th mat-header-cell *matHeaderCellDef>Valuta</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'page.label.currency' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.code }}</mat-label>
       </td>
@@ -9,7 +9,8 @@
 
     <ng-container matColumnDef="budgetRate">
       <th mat-header-cell *matHeaderCellDef>
-        Budgetkurs <mat-icon matTooltip="Används vid omräkning av budgetvärden">info</mat-icon>
+        {{ 'ctrl.input.budget_fx_rate' | translate }}
+        <mat-icon [matTooltip]="'page.label.budget_fx_rate_info' | translate">info</mat-icon>
       </th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.budgetRate | number : '1.0-6' }}</mat-label>
@@ -18,7 +19,8 @@
 
     <ng-container matColumnDef="averageRate">
       <th mat-header-cell *matHeaderCellDef>
-        Medelkurs <mat-icon matTooltip="Används vid omräkning av transaktioner och utfall">info</mat-icon>
+        {{ 'ctrl.input.average_fx_rate' | translate }}
+        <mat-icon [matTooltip]="'page.label.average_fx_rate_info' | translate">info</mat-icon>
       </th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.averageRate | number : '1.0-6' }}</mat-label>
@@ -28,7 +30,12 @@
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let item">
-        <button mat-icon-button type="button" title="Ta bort kurs" (click)="onDelete($event, item)">
+        <button
+          mat-icon-button
+          type="button"
+          [title]="'page.label.remove_currency' | translate"
+          (click)="onDelete($event, item)"
+        >
           <mat-icon>delete_forever</mat-icon>
         </button>
       </td>

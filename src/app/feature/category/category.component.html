@@ -1,5 +1,5 @@
 <h2>
-  Hantera Kategorier
+  {{ 'page.title.manage_categories' | translate }}
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -13,27 +13,33 @@
 >
   <div class="head-section form-field-error">
     <mat-form-field>
-      <mat-label>Kategori</mat-label>
+      <mat-label>{{ 'page.label.category' | translate }}</mat-label>
       <input
         #itemRef
         matInput
-        placeholder="Ange kategori"
+        placeholder="{{ 'page.label.category' | translate }}"
         formControlName="categoryName"
         type="text"
         [errorStateMatcher]="matcher"
         data-testid="category"
       />
       @if(categoryName?.invalid) {
-      <mat-error data-testid="category-error"> {{ getErrorMessage(categoryName, 'Kategori') }} </mat-error>
+      <mat-error data-testid="category-error">
+        {{ getErrorMessage(categoryName, 'page.label.category' | translate) }}
+      </mat-error>
       }
     </mat-form-field>
   </div>
   @if(form) {
   <div>
-    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">Spara</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid" data-testid="submit">
+      {{ 'global.save' | translate }}
+    </button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()" data-testid="action">
-      <mat-radio-button value="add">Lägg till</mat-radio-button>
-      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra</mat-radio-button>
+      <mat-radio-button value="add">{{ 'global.add' | translate }}</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">
+        {{ 'global.edit' | translate }}
+      </mat-radio-button>
     </mat-radio-group>
   </div>
   }
@@ -42,7 +48,7 @@
 <div class="row-xl max-table-height">
   <table mat-table [dataSource]="categories()" class="tbl">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Kategori</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'page.label.category' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.categoryName }}</mat-label>
       </td>
@@ -54,7 +60,7 @@
         <button
           mat-icon-button
           type="button"
-          title="Ta bort kategori"
+          title="{{ 'ctrl.button.delete.category' | translate }}"
           (click)="onDeleteCategory($event, item)"
           data-testid="delete"
         >
@@ -76,7 +82,8 @@
 <!-- No budget -->
 } @else { @if(pageLoaded()) {
 <div>
-  Det finns ingen budget upplagd som kategorier kan kopplas till.
-  <a href="/feature/create-budget">Skapa en ny budget</a>.
+  {{ 'page.empty.budget_category' | translate }}
+  <a href="/feature/create-budget">{{ 'page.link.create_budget' | translate }}</a
+  >.
 </div>
 } }

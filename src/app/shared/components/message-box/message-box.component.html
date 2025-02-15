@@ -16,7 +16,7 @@
     <div class="message-box">
       <div class="message-main">
         <div class="message-head">
-          <div>MoneyCheck</div>
+          <div>{{ 'app.title' | translate }}</div>
         </div>
         <div class="clearfix"></div>
         <div class="message-title" [innerHTML]="message.title">
@@ -29,7 +29,9 @@
     </div>
     <div class="message-foot">
       <div class="message-btn">
-        <button mat-stroked-button type="button" style="margin-left: 5px" (click)="onOK()">OK</button>
+        <button mat-stroked-button type="button" style="margin-left: 5px" (click)="onOK()">
+          {{ 'global.ok' | translate }}
+        </button>
       </div>
     </div>
   </div>

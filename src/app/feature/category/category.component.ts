@@ -22,6 +22,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { Category } from './shared/category.model';
 import { CategoryService } from './shared/category.service';
 import { duplicateValidator } from './shared/category.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing expense category management.
@@ -30,7 +31,7 @@ import { duplicateValidator } from './shared/category.validators';
  */
 @Component({
   selector: 'app-category',
-  imports: [SharedModule, ReactiveFormsModule, MatRadioModule, MatTableModule],
+  imports: [SharedModule, ReactiveFormsModule, MatRadioModule, MatTableModule, TranslatePipe],
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,7 +86,8 @@ export class CategoryComponent extends CommonFormService implements OnInit {
     private categoryService: CategoryService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -150,9 +152,11 @@ export class CategoryComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: `Ta bort kategori`,
-      message: `Klicka OK för att ta bort kategori <strong>${item.categoryName}</strong> från budget
-        ${this.budgetState.budgetName} permanent.`,
+      title: `${this.translate.instant('ctrl.button.delete.category')}?`,
+      message: this.translate.instant('dialog.message.delete_category', {
+        name: item.categoryName,
+        budget: this.budgetState.budgetName,
+      }),
     };
     this.dialogService.open(options);
 

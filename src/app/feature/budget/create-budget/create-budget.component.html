@@ -1,28 +1,32 @@
-<h2>Skapa Budget</h2>
+<h2>{{ 'page.title.create_budget' | translate }}</h2>
 
 <form [formGroup]="form" #formDirective="ngForm" autocomplete="off" (ngSubmit)="onSaveBudget(formDirective)">
   <div class="head-section form-field-error">
     <mat-form-field>
-      <mat-label>Budget</mat-label>
+      <mat-label>{{ 'ctrl.input.budget' | translate }}</mat-label>
       <input
         #itemRef
         matInput
-        placeholder="Ange namn på budget"
+        placeholder="{{ 'ctrl.input.budget_name' | translate }}"
         formControlName="budgetName"
         type="text"
         [errorStateMatcher]="matcher"
       />
       @if(budgetName?.invalid) {
-      <mat-error>{{ getErrorMessage(budgetName, 'Budget') }}</mat-error>
+      <mat-error>{{ getErrorMessage(budgetName, 'ctrl.input.budget' | translate) }}</mat-error>
       }
     </mat-form-field>
   </div>
   @if(form) {
   <div>
-    <button mat-flat-button color="primary" type="submit" data-testid="submit" [disabled]="!form.valid">Spara</button>
+    <button mat-flat-button type="submit" data-testid="submit" [disabled]="!form.valid">
+      {{ 'global.save' | translate }}
+    </button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
-      <mat-radio-button value="add">Lägg till budget</mat-radio-button>
-      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">Ändra vald budget</mat-radio-button>
+      <mat-radio-button value="add">{{ 'ctrl.radio.add_budget' | translate }}</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">
+        {{ 'ctrl.radio.edit_budget' | translate }}
+      </mat-radio-button>
     </mat-radio-group>
   </div>
   }
@@ -31,7 +35,7 @@
 <div class="row-xl max-table-height">
   <table mat-table [dataSource]="budgets()" class="tbl">
     <ng-container matColumnDef="budgetName">
-      <th mat-header-cell *matHeaderCellDef>Namn på budget</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'ctrl.input.budget_name' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.budgetName }}</mat-label>
       </td>

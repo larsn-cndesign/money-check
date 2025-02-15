@@ -13,6 +13,7 @@ import { BudgetStateService } from 'src/app/shared/services/budget-state.service
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BudgetVariance, VarianceItem } from './shared/budget-variance.model';
 import { BudgetVarianceService } from './shared/budget-variance.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing budget variance.
@@ -21,7 +22,7 @@ import { BudgetVarianceService } from './shared/budget-variance.service';
  */
 @Component({
   selector: 'app-budget-variance',
-  imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule],
+  imports: [SharedModule, MatTableModule, MatSelectModule, MatCheckboxModule, MatSortModule, TranslatePipe],
   templateUrl: './budget-variance.component.html',
   styleUrls: ['./budget-variance.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -76,11 +77,13 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @param budgetVarianceService A service managing budget variance.
    * @param budgetStateService Manage the state of a budget.
    * @param filterListService Service to manage filtering of categories.
+   * @param translate - The translation service used to manage language settings.
    */
   constructor(
     private budgetVarianceService: BudgetVarianceService,
     private budgetStateService: BudgetStateService,
-    private filterListService: FilterListService
+    private filterListService: FilterListService,
+    private translate: TranslateService
   ) {
     this.budgetVariance = this.budgetVarianceService.getItem();
     this.varianceItems = this.budgetVarianceService.getItems();
@@ -90,6 +93,12 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @description Set title of HTML document and get budget variance items from server
    */
   ngOnInit(): void {
+    this.months.map((month, index) => {
+      pipeTakeUntil(this.translate.get(`months.month_${index}`), this.sub$).subscribe((value: string) => {
+        month.name = value;
+      });
+    });
+
     pipeTakeUntil(this.budgetStateService.getItem(), this.sub$)
       .pipe(
         tap((budgetState) => (this.budgetState = budgetState)),

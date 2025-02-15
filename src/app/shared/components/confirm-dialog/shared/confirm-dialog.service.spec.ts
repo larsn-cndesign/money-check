@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmDialogService } from './confirm-dialog.service';
 
 describe('ConfirmDialogService', () => {
@@ -8,7 +9,7 @@ describe('ConfirmDialogService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatDialogModule],
+      imports: [MatDialogModule, TranslateModule.forRoot()],
     });
     service = TestBed.inject(ConfirmDialogService);
   });

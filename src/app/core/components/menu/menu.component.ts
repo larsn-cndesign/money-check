@@ -1,18 +1,19 @@
 import { Component, EventEmitter, OnInit, Output, Signal } from '@angular/core';
+import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AppUser } from '../../models/app-user.model';
-import { MatMenuModule } from '@angular/material/menu';
+import { LanguageService } from 'src/app/shared/services/language.service';
 
 /**
  * Class representing a reusable menu for both `toolbar` and `sidenav`.
  */
 @Component({
   selector: 'app-menu',
-  imports: [SharedModule, RouterLink, MatMenuModule],
+  imports: [SharedModule, RouterLink, MatMenuModule, TranslatePipe],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
 })
@@ -34,7 +35,12 @@ export class MenuComponent implements OnInit {
    * @param authService Manage user authenticaton.
    * @param router Navigation service.
    */
-  constructor(private userService: UserService, private authService: AuthService, private router: Router) {
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private router: Router,
+    private languageService: LanguageService
+  ) {
     // Get stored user object if user is logged in, useful if page is refreshed.
     if (this.authService.isLoggedIn()) {
       this.userService.getStoredUser();
@@ -58,5 +64,13 @@ export class MenuComponent implements OnInit {
    */
   logout(): void {
     this.authService.logout();
+  }
+
+  /**
+   *
+   * @param lang Set UI language for the application
+   */
+  onSelectLanguage(lang: string): void {
+    this.languageService.setLanguage(lang);
   }
 }

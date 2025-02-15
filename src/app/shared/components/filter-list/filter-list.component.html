@@ -17,8 +17,10 @@
   </div>
   <mat-divider></mat-divider>
   <div class="list-footer">
-    <button mat-button type="button" style="margin-right: 10px" (click)="onCancel()">Avbryt</button>
-    <button mat-flat-button type="button" (click)="onOK()">OK</button>
+    <button mat-button type="button" style="margin-right: 10px" (click)="onCancel()">
+      {{ 'global.cancel' | translate }}
+    </button>
+    <button mat-flat-button type="button" (click)="onOK()">{{ 'global.ok' | translate }}</button>
   </div>
 </div>
 } }

@@ -2,7 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
+import { DateAdapter, MAT_DATE_LOCALE, NativeDateAdapter } from '@angular/material/core';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -10,8 +12,12 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, RouterModule.forRoot([]), RouterOutlet],
-      providers: [provideHttpClient()],
+      imports: [AppComponent, RouterModule.forRoot([]), RouterOutlet, TranslateModule.forRoot()],
+      providers: [
+        provideHttpClient(),
+        { provide: DateAdapter, useClass: NativeDateAdapter }, // Provide the default DateAdapter (or your custom adapter)
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }, // Set the default locale for dates (can be dynamic based on tests)
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
@@ -22,19 +28,6 @@ describe('AppComponent', () => {
   it('should create the app', () => {
     expect(component).toBeTruthy();
   });
-
-  // it(`should have as title 'money-check'`, () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const app = fixture.componentInstance;
-  //   expect(app.title).toEqual('money-check');
-  // });
-
-  // it('should render title', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const compiled = fixture.nativeElement;
-  //   expect(compiled.querySelector('.content span').textContent).toContain('money-check app is running!');
-  // });
 
   // ----------------------------------------------------------------
   // INTEGRATION TESTS

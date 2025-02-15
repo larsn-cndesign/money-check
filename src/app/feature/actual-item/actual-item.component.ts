@@ -31,6 +31,7 @@ import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
 import { budgetYearNotExistValidator } from './shared/actual-item.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing actual transactions of expenses.
@@ -48,6 +49,7 @@ import { budgetYearNotExistValidator } from './shared/actual-item.validators';
     MatRadioModule,
     MatDatepickerModule,
     MatSortModule,
+    TranslatePipe,
   ],
   templateUrl: './actual-item.component.html',
   styleUrls: ['./actual-item.component.scss'],
@@ -214,7 +216,8 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
     private messageBoxService: MessageBoxService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private translate: TranslateService
   ) {
     super();
 
@@ -253,7 +256,7 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
       .pipe(
         tap((budgetState) => {
           this.budgetState = budgetState;
-          
+
           const currentItem = this.actualItemService.getItemValue();
           const updatedItem = { ...currentItem, filter: ItemFilter.getFilter() };
           this.actualItemService.setItem(updatedItem);
@@ -331,8 +334,8 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: 'Ta bort transaktion?',
-      message: `Klicka OK för att ta bort den markerade transaktionen från budget ${this.budgetState.budgetName}.`,
+      title: `${this.translate.instant('ctrl.button.delete.transaction')}?`,
+      message: `${this.translate.instant('dialog.confirm.remove_transaction')} ${this.budgetState.budgetName}.`,
     };
     this.dialogService.open(options);
 

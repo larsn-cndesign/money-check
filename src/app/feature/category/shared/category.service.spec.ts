@@ -8,6 +8,7 @@ import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Category } from './category.model';
 import { CategoryService } from './category.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -53,7 +54,7 @@ describe('CategoryService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [SharedModule, TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     categoryService = TestBed.inject(CategoryService);

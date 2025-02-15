@@ -18,6 +18,7 @@ import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { BudgetItemService } from './shared/budget-item.service';
 import { uniqueValidator } from './shared/budget-item.validators';
 import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing budget transactions.
@@ -26,7 +27,7 @@ import { BudgetItem, ManageBudgetItem } from './shared/butget-item.model';
  */
 @Component({
   selector: 'app-budget-item',
-  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule],
+  imports: [SharedModule, ReactiveFormsModule, MatTableModule, MatSelectModule, MatRadioModule, TranslatePipe],
   templateUrl: './budget-item.component.html',
   styleUrls: ['./budget-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -153,7 +154,8 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
     private budgetItemService: BudgetItemService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -264,8 +266,8 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
     e.stopPropagation(); // Do not highlight row
 
     const options: DialogOptions = {
-      title: 'Ta bort budgetpost?',
-      message: `Klicka OK för att ta bort den markerade budgetposten från budget ${this.budgetState.budgetName}.`,
+      title: `${this.translate.instant('ctrl.button.delete.budget_item')}?`,
+      message: `${this.translate.instant('dialog.confirm.remove_budget_item')} ${this.budgetState.budgetName}.`,
     };
     this.dialogService.open(options);
 

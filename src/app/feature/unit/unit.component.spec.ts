@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Signal, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,9 +11,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
-import { BUDGET_STATE, OmitAllFromStore, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
+import { BUDGET_STATE, UNITS, UNIT_1 } from 'src/app/mock-backend/spec-constants';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
 import { deepCoyp } from 'src/app/shared/classes/common.fn';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -65,6 +66,7 @@ describe('UnitComponent', () => {
         MatCheckboxModule,
         ConfirmDialogComponent,
         UnitComponent,
+        TranslateModule.forRoot(),
       ],
       providers: [
         { provide: UnitService, useValue: unitService },
@@ -181,7 +183,7 @@ describe('UnitComponent', () => {
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(element.innerText).toContain('finns redan');
+    expect(element.innerText).toBe('error.duplicate');
   });
 
   it('sets a unit name that already exist, when editing an item', () => {

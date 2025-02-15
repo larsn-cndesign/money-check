@@ -4,16 +4,17 @@ import { SharedModule } from '../../shared.module';
 import { dropDown, slideInFromLeft } from './shared/message-box.animations';
 import { MessageBox } from './shared/message-box.model';
 import { MessageBoxService } from './shared/message-box.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing a messag box.
  */
 @Component({
-    selector: 'app-message-box',
-    imports: [SharedModule],
-    templateUrl: './message-box.component.html',
-    styleUrls: ['./message-box.component.scss'],
-    animations: [slideInFromLeft, dropDown]
+  selector: 'app-message-box',
+  imports: [SharedModule, TranslatePipe],
+  templateUrl: './message-box.component.html',
+  styleUrls: ['./message-box.component.scss'],
+  animations: [slideInFromLeft, dropDown],
 })
 export class MessageBoxComponent implements OnInit, OnDestroy {
   /**

@@ -20,6 +20,7 @@ import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { BudgetYear, Currency, ManageBudgetYear } from '../../budget-year/shared/budget-year.model';
 import { BudgetVersionService } from '../shared/budget-version.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing the creating of a version.
@@ -28,7 +29,14 @@ import { BudgetVersionService } from '../shared/budget-version.service';
  */
 @Component({
   selector: 'app-create-version',
-  imports: [SharedModule, MatSelectModule, ReactiveFormsModule, CurrencyFormComponent, MatCheckboxModule],
+  imports: [
+    SharedModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    CurrencyFormComponent,
+    MatCheckboxModule,
+    TranslatePipe,
+  ],
   templateUrl: './create-version.component.html',
   styleUrls: ['./create-version.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

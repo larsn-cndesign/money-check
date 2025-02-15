@@ -1,34 +1,25 @@
-import { APP_BASE_HREF, registerLocaleData } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import localeSv from '@angular/common/locales/sv';
-import { ApplicationConfig, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-// import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
-// import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-// import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { APP_ROUTES } from './app.routes';
+import { fakeBackendProvider } from './mock-backend/fake-backend'; // @Test Only for testing, should be removed if using a real backend.
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
-// import { LanguageService } from './shared/services/language.service';
-// import { WINDOW_PROVIDERS } from './shared/services/window.service';
-// import { PaginatorIntl } from './shared/utilities/paginator-intl';
-
-registerLocaleData(localeSv);
-
-// /** @Test Only for testing, should be removed if using a real backend. */
-import { fakeBackendProvider } from './mock-backend/fake-backend';
+import { LanguageService } from './shared/services/language.service';
 
 export function tokenGetter() {
   return localStorage.getItem(environment.tokenName);
 }
 
-// export function translateHttpLoaderFactory(httpBackend: HttpBackend): TranslateHttpLoader {
-//   return new TranslateHttpLoader(new HttpClient(httpBackend));
-// }
+const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
+  new TranslateHttpLoader(http, '/assets/i18n/', '.json');
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -44,30 +35,28 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     importProvidersFrom(MatNativeDateModule),
-    // provideHttpClient(),
-    // importProvidersFrom(
-    //   TranslateModule.forRoot({
-    //     loader: {
-    //       provide: TranslateLoader,
-    //       useFactory: translateHttpLoaderFactory,
-    //       deps: [HttpBackend],
-    //     },
-    //   })
-    // ),
+    provideHttpClient(),
+    provideTranslateService({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
     provideHttpClient(withInterceptorsFromDi()),
-    // WINDOW_PROVIDERS,
-    // {
-    //   provide: LOCALE_ID,
-    //   deps: [LanguageService],
-    //   useFactory: (languageService: LanguageService): string => languageService.getLanguage(),
-    // },
+    {
+      provide: MAT_DATE_LOCALE,
+      useFactory: (languageService: LanguageService) => languageService.setDateLocale(languageService.getLanguage()),
+      deps: [LanguageService],
+    },
+    {
+      provide: LOCALE_ID,
+      useFactory: (languageService: LanguageService) => languageService.getLanguage(),
+      deps: [LanguageService],
+    },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: 'sv-SE' },
-    { provide: MAT_DATE_LOCALE, useValue: 'sv-SE' },
-    // { provide: MatPaginatorIntl, useClass: PaginatorIntl },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill', floatLabel: 'always' } },
     { provide: APP_BASE_HREF, useValue: '/' },
-    //     /** @Test Only for testing, should be removed if using a real backend. */
-    fakeBackendProvider,
+    fakeBackendProvider, // @Test Only for testing, should be removed if using a real backend.
   ],
 };

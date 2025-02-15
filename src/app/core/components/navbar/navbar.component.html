@@ -6,9 +6,12 @@
   }
   <div class="left">
     <span routerLink="/feature/home" style="cursor: pointer">
-      <div class="valign-icon-text menu-font"><mat-icon color="primary">euro</mat-icon>MoneyCheck</div>
+      <div class="valign-icon-text menu-font">
+        <mat-icon color="primary">euro</mat-icon>{{ 'app.title' | translate }}
+      </div>
     </span>
   </div>
+
   <div class="center">
     @if(budgetState$ | async; as budgetState) {
     <!-- Select budget -->
@@ -17,7 +20,7 @@
       <mat-select
         (selectionChange)="onChangeBudget($event)"
         [value]="budgetState.budgetId"
-        placeholder="Välj budget"
+        placeholder="'{{ 'ctrl.select.budget' | translate }}"
         data-testid="change-budget"
       >
         @for (item of budgetState.budgets; track item.id) {
@@ -27,7 +30,34 @@
         }
       </mat-select>
     </mat-form-field>
-    } }
+    } } @if (user().name == ''; as user) {
+    <div class="float-rigth">
+      <button mat-button (click)="onSelectLanguage('en-GB')" data-testid="lang-es">
+        <div class="valign-icon-text" title="English">
+          <img class="flag" src="../../../../assets/images/flag_united_kingdom_64x64.png" alt="English" height="32" />
+          @if(!(isMobile | async)?.matches) {
+          <span>English</span>
+          }
+        </div>
+      </button>
+      <button mat-button (click)="onSelectLanguage('es-ES')" data-testid="lang-en">
+        <div class="valign-icon-text" title="Español">
+          <img class="flag" src="../../../../assets/images/flag_spain_64x64.png" alt="Español" height="32" />
+          @if(!(isMobile | async)?.matches) {
+          <span>Español</span>
+          }
+        </div>
+      </button>
+      <button mat-button (click)="onSelectLanguage('sv-SE')" data-testid="lang-sv">
+        <div class="valign-icon-text" title="Svenska">
+          <img class="flag" src="../../../../assets/images/flag_sweden_64x64.png" alt="Svenska" height="32" />
+          @if(!(isMobile | async)?.matches) {
+          <span>Svenska</span>
+          }
+        </div>
+      </button>
+    </div>
+    }
   </div>
   <div class="right">
     @if(!(isMobile | async)?.matches) {

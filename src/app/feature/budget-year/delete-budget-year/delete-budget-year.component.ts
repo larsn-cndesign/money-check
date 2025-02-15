@@ -12,6 +12,7 @@ import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing deletion of a budget year.
@@ -20,7 +21,7 @@ import { BudgetYearService } from '../shared/budget-year.service';
  */
 @Component({
   selector: 'app-delete-budget-year',
-  imports: [SharedModule, ReactiveFormsModule, MatSelectModule],
+  imports: [SharedModule, ReactiveFormsModule, MatSelectModule, TranslatePipe],
   templateUrl: './delete-budget-year.component.html',
   styleUrls: ['./delete-budget-year.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,7 +60,8 @@ export class DeleteBudgetYearComponent extends CommonFormService implements OnIn
     private budgetYearService: BudgetYearService,
     private budgetStateService: BudgetStateService,
     private dialogService: ConfirmDialogService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -97,11 +99,11 @@ export class DeleteBudgetYearComponent extends CommonFormService implements OnIn
     const budgetYear = this.budgetYearService.getSelectedBudgetYear(val.budgetYearId);
 
     const options: DialogOptions = {
-      title: 'Ta bort budgetår?',
-      message: `Klicka OK för att ta bort <strong>budgetåret ${budgetYear.year}</strong> från budget
-      ${this.budgetState.budgetName}.<br/>
-        Obs! alla versioner, valutor och budgettransaktioner som är kopplade till det här året
-        kommer också att tas bort`,
+      title: `${this.translate.instant('ctrl.button.delete.budget_year')}?`,
+      message: this.translate.instant('dialog.message.delete_year', {
+        year: budgetYear.year,
+        name: this.budgetState.budgetName,
+      }),
     };
     this.dialogService.open(options);
 

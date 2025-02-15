@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyTableComponent } from '../currency-table/currency-table.component';
 import { CurrencyFormComponent } from './currency-form.component';
 
@@ -23,6 +24,7 @@ describe('CurrencyFormComponent', () => {
         MatRadioModule,
         CurrencyFormComponent,
         CurrencyTableComponent,
+        TranslateModule.forRoot(),
       ],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();

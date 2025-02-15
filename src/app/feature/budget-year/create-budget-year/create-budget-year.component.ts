@@ -20,6 +20,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { BudgetYear, Currency, ManageBudgetYear } from '../shared/budget-year.model';
 import { BudgetYearService } from '../shared/budget-year.service';
 import { yearExistValidator } from '../shared/budget-year.validators';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing creation of a new budget year.
@@ -28,7 +29,7 @@ import { yearExistValidator } from '../shared/budget-year.validators';
  */
 @Component({
   selector: 'app-create-budget-year',
-  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule],
+  imports: [SharedModule, ReactiveFormsModule, MatCheckboxModule, TranslatePipe],
   templateUrl: './create-budget-year.component.html',
   styleUrls: ['./create-budget-year.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,7 +76,8 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
     private budgetYearService: BudgetYearService,
     private currencyTableService: CurrencyTableService,
     private budgetStateService: BudgetStateService,
-    private messageBoxService: MessageBoxService
+    private messageBoxService: MessageBoxService,
+    private translate: TranslateService
   ) {
     super();
 
@@ -136,7 +138,11 @@ export class CreateBudgetYearComponent extends CommonFormService implements OnIn
         formDirective.resetForm();
         this.form.reset();
         this.messageBoxService.show(
-          new MessageBox('Budgetår skapat', 'Budgetår med version och valutor har skapats.', 'success')
+          new MessageBox(
+            this.translate.instant('dialog.title.budget_year_created'),
+            this.translate.instant('dialog.message.budget_year_created'),
+            'success'
+          )
         );
       });
     }

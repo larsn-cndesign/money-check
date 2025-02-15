@@ -1,23 +1,23 @@
 <div style="text-align: center">
   <div>
     <button class="home-btn" mat-raised-button routerLink="/feature/actual-item">
-      <div>Transaktioner</div>
+      <div>{{ 'menu.transaction' | translate }}</div>
       <div><mat-icon>credit_card</mat-icon></div>
     </button>
 
     <button class="home-btn" mat-raised-button routerLink="/feature/budget-variance">
-      <div>Utfall</div>
+      <div>{{ 'menu.actual' | translate }}</div>
       <div><mat-icon>insights</mat-icon></div>
     </button>
   </div>
   <div>
     <button class="home-btn" mat-raised-button routerLink="/feature/budget-item">
-      <div>Hantera Budget</div>
+      <div>{{ 'menu.manage_budget' | translate }}</div>
       <div><mat-icon>table_chart</mat-icon></div>
     </button>
 
     <button class="home-btn" mat-raised-button routerLink="/feature/create-version">
-      <div>Ny Version</div>
+      <div>{{ 'menu.new_version' | translate }}</div>
       <div><mat-icon>123</mat-icon></div>
     </button>
   </div>

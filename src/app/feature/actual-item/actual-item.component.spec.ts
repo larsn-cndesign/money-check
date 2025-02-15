@@ -18,6 +18,7 @@ import { Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { click, findEl, setFieldValue, triggerEvent } from 'src/app/mock-backend/element.spec-helper';
 import { selectMatOption } from 'src/app/mock-backend/material.spec-helper';
@@ -56,6 +57,8 @@ describe('ActualItemComponent', () => {
         MatNativeDateModule,
         MatSelectModule,
         ActualItemComponent,
+        TranslateModule.forRoot(),
+        TranslatePipe,
       ],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
@@ -247,7 +250,7 @@ describe('ActualItemComponent', () => {
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(element.innerText).toContain('Budget saknas för detta år');
+    expect(element.innerText).toBe('error.missing_budget');
   });
 
   it('sets an invalid amount', () => {
@@ -257,7 +260,7 @@ describe('ActualItemComponent', () => {
     const element = findEl(fixture, 'amount-error').nativeElement as HTMLElement;
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-    expect(element.innerText).toContain('Ogiltigt nummer');
+    expect(element.innerText).toContain('error.invalid_number');
   });
 
   it('sets the number of rows to display in the note form field based on focus and blur events', () => {

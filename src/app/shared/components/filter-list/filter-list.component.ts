@@ -5,10 +5,11 @@ import { Observable, Subject } from 'rxjs';
 import { SharedModule } from '../../shared.module';
 import { FilterList, FilterListModel } from './shared/filter-list.model';
 import { FilterListService } from './shared/filter-list.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filter-list',
-  imports: [SharedModule, MatListModule, MatDividerModule],
+  imports: [SharedModule, MatListModule, MatDividerModule, TranslatePipe],
   templateUrl: './filter-list.component.html',
   styleUrls: ['./filter-list.component.scss'],
 })

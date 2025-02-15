@@ -8,6 +8,7 @@ import { Modify } from 'src/app/shared/enums/enums';
 import { BudgetStateService } from 'src/app/shared/services/budget-state.service';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { Budget } from './budget.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for managing a budget.
@@ -22,7 +23,11 @@ export class BudgetService extends StoreItems<Budget> {
    * @param budgetStateService Helper service for managing the state of a budget.
    * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private budgetStateService: BudgetStateService, private httpService: HttpService) {
+  constructor(
+    private budgetStateService: BudgetStateService,
+    private httpService: HttpService,
+    private translate: TranslateService
+  ) {
     super();
   }
 
@@ -53,7 +58,7 @@ export class BudgetService extends StoreItems<Budget> {
         return this.httpService.putItem<Budget>(budget, 'budget').pipe(tap((item) => this.editItem(item, 'id')));
     }
 
-    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
+    throw new HttpErrorResponse({ error: `${action}: ${this.translate.instant('error.unknown_event')}` });
   }
 
   /**

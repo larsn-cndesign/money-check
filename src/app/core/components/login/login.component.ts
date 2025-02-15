@@ -9,13 +9,14 @@ import { CommonFormService } from 'src/app/shared/services/common-form.service';
 import { ErrorService } from 'src/app/shared/services/error.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { UserCredential } from '../../models/user-credential.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 /**
  * Class representing a login page.
  */
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, ReactiveFormsModule],
+  imports: [SharedModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

@@ -23,6 +23,7 @@ interface PrimaryKey {
  * @description Only used for testing and should be replaced with backend code.
  * The code is not optimized and basic constraints is simulated but many of them are missing.
  * None of the methods in this class is documented with JSDoc.
+ * There are no translations for this fake backend service.
  */
 export class DatabaseService {
   private static db = new DatabaseServer();

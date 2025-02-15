@@ -10,6 +10,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { delay, dematerialize, materialize, mergeMap } from 'rxjs/operators';
 import { AppUser } from '../core/models/app-user.model';
@@ -39,6 +40,7 @@ const users = [{ email: FAKE_EMAIL, password: FAKE_USER_PASSWORD }] as any;
 /**
  * Method for storing token in localStorage. Need to run for a user to be able to login as there are no signup form.
  * First login will always fail. Thereafter it will work as expected.
+ * There are no translations for this fake backend http interceptor.
  */
 export function setTokenForTestUser(): void {
   const testToken = localStorage.getItem(LS_ACCESS_TOKEN);
@@ -59,6 +61,8 @@ export function loadMockData(): void {
  */
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
+  constructor(private translate: TranslateService) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const { url, method, headers, body, params } = request;
 
@@ -162,8 +166,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       const user = users.find((x: any) => x.email === email && x.password === password);
       if (!user) {
         return badRequest({
-          title: 'Fel vid inlogging',
-          description: 'Användarnamn eller lösenord är felaktigt',
+          title: 'Invalid credentials',
+          description: 'Incorrect email or password',
         });
       }
 

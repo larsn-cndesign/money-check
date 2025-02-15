@@ -2,6 +2,7 @@ import { HttpHeaders, HttpResponse, provideHttpClient, withInterceptorsFromDi } 
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { UserCredential } from 'src/app/core/models/user-credential.model';
@@ -16,7 +17,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [],
+      imports: [TranslateModule.forRoot()],
       providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     authService = TestBed.inject(AuthService);

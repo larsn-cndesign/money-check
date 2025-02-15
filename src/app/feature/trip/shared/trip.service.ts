@@ -7,6 +7,7 @@ import { StoreItems } from 'src/app/shared/classes/store';
 import { Modify } from 'src/app/shared/enums/enums';
 import { HttpService } from 'src/app/shared/services/http.service';
 import { Trip } from './trip.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing a service for managing expense for trips.
@@ -20,7 +21,7 @@ export class TripService extends StoreItems<Trip> {
    * Initializes services.
    * @param httpService Helper service for managing CRUD operations.
    */
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private translate: TranslateService) {
     super();
   }
 
@@ -53,7 +54,7 @@ export class TripService extends StoreItems<Trip> {
         return this.httpService.deleteItem<Trip>(trip, 'trip').pipe(tap((item) => this.deleteItem(item, 'id')));
     }
 
-    throw new HttpErrorResponse({ error: `${action}: okänd händelse` });
+    throw new HttpErrorResponse({ error: `${action}: ${this.translate.instant('error.unknown_event')}` });
   }
 
   /**

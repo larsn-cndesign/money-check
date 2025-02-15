@@ -1,5 +1,5 @@
 <h2>
-  Hantera Budget
+  {{ 'page.title.manage_budget' | translate }}
   <span class="title">{{ budgetState.hasBudget ? ' (' + budgetState.budgetName + ')' : '' }}</span>
 </h2>
 
@@ -13,7 +13,7 @@
 <form [formGroup]="form" (ngSubmit)="onSaveBudgetItem()">
   <div class="form-field-error">
     <mat-form-field>
-      <mat-label>Välj år</mat-label>
+      <mat-label>{{ 'ctrl.select.year' | translate }}</mat-label>
       <mat-select
         formControlName="budgetYearId"
         [errorStateMatcher]="matcher"
@@ -31,12 +31,12 @@
       }
     </mat-form-field>
 
-    <span class="year-version">Nuvarnade version: {{ budget?.version?.versionName }}</span>
+    <span class="year-version">{{ 'page.label.current_version' | translate }}: {{ budget?.version?.versionName }}</span>
   </div>
 
   <div class="form-field-error">
     <mat-form-field>
-      <mat-label>Välj kategori</mat-label>
+      <mat-label>{{ 'ctrl.select.category' | translate }}</mat-label>
       <mat-select formControlName="category" [errorStateMatcher]="matcher" required>
         @for (item of budget.categories; track item.id) {
         <mat-option [value]="item.id">
@@ -50,7 +50,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Välj enhet</mat-label>
+      <mat-label>{{ 'ctrl.select.unit' | translate }}</mat-label>
       <mat-select
         formControlName="unit"
         [errorStateMatcher]="matcher"
@@ -70,7 +70,7 @@
 
     @if(useCurrency) {
     <mat-form-field>
-      <mat-label>Välj valuta</mat-label>
+      <mat-label>{{ 'ctrl.select.currency' | translate }}</mat-label>
       <mat-select formControlName="currencyCode" [errorStateMatcher]="matcher">
         @for (item of budget.currencies; track item.code) {
         <mat-option [value]="item.code">
@@ -85,7 +85,7 @@
     }
 
     <mat-form-field>
-      <mat-label>Värde</mat-label>
+      <mat-label>{{ 'ctrl.input.value' | translate }}</mat-label>
       <input matInput type="text" formControlName="unitValue" [errorStateMatcher]="matcher" required />
       @if(unitValue?.invalid) {
       <mat-error>{{ getErrorMessage(unitValue) }}</mat-error>
@@ -94,7 +94,7 @@
   </div>
 
   <mat-form-field class="form-field-note">
-    <mat-label>Notering</mat-label>
+    <mat-label>{{ 'global.note' | translate }}</mat-label>
     <textarea
       matInput
       formControlName="note"
@@ -123,11 +123,13 @@
         (useCurrency && currencyCode?.invalid)
       "
     >
-      Spara budgetpost
+      {{ 'ctrl.button.save.budget_item' | translate }}
     </button>
     <mat-radio-group class="v-radio-group" formControlName="action" (change)="onChangeAction()">
-      <mat-radio-button value="add">Lägg till</mat-radio-button>
-      <mat-radio-button value="edit" [disabled]="action?.value === 'add'"> Ändra </mat-radio-button>
+      <mat-radio-button value="add">{{ 'global.add' | translate }}</mat-radio-button>
+      <mat-radio-button value="edit" [disabled]="action?.value === 'add'">{{
+        'global.edit' | translate
+      }}</mat-radio-button>
     </mat-radio-group>
   </div>
 </form>
@@ -135,16 +137,16 @@
 <div class="row-xl filter">
   <div>
     <button mat-button type="button" (click)="showFilter = !showFilter" data-testid="show-filter">
-      Filter
+      {{ 'ctrl.button.filter' | translate }}
       <mat-icon>filter_alt</mat-icon>
-    </button>    
+    </button>
   </div>
 
   @if(showFilter) {
   <mat-form-field>
-    <mat-label>Välj kategori</mat-label>
+    <mat-label>{{ 'ctrl.select.category' | translate }}</mat-label>
     <mat-select [value]="budget.filter.categoryId" (selectionChange)="onChangeFilter($event, 'category')">
-      <mat-option [value]="-1">Alla kategorier</mat-option>
+      <mat-option [value]="-1">{{ 'ctrl.select.all_categories' | translate }}</mat-option>
       @for (item of budget.categories; track item.id) {
       <mat-option [value]="item.id">
         {{ item.categoryName }}
@@ -158,35 +160,35 @@
 <div class="max-table-height">
   <table mat-table [dataSource]="budgetItems()" class="tbl">
     <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef>Kategori</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'page.label.category' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.categoryName }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="unit">
-      <th mat-header-cell *matHeaderCellDef>Enhet</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'page.label.unit' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.unitName }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="currencyCode">
-      <th mat-header-cell *matHeaderCellDef>Valuta</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'page.label.currency' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.currencyCode !== '' ? item.currencyCode : '-' }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="unitValue">
-      <th mat-header-cell *matHeaderCellDef>Värde</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'ctrl.input.value' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label>{{ item.unitValue | number : '1.0-2' }}</mat-label>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="note">
-      <th mat-header-cell *matHeaderCellDef>Notering</th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'global.note' | translate }}</th>
       <td mat-cell *matCellDef="let item">
         <mat-label class="shorten-text-s">{{ item.note }}</mat-label>
       </td>
@@ -195,7 +197,12 @@
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let item">
-        <button mat-icon-button type="button" title="Ta bort budgetpost" (click)="onDeleteItem($event, item)">
+        <button
+          mat-icon-button
+          type="button"
+          title="{{ 'ctrl.button.delete.budget_item' | translate }}"
+          (click)="onDeleteItem($event, item)"
+        >
           <mat-icon>delete_forever</mat-icon>
         </button>
       </td>
@@ -212,11 +219,17 @@
 </div>
 } @else { @if(pageLoaded()) {
 <!-- No units -->
-<div>Det finns ingen enhet upplagd för denna budget. <a href="/feature/unit">Lägg upp enhet</a>.</div>
+<div>
+  {{ 'page.empty.unit' | translate }} <a href="/feature/unit">{{ 'page.link.add_unit' | translate }}</a
+  >.
+</div>
 } } } @else { @if(pageLoaded()) {
 <!-- No categories -->
-<div>Det finns ingen kategori upplagd för denna budget. <a href="/feature/category">Lägg upp kategori</a>.</div>
+<div>
+  {{ 'page.empty.category' | translate }} <a href="/feature/category">{{ 'page.link.add_category' | translate }}</a
+  >.
+</div>
 } } } @else { @if(pageLoaded()) {
 <!-- No years -->
-<div>Det finns ingen budget eller budgetår att hantera.</div>
+<div>{{ 'page.empty.budget' | translate }}</div>
 } } }
