@@ -50,8 +50,10 @@ export class AppComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private dateAdapter: DateAdapter<any>
   ) {
-    this.translate.setDefaultLang('en-GB');
-    this.translate.use(this.languageService.getLanguage());
+    const language = this.languageService.getLanguage();
+    this.translate.setDefaultLang(language);
+    this.translate.use(language);
+    this.dateAdapter.setLocale(language); // Set default adapter
   }
 
   /**

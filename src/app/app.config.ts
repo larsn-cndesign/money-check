@@ -1,5 +1,8 @@
-import { APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import localeEn from '@angular/common/locales/en';
+import localeEs from '@angular/common/locales/es';
+import localeSv from '@angular/common/locales/sv';
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
@@ -10,9 +13,13 @@ import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { APP_ROUTES } from './app.routes';
-import { fakeBackendProvider } from './mock-backend/fake-backend'; // @Test Only for testing, should be removed if using a real backend.
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
 import { LanguageService } from './shared/services/language.service';
+import { fakeBackendProvider } from './mock-backend/fake-backend'; // @Test Only for testing, should be removed if using a real backend.
+
+registerLocaleData(localeSv);
+registerLocaleData(localeEs);
+registerLocaleData(localeEn); // Fallback to en-GB
 
 export function tokenGetter() {
   return localStorage.getItem(environment.tokenName);
