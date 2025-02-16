@@ -73,6 +73,21 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
   months = MONTHS;
 
   /**
+   * Timeout reference to distinguish between single and double clicks.
+   */
+  private clickTimeout: any;
+
+  /**
+   * Delay (in ms) before executing a single click to check for double-click.
+   */
+  private delayClick = 100;
+
+  /**
+   * Flag to prevent single-click execution if a double-click occurs.
+   */
+  private preventClick = false;
+
+  /**
    * Creating a budget variance.
    * @param budgetVarianceService A service managing budget variance.
    * @param budgetStateService Manage the state of a budget.
@@ -131,7 +146,12 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @param item The selected variance item
    */
   onSelectItem(item: VarianceItem): void {
-    this.budgetVarianceService.selectItem(item);
+    this.clickTimeout = setTimeout(() => {
+      if (!this.preventClick) {
+        this.budgetVarianceService.selectItem(item);
+      }
+      this.preventClick = false;
+    }, this.delayClick);
   }
 
   /**
@@ -171,6 +191,9 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
    * @param type The type of the selected item (budget or actual).
    */
   onDblClickItem(item: VarianceItem, type: string): void {
+    clearTimeout(this.clickTimeout);
+    this.preventClick = true;
+
     this.budgetVarianceService.gotoDetails(item, type);
   }
 
