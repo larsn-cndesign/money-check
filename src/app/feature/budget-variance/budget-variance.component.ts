@@ -80,7 +80,7 @@ export class BudgetVarianceComponent implements OnInit, OnDestroy {
   /**
    * Delay (in ms) before executing a single click to check for double-click.
    */
-  private delayClick = 100;
+  private delayClick = 250;
 
   /**
    * Flag to prevent single-click execution if a double-click occurs.
