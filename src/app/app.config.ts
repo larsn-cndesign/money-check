@@ -4,7 +4,7 @@ import localeEn from '@angular/common/locales/en';
 import localeEs from '@angular/common/locales/es';
 import localeSv from '@angular/common/locales/sv';
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
-import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 import { APP_ROUTES } from './app.routes';
 import { LoadingInterceptor } from './shared/http-interceptors/loading-interceptor';
 import { LanguageService } from './shared/services/language.service';
+import { CustomDateAdapter } from './shared/services/custom-date-adapter.service';
 import { fakeBackendProvider } from './mock-backend/fake-backend'; // @Test Only for testing, should be removed if using a real backend.
 
 registerLocaleData(localeSv);
@@ -61,6 +62,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: (languageService: LanguageService) => languageService.getLanguage(),
       deps: [LanguageService],
     },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill', floatLabel: 'always' } },
     { provide: APP_BASE_HREF, useValue: '/' },
