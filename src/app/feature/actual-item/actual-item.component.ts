@@ -374,16 +374,23 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
   onSaveActualItem(): void {
     const val = this.form.getRawValue();
 
+    const model = this.actualItemService.getItemValue();
+    const category = model.categories.find((x) => x.id === val.category);
+    const trip = model.trips.find((x) => x.id === val.trip);
+
     if (val.category && val.purchaseDate && val.currencyCode && val.amount) {
-      const actualItem = new ActualItem();
-      actualItem.id = val.id;
-      actualItem.budgetId = BudgetState.getSelectedBudgetId();
-      actualItem.categoryId = val.category;
-      actualItem.tripId = val.trip;
-      actualItem.purchaseDate = val.purchaseDate;
-      actualItem.currencyCode = val.currencyCode;
-      actualItem.amount = toNumber(val.amount);
-      actualItem.note = val.note ? val.note : '';
+      const actualItem: ActualItem = {
+        id: val.id,
+        budgetId: BudgetState.getSelectedBudgetId(),
+        categoryId: val.category,
+        tripId: val.trip,
+        purchaseDate: val.purchaseDate,
+        currencyCode: val.currencyCode,
+        amount: toNumber(val.amount),
+        note: val.note ? val.note : '',
+        categoryName: category?.categoryName,
+        tripName: trip ? `${toDate(trip.fromDate)} / ${toDate(trip.toDate)}` : '',
+      };
 
       this.modifyItem(actualItem, val.action);
     }

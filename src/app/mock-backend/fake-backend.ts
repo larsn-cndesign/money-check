@@ -260,7 +260,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     function deleteBudgetYear(): Observable<HttpEvent<any>> {
       const budgetYear = JSON.parse(body) as BudgetYear;
       DatabaseService.deleteBudgetYear(budgetYear);
-      return of(new HttpResponse({ status: 200, body: true }));
+      return of(new HttpResponse({ status: 200 }));
     }
 
     // Version
@@ -271,15 +271,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     }
     function createVersion(): Observable<HttpEvent<any>> {
       DatabaseService.createVersion(JSON.parse(body) as ManageBudgetYear);
-      return of(new HttpResponse({ status: 200, body: true }));
+      return of(new HttpResponse({ status: 200 }));
     }
     function updateVersion(): Observable<HttpEvent<any>> {
       DatabaseService.updateVersion(JSON.parse(body) as ManageBudgetYear);
-      return of(new HttpResponse({ status: 200, body: true }));
+      return of(new HttpResponse({ status: 200 }));
     }
     function deleteVersion(): Observable<HttpEvent<any>> {
       DatabaseService.deleteVersion(JSON.parse(body) as BudgetYear);
-      return of(new HttpResponse({ status: 200, body: true }));
+      return of(new HttpResponse({ status: 200 }));
     }
 
     // Budget item

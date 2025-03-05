@@ -4,6 +4,7 @@ import { tap } from 'rxjs/operators';
 import { BudgetState } from '../classes/budget-state.model';
 import { StoreItemAsync } from '../classes/store';
 import { HttpService } from './http.service';
+import { ItemFilter } from '../classes/filter';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +62,10 @@ export class BudgetStateService extends StoreItemAsync<BudgetState> {
     };
 
     this.updateBudgetState(updatedBudgetState);
+
+    const filter = new ItemFilter();
+    filter.budgetId = budgetId;
+    ItemFilter.setFilter(filter);
   }
 
   /**

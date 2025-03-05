@@ -59,8 +59,8 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @param budgetYear A budget year obejct that includes the version to be created
    * @returns Observer of a `boolean` object.
    */
-  addVersion(budgetYear: ManageBudgetYear): Observable<boolean> {
-    return this.httpService.postItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
+  addVersion(budgetYear: ManageBudgetYear): Observable<void> {
+    return this.httpService.postItemVar<ManageBudgetYear, void>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
       })
@@ -72,10 +72,10 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * @description When deleting a version the previous version is reopened.
    * @returns Observer of a `boolean` object.
    */
-  deleteVersion(): Observable<boolean> {
+  deleteVersion(): Observable<void> {
     const budgetYear = this.getItemValue().budgetYear;
 
-    return this.httpService.deleteItemVar<BudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
+    return this.httpService.deleteItemVar<BudgetYear, void>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
       })
@@ -88,7 +88,7 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
    * It can be anything but is recommended to use version numbering such as 1.0.0.
    * @returns
    */
-  updateVersion(versionName: string): Observable<boolean> {
+  updateVersion(versionName: string): Observable<void> {
     const currentItem = this.getItemValue();
 
     const budgetYear = {
@@ -97,7 +97,7 @@ export class BudgetVersionService extends StoreItem<ManageBudgetYear> {
       currencies: this.currencyTableService.items(),
     };
 
-    return this.httpService.putItemVar<ManageBudgetYear, boolean>(budgetYear, 'budgetVersion').pipe(
+    return this.httpService.putItemVar<ManageBudgetYear, void>(budgetYear, 'budgetVersion').pipe(
       tap(() => {
         this.currencyTableService.items = [];
       })

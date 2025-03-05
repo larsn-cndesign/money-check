@@ -285,6 +285,10 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
   onSaveBudgetItem(): void {
     const val = this.form.getRawValue();
 
+    const model = this.budgetItemService.getItemValue();
+    const category = model.categories.find((x) => x.id === val.category);
+    const unit = model.units.find((x) => x.id === val.unit);
+
     if (val.versionId && val.category && val.unit) {
       const budgetItem: BudgetItem = {
         id: val.id,
@@ -294,6 +298,8 @@ export class BudgetItemComponent extends CommonFormService implements OnInit {
         currencyCode: this.useCurrency && val.currencyCode ? val.currencyCode : '',
         unitValue: toNumber(val.unitValue),
         note: val.note ? val.note : '',
+        categoryName: category?.categoryName,
+        unitName: unit?.unitName,
       };
 
       this.modifyItem(budgetItem, val.action);

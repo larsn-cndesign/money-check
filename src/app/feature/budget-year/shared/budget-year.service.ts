@@ -62,9 +62,9 @@ export class BudgetYearService extends StoreItem<ManageBudgetYear, Currency> {
    * @param budgetYear The budget year objcet to be deleted.
    * @returns Observer of a boolean type.
    */
-  deleteBudgetYear(budgetYear: BudgetYear): Observable<boolean> {
+  deleteBudgetYear(budgetYear: BudgetYear): Observable<void> {
     return this.httpService
-      .deleteItemVar<BudgetYear, boolean>(budgetYear, 'budgetYear')
+      .deleteItemVar<BudgetYear, void>(budgetYear, 'budgetYear')
       .pipe(tap(() => this.removeBudgetYear(budgetYear.id)));
   }
 

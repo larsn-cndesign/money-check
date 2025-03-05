@@ -52,15 +52,15 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    * @param action The action to perform (add, edit or delete).
    * @returns An observable of a `ActualItem` representing the modified expense item.
    */
-  modifyActualItem(budgetItem: ActualItem, action: string): Observable<ActualItem> {
+  modifyActualItem(actualItem: ActualItem, action: string): Observable<ActualItem> {
     switch (action) {
       case Modify.Add:
-        return this.httpService.postItem<ActualItem>(budgetItem, 'actualItem').pipe(tap((item) => this._addItem(item)));
+        return this.httpService.postItem<ActualItem>(actualItem, 'actualItem').pipe(tap((item) => this._addItem(item)));
       case Modify.Edit:
-        return this.httpService.putItem<ActualItem>(budgetItem, 'actualItem').pipe(tap((item) => this._editItem(item)));
+        return this.httpService.putItem<ActualItem>(actualItem, 'actualItem').pipe(tap((item) => this._editItem(item)));
       case Modify.Delete:
         return this.httpService
-          .deleteItem<ActualItem>(budgetItem, 'actualItem')
+          .deleteItem<ActualItem>(actualItem, 'actualItem')
           .pipe(tap((item) => this.deleteItem(item, 'id')));
     }
 
@@ -145,7 +145,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    */
   private _addItem(item: ActualItem): void {
     if (this.isYearInFilter(new Date(item.purchaseDate).getFullYear())) {
-      item.tripId = item.tripId == null ? item.tripId : -1;
+      item.tripId = item.tripId ? item.tripId : -1;
       this.addItem(item);
     }
   }
@@ -156,7 +156,7 @@ export class ActualItemService extends StoreItem<ManageActualItem, ActualItem> {
    */
   private _editItem(item: ActualItem): void {
     if (this.isYearInFilter(new Date(item.purchaseDate).getFullYear())) {
-      item.tripId = item.tripId == null ? item.tripId : -1;
+      item.tripId = item.tripId ? item.tripId : -1;
       this.editItem(item, 'id');
     } else {
       this.deleteItem(item, 'id');
