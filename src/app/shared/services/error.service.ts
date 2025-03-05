@@ -58,25 +58,25 @@ export class ErrorService {
       }
 
       if (control.hasError('duplicate')) {
-        return this.translate.instant('error.duplicate', { title: title });
+        return this.translate.instant('error.duplicate', { p1: title });
       }
 
       if (control.hasError('minlength') && control.errors) {
         return this.translate.instant('error.min_length', {
-          title: title,
-          length: control.errors.minlength.requiredLength,
+          p1: title,
+          p2: control.errors.minlength.requiredLength,
         });
       }
 
       if (control.hasError('maxlength') && control.errors) {
         return this.translate.instant('error.max_length', {
-          title: title,
-          length: control.errors.minlength.requiredLength,
+          p1: title,
+          p2: control.errors.minlength.requiredLength,
         });
       }
 
       if (control.hasError('email') && control.errors) {
-        return this.translate.instant('error.invalid_input', { title: title });
+        return this.translate.instant('error.invalid_input', { p1: title });
       }
 
       if (control.hasError('budgetYearNotExist') && control.errors) {
@@ -93,32 +93,56 @@ export class ErrorService {
    * Report error to the consol and rethrow it to subscribers so that error can be displayed to the user.
    * @param error The error respoinse from a server http response.
    * @returns An observable of never.
-   * @todo Log error.
    */
   handleHttpError = (error: HttpErrorResponse): Observable<never> => {
-    let errorDescription = '';
-    let title = this.translate.instant('error.program'); // 'Programfel';
+    let content = '';
 
     if (error.error instanceof ErrorEvent) {
-      console.error(this.translate.instant('error.occured'), error.error.message);
+      content = error.error.message;
     } else {
-      errorDescription = error.error;
-
-      if (error.status === 400 || error.status === 404) {
-        if (error.error?.title && error.error?.description) {
-          title = error.error.title;
-          errorDescription = error.error.description;
-        }
+      switch (error.status) {
+        case 400:
+        case 404:
+          content = this.translateError(error.error.LocaleKey, error.error.LocaleParams);
+          break;
+        case 401:
+          content = this.translateError(error.error.LocaleKey, error.error.LocaleParams);
+          this.router.navigate(['/login']);
+          break;
+        case 500:
+          content = this.translate.instant('error.server');
+          break;
+        default:
+          content = this.translate.instant('error.unknown');
+          break;
       }
-
-      if (error.status === 401) {
-        title = this.translate.instant('error.authorization');
-        this.router.navigate(['/login']);
-      }
-
-      // console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
-    this.messageBoxService.show(new MessageBox(title, errorDescription, 'error'));
-    return throwError(error);
+
+    this.messageBoxService.show(new MessageBox('', content, 'error'));
+    return throwError(() => error);
   };
+
+  private translateError(localeKey: string, localeParams: string[]): string {
+    // Dynamically create an object for the parameters
+    const params = localeParams.reduce((acc, param, index) => {
+      acc[`p${index + 1}`] = this.parseMessage(param); // Assign p1, p2, p3, etc.
+      return acc;
+    }, {} as { [key: string]: string });
+
+    return this.translate.instant(`error.${localeKey}`, params);
+  }
+
+  private parseMessage(param: string): string {
+    let translation = this.translate.instant(param);
+
+    // If the key doesn't exist, try with the error prefix
+    if (translation === param) {
+      translation = this.translate.instant(`error.${param}`);
+
+      // Fallback to param
+      if (translation === `error.${param}`) return param;
+    }
+
+    return translation;
+  }
 }
