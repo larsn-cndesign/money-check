@@ -215,6 +215,7 @@
     (matSortChange)="onSortData($event)"
     class="tbl"
     data-testid="sort"
+    [trackBy]="trackBy"
   >
     <ng-container matColumnDef="purchaseDate">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'global.date' | translate }}</th>

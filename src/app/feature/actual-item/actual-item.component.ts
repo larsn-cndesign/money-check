@@ -14,6 +14,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { BudgetState } from 'src/app/shared/classes/budget-state.model';
@@ -31,7 +32,6 @@ import { isNumberValidator } from 'src/app/shared/validators/common.validators';
 import { ActualItem, CurrencyItem, ManageActualItem } from './shared/actual-item.model';
 import { ActualItemService } from './shared/actual-item.service';
 import { budgetYearNotExistValidator } from './shared/actual-item.validators';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 /**
  * Class representing actual transactions of expenses.
@@ -285,6 +285,16 @@ export class ActualItemComponent extends CommonFormService implements OnInit {
         this.actualItemService.setFilterItem(note, 'note');
         this.getActualItems();
       });
+  }
+
+  /**
+   * Tack by id for faster DOM rendering
+   * @param _index Not used
+   * @param item The item to track id for
+   * @returns
+   */
+  trackBy(_index: number, item: ActualItem) {
+    return item.id;
   }
 
   /**
