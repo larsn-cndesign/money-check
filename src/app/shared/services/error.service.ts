@@ -123,6 +123,8 @@ export class ErrorService {
   };
 
   private translateError(localeKey: string, localeParams: string[]): string {
+    if (!localeKey || !localeParams) return this.translate.instant('error.unknown');
+
     // Dynamically create an object for the parameters
     const params = localeParams.reduce((acc, param, index) => {
       acc[`p${index + 1}`] = this.parseMessage(param); // Assign p1, p2, p3, etc.
